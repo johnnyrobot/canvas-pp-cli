@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-23T00:01:17.142118Z",
+  "printing_press_version": "4.25.0",
+  "api_name": "canvas",
+  "display_name": "Canvas LMS",
+  "cli_name": "canvas-pp-cli",
+  "creator": {
+    "handle": "johnnyrobot",
+    "name": "johnnyrobot"
+  },
+  "owner": "johnnyrobot",
+  "printer": "johnnyrobot",
+  "spec_format": "internal",
+  "spec_checksum": "sha256:1a415831ddae10593e7832dc9b3b889a13cce8c432e6e73c7433271c424e438c",
+  "run_id": "20260622-151431-06e611a5",
+  "category": "productivity",
+  "description": "The whole Canvas REST API in one Go binary — plus a local store, offline search, and cross-resource commands (roster, at-risk, standings) that no single Canvas endpoint returns.",
+  "mcp_binary": "canvas-pp-mcp",
+  "mcp_tool_count": 1042,
+  "mcp_ready": "full",
+  "api_version": "0.1.0",
+  "auth_type": "bearer_token",
+  "auth_env_vars": [
+    "CANVAS_API_TOKEN",
+    "CANVAS_ACCESS_TOKEN"
+  ],
+  "novel_features": [
+    {
+      "name": "Unified roster",
+      "command": "roster",
+      "description": "One table of every student in a course with section, login/SIS ID, role, current and final score, and missing-work count."
+    },
+    {
+      "name": "At-risk / missing radar",
+      "command": "at-risk",
+      "description": "Ranked list of students with missing, late, or unsubmitted work across one or all of an instructor's courses, time-windowed."
+    },
+    {
+      "name": "Grading queue",
+      "command": "to-grade",
+      "description": "A single oldest-first queue of every submitted-but-ungraded item across the instructor's courses, with student, assignment, and points."
+    },
+    {
+      "name": "Since-window changelog",
+      "command": "since",
+      "description": "A 'what changed' digest of new submissions, new announcements, and new enrollments since a time window."
+    },
+    {
+      "name": "Cross-course standings",
+      "command": "standings",
+      "description": "Grade-distribution and pass/fail/DFW rollups computed locally across every course in a term, drillable by section or course."
+    },
+    {
+      "name": "Enrollment audit",
+      "command": "audit-enrollments",
+      "description": "Flags enrollment anomalies in an account: students with no submissions, teacher-less courses, and concluded-but-active users."
+    }
+  ],
+  "printer_name": "johnnyrobot"
+}

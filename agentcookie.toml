@@ -1,0 +1,17 @@
+# agentcookie.toml: secrets-bus adoption manifest v2
+# See docs/spec-agentcookie-secrets-bus-v2-adoption.md
+schema_version = 2
+name = "canvas-pp-cli"
+display_name = "Canvas LMS"
+description = "The whole Canvas REST API in one Go binary — plus a local store, offline search, and cross-resource commands (roster, at-risk, standings) that no single Canvas endpoint returns."
+project_kind = "cli"
+
+[secrets.file]
+path = "~/.config/canvas-pp-cli/config.toml"
+
+[sync]
+default = false
+
+[sync.keys]
+CANVAS_ACCESS_TOKEN = true
+CANVAS_API_TOKEN = true
