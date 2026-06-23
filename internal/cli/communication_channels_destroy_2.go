@@ -17,7 +17,7 @@ func newCommunicationChannelsDestroy2Cmd(flags *rootFlags) *cobra.Command {
 		Use:   "destroy-2 <user_id> <type> <address>",
 		Short: "Delete a communication channel",
 		// TODO: replace placeholder example values before relying on this for live dogfood.
-		Example:     "  canvas-cli communication_channels destroy-2 550e8400-e29b-41d4-a716-446655440000 example-value 123 Test St, Anytown, ST 12345",
+		Example:     "  canvas-pp-cli communication_channels destroy-2 550e8400-e29b-41d4-a716-446655440000 example-value 123 Test St, Anytown, ST 12345",
 		Annotations: map[string]string{"pp:endpoint": "communication_channels.destroy_2", "pp:method": "DELETE", "pp:path": "/api/v1/users/{user_id}/communication_channels/{type}/{address}"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

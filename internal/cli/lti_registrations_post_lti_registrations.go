@@ -27,7 +27,7 @@ func newLtiRegistrationsPostLtiRegistrationsCmd(flags *rootFlags) *cobra.Command
 	cmd := &cobra.Command{
 		Use:         "post-lti-registrations <account_id>",
 		Short:       "Create a new LTI Registration, as well as an associated Tool Configuration, Developer Key, and Registration Account bind",
-		Example:     "  canvas-cli lti_registrations post-lti-registrations 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli lti_registrations post-lti-registrations 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "lti_registrations.post_lti_registrations", "pp:method": "POST", "pp:path": "/api/v1/accounts/{account_id}/lti_registrations"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

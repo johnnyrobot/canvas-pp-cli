@@ -17,7 +17,7 @@ func newUsersTodoItemCountCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "todo-item-count",
 		Short:       "List counts for todo items",
-		Example:     "  canvas-cli users todo-item-count",
+		Example:     "  canvas-pp-cli users todo-item-count",
 		Annotations: map[string]string{"pp:endpoint": "users.todo_item_count", "pp:method": "GET", "pp:path": "/api/v1/users/self/todo_item_count", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := flags.newClient()

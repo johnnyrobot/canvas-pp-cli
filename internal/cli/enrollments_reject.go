@@ -18,7 +18,7 @@ func newEnrollmentsRejectCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "reject <course_id> <id>",
 		Short:       "Reject Course Invitation",
-		Example:     "  canvas-cli enrollments reject 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli enrollments reject 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "enrollments.reject", "pp:method": "POST", "pp:path": "/api/v1/courses/{course_id}/enrollments/{id}/reject"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

@@ -5,8 +5,8 @@ package client
 
 import (
 	"bytes"
-	"canvas-cli/internal/cliutil"
-	"canvas-cli/internal/config"
+	"canvas-pp-cli/internal/cliutil"
+	"canvas-pp-cli/internal/config"
 	"context"
 	"crypto/sha256"
 	"encoding/base64"
@@ -552,7 +552,7 @@ func (c *Client) doInternal(ctx context.Context, method, path string, params map
 			req.Header.Del(BinaryResponseHeader)
 		}
 		if req.Header.Get("User-Agent") == "" {
-			req.Header.Set("User-Agent", "canvas-cli/0.1.0")
+			req.Header.Set("User-Agent", "canvas-pp-cli/0.1.0")
 		}
 		// Go's net/http omits Accept by default; browsers, curl, and other
 		// stdlibs always send it. Fingerprint-checking WAFs (Imperva, Akamai,
@@ -753,7 +753,7 @@ func looksLikeCredentialPlaceholder(value string) bool {
 }
 
 func authPlaceholderCredentialError(cfg *config.Config) error {
-	return authPlaceholderCredentialErrorWithSetup(cfg, "export CANVAS_API_TOKEN=<your-token> or canvas-cli auth set-token <token>")
+	return authPlaceholderCredentialErrorWithSetup(cfg, "export CANVAS_API_TOKEN=<your-token> or canvas-pp-cli auth set-token <token>")
 }
 
 func authPlaceholderCredentialErrorWithSetup(cfg *config.Config, setup string) error {

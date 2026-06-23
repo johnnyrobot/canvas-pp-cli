@@ -19,7 +19,7 @@ func newAccountReportsAbortCmd(flags *rootFlags) *cobra.Command {
 		Use:   "abort <account_id> <report> <id>",
 		Short: "Abort a Report",
 		// TODO: replace placeholder example values before relying on this for live dogfood.
-		Example:     "  canvas-cli account_reports abort 550e8400-e29b-41d4-a716-446655440000 example-value 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli account_reports abort 550e8400-e29b-41d4-a716-446655440000 example-value 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "account_reports.abort", "pp:method": "PUT", "pp:path": "/api/v1/accounts/{account_id}/reports/{report}/{id}/abort"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

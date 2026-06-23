@@ -23,7 +23,7 @@ func newJwtsCreateCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "create",
 		Short:       "Create JWT",
-		Example:     "  canvas-cli jwts create",
+		Example:     "  canvas-pp-cli jwts create",
 		Annotations: map[string]string{"pp:endpoint": "jwts.create", "pp:method": "POST", "pp:path": "/api/v1/jwts"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if !stdinBody {

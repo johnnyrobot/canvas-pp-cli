@@ -12,9 +12,9 @@ import (
 	"text/tabwriter"
 	"time"
 
-	"canvas-cli/internal/client"
-	"canvas-cli/internal/cliutil"
-	"canvas-cli/internal/config"
+	"canvas-pp-cli/internal/client"
+	"canvas-pp-cli/internal/cliutil"
+	"canvas-pp-cli/internal/config"
 	"github.com/spf13/cobra"
 )
 
@@ -144,7 +144,7 @@ func isCobraUsageError(err error) bool {
 
 func newRootCmd(flags *rootFlags) *cobra.Command {
 	rootCmd := &cobra.Command{
-		Use:   "canvas-cli",
+		Use:   "canvas-pp-cli",
 		Short: `Canvas CLI — The whole Canvas REST API in one Go binary — plus a local store, offline search, and cross-resource commands (roster, a…`,
 		Long: `Canvas CLI — The whole Canvas REST API in one Go binary — plus a local store, offline search, and cross-resource commands (roster, a…
 
@@ -157,12 +157,12 @@ Highlights (not in the official API docs):
   • audit-enrollments   Flags enrollment anomalies in an account: students with no submissions, teacher-less courses, and concluded-but-active users.
 
 Agent mode: add --agent to any command for JSON output + non-interactive mode.
-Health check: run 'canvas-cli doctor' to verify auth and connectivity.
+Health check: run 'canvas-pp-cli doctor' to verify auth and connectivity.
 See README.md or the bundled SKILL.md for recipes.`,
 		SilenceUsage: true,
 		Version:      version,
 	}
-	rootCmd.SetVersionTemplate("canvas-cli {{ .Version }}\n")
+	rootCmd.SetVersionTemplate("canvas-pp-cli {{ .Version }}\n")
 
 	rootCmd.PersistentFlags().BoolVar(&flags.asJSON, "json", false, "Output as JSON")
 	rootCmd.PersistentFlags().BoolVar(&flags.compact, "compact", false, "Return only key fields (id, name, status, timestamps) for minimal token usage")
@@ -185,7 +185,7 @@ See README.md or the bundled SKILL.md for recipes.`,
 	rootCmd.PersistentFlags().BoolVar(&flags.allowPartialFailure, "allow-partial-failure", false, "Downgrade response-body partial-failure (e.g. partialFailureError) to a warning instead of a non-zero exit")
 	rootCmd.PersistentFlags().StringVar(&flags.dataSource, "data-source", "auto", "Data source for read commands: auto (live with local fallback), live (API only), local (synced data only)")
 	rootCmd.PersistentFlags().DurationVar(&flags.maxAge, "max-age", 30*time.Minute, "Maximum acceptable age of local-store data before a stderr hint suggests sync; 0 disables")
-	rootCmd.PersistentFlags().StringVar(&flags.profileName, "profile", "", "Apply values from a saved profile (see 'canvas-cli profile list')")
+	rootCmd.PersistentFlags().StringVar(&flags.profileName, "profile", "", "Apply values from a saved profile (see 'canvas-pp-cli profile list')")
 	rootCmd.PersistentFlags().StringVar(&flags.deliverSpec, "deliver", "", "Route output to a sink: stdout (default), file:<path>, webhook:<url>")
 	rootCmd.PersistentFlags().Float64Var(&flags.rateLimit, "rate-limit", 0, "Max requests per second (0 to disable)")
 

@@ -53,7 +53,7 @@ func newNovelToGradeCmd(flags *rootFlags) *cobra.Command {
 		Long: "Joins submissions to assignments across a course (or every course you teach with --all-my-courses) " +
 			"and lists everything still awaiting a grade, aged by submission date. Canvas reports needs-grading " +
 			"counts per assignment only; this is the single cross-course work queue. Read-only.",
-		Example: "  canvas-cli to-grade --all-my-courses --sort oldest --agent\n  canvas-cli to-grade --course 12345 --limit 20",
+		Example: "  canvas-pp-cli to-grade --all-my-courses --sort oldest --agent\n  canvas-pp-cli to-grade --course 12345 --limit 20",
 		Annotations: map[string]string{
 			"mcp:read-only":          "true",
 			"pp:happy-args":          "--course=12345;--sort=oldest",

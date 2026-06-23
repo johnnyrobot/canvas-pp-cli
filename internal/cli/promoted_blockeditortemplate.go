@@ -22,7 +22,7 @@ func newBlockeditortemplatePromotedCmd(flags *rootFlags) *cobra.Command {
 		Use:         "blockeditortemplate <course_id>",
 		Short:       "List block templates",
 		Long:        "List block templates",
-		Example:     "  canvas-cli blockeditortemplate 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli blockeditortemplate 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "blockeditortemplate.index", "pp:method": "GET", "pp:path": "/api/v1/courses/{course_id}/block_editor_templates", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := flags.newClient()

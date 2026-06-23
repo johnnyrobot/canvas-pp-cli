@@ -16,7 +16,7 @@ func newGradingStandardsContextShowCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "context-show <course_id> <grading_standard_id>",
 		Short:       "Get a single grading standard in a context.",
-		Example:     "  canvas-cli grading_standards context-show 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli grading_standards context-show 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "grading_standards.context_show", "pp:method": "GET", "pp:path": "/api/v1/courses/{course_id}/grading_standards/{grading_standard_id}", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

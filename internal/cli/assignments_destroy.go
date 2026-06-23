@@ -16,7 +16,7 @@ func newAssignmentsDestroyCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "destroy <course_id> <id>",
 		Short:       "Delete an assignment",
-		Example:     "  canvas-cli assignments destroy 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli assignments destroy 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "assignments.destroy", "pp:method": "DELETE", "pp:path": "/api/v1/courses/{course_id}/assignments/{id}"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

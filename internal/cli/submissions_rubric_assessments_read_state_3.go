@@ -16,7 +16,7 @@ func newSubmissionsRubricAssessmentsReadState3Cmd(flags *rootFlags) *cobra.Comma
 	cmd := &cobra.Command{
 		Use:         "rubric-assessments-read-state-3 <section_id> <assignment_id> <user_id>",
 		Short:       "Get rubric assessments read state",
-		Example:     "  canvas-cli submissions rubric-assessments-read-state-3 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli submissions rubric-assessments-read-state-3 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "submissions.rubric_assessments_read_state_3", "pp:method": "GET", "pp:path": "/api/v1/sections/{section_id}/assignments/{assignment_id}/submissions/{user_id}/rubric_comments/read", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

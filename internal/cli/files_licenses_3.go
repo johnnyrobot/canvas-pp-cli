@@ -16,7 +16,7 @@ func newFilesLicenses3Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "licenses-3 <user_id>",
 		Short:       "List licenses",
-		Example:     "  canvas-cli files licenses-3 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli files licenses-3 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "files.licenses_3", "pp:method": "GET", "pp:path": "/api/v1/users/{user_id}/content_licenses", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

@@ -12,7 +12,7 @@ import (
 	"syscall"
 	"time"
 
-	"canvas-cli/internal/cliutil"
+	"canvas-pp-cli/internal/cliutil"
 	"github.com/spf13/cobra"
 )
 
@@ -32,13 +32,13 @@ Gracefully shuts down on SIGTERM/SIGINT.
 Note: For APIs with WebSocket or SSE support, a future version will use
 native streaming instead of polling.`,
 		Example: `  # Tail all changes every 10 seconds
-  canvas-cli tail --interval 10s
+  canvas-pp-cli tail --interval 10s
 
   # Tail a specific resource
-  canvas-cli tail messages --interval 5s
+  canvas-pp-cli tail messages --interval 5s
 
   # Pipe to jq for filtering
-  canvas-cli tail events --interval 30s | jq 'select(.type == "error")'`,
+  canvas-pp-cli tail events --interval 30s | jq 'select(.type == "error")'`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) > 0 {
 				resource = args[0]

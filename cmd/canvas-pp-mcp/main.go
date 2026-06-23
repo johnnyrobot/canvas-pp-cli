@@ -9,7 +9,7 @@ import (
 	"os"
 	"strings"
 
-	mcptools "canvas-cli/internal/mcp"
+	mcptools "canvas-pp-cli/internal/mcp"
 	"github.com/mark3labs/mcp-go/server"
 )
 
@@ -47,7 +47,7 @@ func main() {
 		}
 	case "http":
 		httpSrv := server.NewStreamableHTTPServer(s)
-		fmt.Fprintf(os.Stderr, "canvas-mcp serving MCP over streamable HTTP at %s\n", *addr)
+		fmt.Fprintf(os.Stderr, "canvas-pp-mcp serving MCP over streamable HTTP at %s\n", *addr)
 		if err := httpSrv.Start(*addr); err != nil {
 			fmt.Fprintf(os.Stderr, "MCP server error: %v\n", err)
 			os.Exit(1)

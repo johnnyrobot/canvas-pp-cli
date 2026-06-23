@@ -17,7 +17,7 @@ func newQuizSubmissionsGetSubmissions2Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "get-submissions-2 <course_id> <quiz_id> <id>",
 		Short:       "Get a single quiz submission.",
-		Example:     "  canvas-cli quiz_submissions get-submissions-2 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli quiz_submissions get-submissions-2 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "quiz_submissions.get_submissions_2", "pp:method": "GET", "pp:path": "/api/v1/courses/{course_id}/quizzes/{quiz_id}/submissions/{id}", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

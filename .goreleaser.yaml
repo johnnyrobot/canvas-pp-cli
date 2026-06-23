@@ -1,15 +1,15 @@
 version: 2
-project_name: canvas-cli
+project_name: canvas-pp-cli
 changelog:
   disable: true
 builds:
-  - id: canvas-cli
-    main: ./cmd/canvas-cli
-    binary: canvas-cli
+  - id: canvas-pp-cli
+    main: ./cmd/canvas-pp-cli
+    binary: canvas-pp-cli
     env:
       - CGO_ENABLED=0
     ldflags:
-      - -s -w -X canvas-cli/internal/cli.version={{ .Version }}
+      - -s -w -X canvas-pp-cli/internal/cli.version={{ .Version }}
     targets:
       - darwin_amd64
       - darwin_arm64
@@ -17,9 +17,9 @@ builds:
       - linux_arm64
       - windows_amd64
       - windows_arm64
-  - id: canvas-mcp
-    main: ./cmd/canvas-mcp
-    binary: canvas-mcp
+  - id: canvas-pp-mcp
+    main: ./cmd/canvas-pp-mcp
+    binary: canvas-pp-mcp
     env:
       - CGO_ENABLED=0
     ldflags:
@@ -40,12 +40,12 @@ archives:
 checksum:
   name_template: checksums.txt
 brews:
-  - name: canvas-cli
+  - name: canvas-pp-cli
     repository:
       owner: johnnyrobot
       name: homebrew-tap
-    homepage: "https://github.com/johnnyrobot/canvas-cli"
+    homepage: "https://github.com/johnnyrobot/canvas-pp-cli"
     description: "The whole Canvas REST API in one Go binary — plus a local store, offline search, and cross-resource commands (roster, at-risk, standings) that no single Canvas endpoint returns."
     install: |
-      bin.install "canvas-cli"
-      bin.install "canvas-mcp"
+      bin.install "canvas-pp-cli"
+      bin.install "canvas-pp-mcp"

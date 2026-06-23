@@ -20,7 +20,7 @@ func newContentSecurityPolicySettingsAddMultipleDomainsCmd(flags *rootFlags) *co
 		Use:   "add-multiple-domains <account_id>",
 		Short: "Add multiple allowed domains to an account",
 		// TODO: replace placeholder example values before relying on this for live dogfood.
-		Example:     "  canvas-cli content_security_policy_settings add-multiple-domains 550e8400-e29b-41d4-a716-446655440000 --domains example-value",
+		Example:     "  canvas-pp-cli content_security_policy_settings add-multiple-domains 550e8400-e29b-41d4-a716-446655440000 --domains example-value",
 		Annotations: map[string]string{"pp:endpoint": "content_security_policy_settings.add_multiple_domains", "pp:method": "POST", "pp:path": "/api/v1/accounts/{account_id}/csp_settings/domains/batch_create"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

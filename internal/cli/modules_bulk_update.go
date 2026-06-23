@@ -20,7 +20,7 @@ func newModulesBulkUpdateCmd(flags *rootFlags) *cobra.Command {
 		Use:   "bulk-update <course_id> <context_module_id>",
 		Short: "Update a module's overrides",
 		// TODO: replace placeholder example values before relying on this for live dogfood.
-		Example:     "  canvas-cli modules bulk-update 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 --overrides example-value",
+		Example:     "  canvas-pp-cli modules bulk-update 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 --overrides example-value",
 		Annotations: map[string]string{"pp:endpoint": "modules.bulk_update", "pp:method": "PUT", "pp:path": "/api/v1/courses/{course_id}/modules/{context_module_id}/assignment_overrides"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

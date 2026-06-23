@@ -16,7 +16,7 @@ func newGradingPeriodsDestroy2Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "destroy-2 <account_id> <id>",
 		Short:       "Delete a grading period",
-		Example:     "  canvas-cli grading_periods destroy-2 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli grading_periods destroy-2 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "grading_periods.destroy_2", "pp:method": "DELETE", "pp:path": "/api/v1/accounts/{account_id}/grading_periods/{id}"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

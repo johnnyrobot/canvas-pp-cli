@@ -18,7 +18,7 @@ func newFilesResetVerifierCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "reset-verifier <id>",
 		Short:       "Reset link verifier",
-		Example:     "  canvas-cli files reset-verifier 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli files reset-verifier 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "files.reset_verifier", "pp:method": "POST", "pp:path": "/api/v1/files/{id}/reset_verifier"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

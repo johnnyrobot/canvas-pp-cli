@@ -18,7 +18,7 @@ func newFavoritesAddFavoriteGroupsCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "add-favorite-groups <id>",
 		Short:       "Add group to favorites",
-		Example:     "  canvas-cli favorites add-favorite-groups 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli favorites add-favorite-groups 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "favorites.add_favorite_groups", "pp:method": "POST", "pp:path": "/api/v1/users/self/favorites/groups/{id}"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

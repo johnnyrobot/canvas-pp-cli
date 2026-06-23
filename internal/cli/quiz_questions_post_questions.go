@@ -29,7 +29,7 @@ func newQuizQuestionsPostQuestionsCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "post-questions <course_id> <quiz_id>",
 		Short:       "Create a new quiz question for this quiz",
-		Example:     "  canvas-cli quiz_questions post-questions 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli quiz_questions post-questions 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "quiz_questions.post_questions", "pp:method": "POST", "pp:path": "/api/v1/courses/{course_id}/quizzes/{quiz_id}/questions"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

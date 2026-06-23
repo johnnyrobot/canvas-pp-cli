@@ -16,7 +16,7 @@ func newPollsubmissionsGetPollSubmissionsCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "get-poll-submissions <poll_id> <poll_session_id> <id>",
 		Short:       "Returns the poll submission with the given id",
-		Example:     "  canvas-cli pollsubmissions get-poll-submissions 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli pollsubmissions get-poll-submissions 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "pollsubmissions.get_poll_submissions", "pp:method": "GET", "pp:path": "/api/v1/polls/{poll_id}/poll_sessions/{poll_session_id}/poll_submissions/{id}", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

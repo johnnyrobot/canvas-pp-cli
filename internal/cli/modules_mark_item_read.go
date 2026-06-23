@@ -18,7 +18,7 @@ func newModulesMarkItemReadCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "mark-item-read <course_id> <module_id> <id>",
 		Short:       "Mark module item read",
-		Example:     "  canvas-cli modules mark-item-read 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli modules mark-item-read 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "modules.mark_item_read", "pp:method": "POST", "pp:path": "/api/v1/courses/{course_id}/modules/{module_id}/items/{id}/mark_read"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

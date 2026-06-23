@@ -18,7 +18,7 @@ func newConversationsMarkAllAsReadCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "mark-all-as-read",
 		Short:       "Mark all as read",
-		Example:     "  canvas-cli conversations mark-all-as-read",
+		Example:     "  canvas-pp-cli conversations mark-all-as-read",
 		Annotations: map[string]string{"pp:endpoint": "conversations.mark_all_as_read", "pp:method": "POST", "pp:path": "/api/v1/conversations/mark_all_as_read"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if !stdinBody {

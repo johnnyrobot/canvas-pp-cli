@@ -18,7 +18,7 @@ func newAssignmentsBulkUpdateCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "bulk-update <course_id>",
 		Short:       "Bulk update assignment dates",
-		Example:     "  canvas-cli assignments bulk-update 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli assignments bulk-update 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "assignments.bulk_update", "pp:method": "PUT", "pp:path": "/api/v1/courses/{course_id}/assignments/bulk_update"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

@@ -18,7 +18,7 @@ func newSubmissionsMarkRubricAssessmentsRead4Cmd(flags *rootFlags) *cobra.Comman
 	cmd := &cobra.Command{
 		Use:         "mark-rubric-assessments-read-4 <section_id> <assignment_id> <user_id>",
 		Short:       "Mark rubric assessments as read",
-		Example:     "  canvas-cli submissions mark-rubric-assessments-read-4 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli submissions mark-rubric-assessments-read-4 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "submissions.mark_rubric_assessments_read_4", "pp:method": "PUT", "pp:path": "/api/v1/sections/{section_id}/assignments/{assignment_id}/submissions/{user_id}/rubric_assessments/read"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

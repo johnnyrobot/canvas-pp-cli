@@ -24,7 +24,7 @@ func newAiExperiencesCreateCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "create <course_id>",
 		Short:       "Create an AI experience",
-		Example:     "  canvas-cli ai_experiences create 550e8400-e29b-41d4-a716-446655440000 --title example-resource",
+		Example:     "  canvas-pp-cli ai_experiences create 550e8400-e29b-41d4-a716-446655440000 --title example-resource",
 		Annotations: map[string]string{"pp:endpoint": "ai_experiences.create", "pp:method": "POST", "pp:path": "/api/v1/courses/{course_id}/ai_experiences"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

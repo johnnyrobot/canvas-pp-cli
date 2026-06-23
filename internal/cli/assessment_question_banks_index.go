@@ -20,7 +20,7 @@ func newAssessmentQuestionBanksIndexCmd(flags *rootFlags) *cobra.Command {
 		Use:   "index",
 		Short: "List question banks",
 		// TODO: replace placeholder example values before relying on this for live dogfood.
-		Example:     "  canvas-cli assessment_question_banks index --context-type example-value --context-id 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli assessment_question_banks index --context-type example-value --context-id 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "assessment_question_banks.index", "pp:method": "GET", "pp:path": "/api/v1/question_banks", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

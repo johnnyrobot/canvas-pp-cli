@@ -16,7 +16,7 @@ func newDeveloperKeysDestroyCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "destroy <id>",
 		Short:       "Delete a Developer Key",
-		Example:     "  canvas-cli developer_keys destroy 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli developer_keys destroy 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "developer_keys.destroy", "pp:method": "DELETE", "pp:path": "/api/v1/developer_keys/{id}"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

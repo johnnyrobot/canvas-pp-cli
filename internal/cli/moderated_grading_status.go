@@ -17,7 +17,7 @@ func newModeratedGradingStatusCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "status <course_id> <assignment_id>",
 		Short:       "Show provisional grade status for a student",
-		Example:     "  canvas-cli moderated_grading status 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli moderated_grading status 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "moderated_grading.status", "pp:method": "GET", "pp:path": "/api/v1/courses/{course_id}/assignments/{assignment_id}/provisional_grades/status", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

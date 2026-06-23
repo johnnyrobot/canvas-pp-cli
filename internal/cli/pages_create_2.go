@@ -25,7 +25,7 @@ func newPagesCreate2Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "create-2 <group_id>",
 		Short:       "Create page",
-		Example:     "  canvas-cli pages create-2 550e8400-e29b-41d4-a716-446655440000 --wiki-page-title example-resource",
+		Example:     "  canvas-pp-cli pages create-2 550e8400-e29b-41d4-a716-446655440000 --wiki-page-title example-resource",
 		Annotations: map[string]string{"pp:endpoint": "pages.create_2", "pp:method": "POST", "pp:path": "/api/v1/groups/{group_id}/pages"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

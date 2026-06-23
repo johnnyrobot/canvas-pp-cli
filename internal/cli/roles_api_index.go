@@ -18,7 +18,7 @@ func newRolesApiIndexCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "api-index <account_id>",
 		Short:       "List roles",
-		Example:     "  canvas-cli roles api-index 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli roles api-index 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "roles.api_index", "pp:method": "GET", "pp:path": "/api/v1/accounts/{account_id}/roles", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

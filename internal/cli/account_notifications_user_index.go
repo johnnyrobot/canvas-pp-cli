@@ -19,7 +19,7 @@ func newAccountNotificationsUserIndexCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "user-index <account_id>",
 		Short:       "Index of active global notification for the user",
-		Example:     "  canvas-cli account_notifications user-index 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli account_notifications user-index 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "account_notifications.user_index", "pp:method": "GET", "pp:path": "/api/v1/accounts/{account_id}/account_notifications", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

@@ -18,7 +18,7 @@ func newModeratedGradingSelectCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "select <course_id> <assignment_id> <provisional_grade_id>",
 		Short:       "Select provisional grade",
-		Example:     "  canvas-cli moderated_grading select 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli moderated_grading select 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "moderated_grading.select", "pp:method": "PUT", "pp:path": "/api/v1/courses/{course_id}/assignments/{assignment_id}/provisional_grades/{provisional_grade_id}/select"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

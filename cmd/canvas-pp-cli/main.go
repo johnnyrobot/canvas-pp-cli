@@ -6,7 +6,7 @@ package main
 import (
 	"os"
 
-	"canvas-cli/internal/cli"
+	"canvas-pp-cli/internal/cli"
 )
 
 func main() {

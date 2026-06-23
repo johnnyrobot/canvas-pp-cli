@@ -18,7 +18,7 @@ func newLearningObjectDatesShow4Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "show-4 <course_id> <discussion_topic_id>",
 		Short:       "Get a learning object's date information",
-		Example:     "  canvas-cli learning_object_dates show-4 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli learning_object_dates show-4 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "learning_object_dates.show_4", "pp:method": "GET", "pp:path": "/api/v1/courses/{course_id}/discussion_topics/{discussion_topic_id}/date_details", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

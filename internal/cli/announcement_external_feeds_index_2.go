@@ -16,7 +16,7 @@ func newAnnouncementExternalFeedsIndex2Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "index-2 <group_id>",
 		Short:       "List external feeds",
-		Example:     "  canvas-cli announcement_external_feeds index-2 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli announcement_external_feeds index-2 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "announcement_external_feeds.index_2", "pp:method": "GET", "pp:path": "/api/v1/groups/{group_id}/external_feeds", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

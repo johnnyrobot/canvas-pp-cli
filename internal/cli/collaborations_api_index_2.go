@@ -16,7 +16,7 @@ func newCollaborationsApiIndex2Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "api-index-2 <group_id>",
 		Short:       "List collaborations",
-		Example:     "  canvas-cli collaborations api-index-2 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli collaborations api-index-2 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "collaborations.api_index_2", "pp:method": "GET", "pp:path": "/api/v1/groups/{group_id}/collaborations", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

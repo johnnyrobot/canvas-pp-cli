@@ -25,7 +25,7 @@ func newGroupCategoriesUpdateCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "update <group_category_id>",
 		Short:       "Update a Group Category",
-		Example:     "  canvas-cli group_categories update 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli group_categories update 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "group_categories.update", "pp:method": "PUT", "pp:path": "/api/v1/group_categories/{group_category_id}"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

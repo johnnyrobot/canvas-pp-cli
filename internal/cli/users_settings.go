@@ -25,7 +25,7 @@ func newUsersSettingsCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "settings <id>",
 		Short:       "Update user settings.",
-		Example:     "  canvas-cli users settings 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli users settings 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "users.settings", "pp:method": "GET", "pp:path": "/api/v1/users/{id}/settings", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

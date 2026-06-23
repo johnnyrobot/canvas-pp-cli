@@ -18,7 +18,7 @@ func newContentMigrationsUpdate6Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "update-6 <course_id> <id>",
 		Short:       "Update a content migration",
-		Example:     "  canvas-cli content_migrations update-6 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli content_migrations update-6 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "content_migrations.update_6", "pp:method": "PUT", "pp:path": "/api/v1/courses/{course_id}/content_migrations/{id}"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

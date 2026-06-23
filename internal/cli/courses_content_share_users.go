@@ -18,7 +18,7 @@ func newCoursesContentShareUsersCmd(flags *rootFlags) *cobra.Command {
 		Use:   "content-share-users <course_id>",
 		Short: "Search for content share users",
 		// TODO: replace placeholder example values before relying on this for live dogfood.
-		Example:     "  canvas-cli courses content-share-users 550e8400-e29b-41d4-a716-446655440000 --search-term example-value",
+		Example:     "  canvas-pp-cli courses content-share-users 550e8400-e29b-41d4-a716-446655440000 --search-term example-value",
 		Annotations: map[string]string{"pp:endpoint": "courses.content_share_users", "pp:method": "GET", "pp:path": "/api/v1/courses/{course_id}/content_share_users", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

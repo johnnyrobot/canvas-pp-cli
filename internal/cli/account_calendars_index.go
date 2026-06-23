@@ -17,7 +17,7 @@ func newAccountCalendarsIndexCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "index",
 		Short:       "List available account calendars",
-		Example:     "  canvas-cli account_calendars index",
+		Example:     "  canvas-pp-cli account_calendars index",
 		Annotations: map[string]string{"pp:endpoint": "account_calendars.index", "pp:method": "GET", "pp:path": "/api/v1/account_calendars", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := flags.newClient()

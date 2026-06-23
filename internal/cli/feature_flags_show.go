@@ -17,7 +17,7 @@ func newFeatureFlagsShowCmd(flags *rootFlags) *cobra.Command {
 		Use:   "show <course_id> <feature>",
 		Short: "Get feature flag",
 		// TODO: replace placeholder example values before relying on this for live dogfood.
-		Example:     "  canvas-cli feature_flags show 550e8400-e29b-41d4-a716-446655440000 example-value",
+		Example:     "  canvas-pp-cli feature_flags show 550e8400-e29b-41d4-a716-446655440000 example-value",
 		Annotations: map[string]string{"pp:endpoint": "feature_flags.show", "pp:method": "GET", "pp:path": "/api/v1/courses/{course_id}/features/flags/{feature}", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

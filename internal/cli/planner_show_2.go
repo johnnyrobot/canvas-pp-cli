@@ -16,7 +16,7 @@ func newPlannerShow2Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "show-2 <id>",
 		Short:       "Show a planner override",
-		Example:     "  canvas-cli planner show-2 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli planner show-2 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "planner.show_2", "pp:method": "GET", "pp:path": "/api/v1/planner/overrides/{id}", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

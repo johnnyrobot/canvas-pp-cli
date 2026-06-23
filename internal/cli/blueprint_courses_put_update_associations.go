@@ -20,7 +20,7 @@ func newBlueprintCoursesPutUpdateAssociationsCmd(flags *rootFlags) *cobra.Comman
 	cmd := &cobra.Command{
 		Use:         "put-update-associations <course_id> <template_id>",
 		Short:       "Send a list of course ids to add or remove new associations for the template. Cannot add courses that do not belong to t",
-		Example:     "  canvas-cli blueprint_courses put-update-associations 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli blueprint_courses put-update-associations 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "blueprint_courses.put_update_associations", "pp:method": "PUT", "pp:path": "/api/v1/courses/{course_id}/blueprint_templates/{template_id}/update_associations"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

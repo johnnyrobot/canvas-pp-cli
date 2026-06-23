@@ -18,7 +18,7 @@ func newQuizSubmissionUserListPromotedCmd(flags *rootFlags) *cobra.Command {
 		Use:         "quiz-submission-user-list <course_id> <id>",
 		Short:       "{ 'body': { 'type': 'string', 'description': 'message body of the conversation to be created', 'example': 'Please take t",
 		Long:        "{ 'body': { 'type': 'string', 'description': 'message body of the conversation to be created', 'example': 'Please take t",
-		Example:     "  canvas-cli quiz-submission-user-list 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli quiz-submission-user-list 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "quiz_submission_user_list.post_message", "pp:method": "POST", "pp:path": "/api/v1/courses/{course_id}/quizzes/{id}/submission_users/message"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := flags.newClient()

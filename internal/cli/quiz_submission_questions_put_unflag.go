@@ -21,7 +21,7 @@ func newQuizSubmissionQuestionsPutUnflagCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "put-unflag <quiz_submission_id> <id>",
 		Short:       "Remove the flag that you previously set on a quiz question after you've returned to it.",
-		Example:     "  canvas-cli quiz_submission_questions put-unflag 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 --validation-token your-token-here",
+		Example:     "  canvas-pp-cli quiz_submission_questions put-unflag 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 --validation-token your-token-here",
 		Annotations: map[string]string{"pp:endpoint": "quiz_submission_questions.put_unflag", "pp:method": "PUT", "pp:path": "/api/v1/quiz_submissions/{quiz_submission_id}/questions/{id}/unflag"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

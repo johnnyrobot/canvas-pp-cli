@@ -16,7 +16,7 @@ func newAnalyticsResourceDepartmentParticipation2Cmd(flags *rootFlags) *cobra.Co
 	cmd := &cobra.Command{
 		Use:         "department-participation-2 <account_id>",
 		Short:       "Get department-level participation data",
-		Example:     "  canvas-cli analytics_resource department-participation-2 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli analytics_resource department-participation-2 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "analytics_resource.department_participation_2", "pp:method": "GET", "pp:path": "/api/v1/accounts/{account_id}/analytics/current/activity", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

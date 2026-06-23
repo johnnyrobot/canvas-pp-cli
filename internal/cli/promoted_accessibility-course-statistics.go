@@ -17,7 +17,7 @@ func newAccessibilityCourseStatisticsPromotedCmd(flags *rootFlags) *cobra.Comman
 		Use:         "accessibility-course-statistics <user_id>",
 		Short:       "List accessibility course statistics",
 		Long:        "List accessibility course statistics",
-		Example:     "  canvas-cli accessibility-course-statistics 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli accessibility-course-statistics 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "accessibility_course_statistics.index", "pp:method": "GET", "pp:path": "/api/v1/users/{user_id}/educator_accessibility_course_statistics", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := flags.newClient()

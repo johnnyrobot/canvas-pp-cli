@@ -16,7 +16,7 @@ func newOutcomeImportsCreatedGroupIds2Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "created-group-ids-2 <course_id> <id>",
 		Short:       "Get IDs of outcome groups created after successful import",
-		Example:     "  canvas-cli outcome_imports created-group-ids-2 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli outcome_imports created-group-ids-2 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "outcome_imports.created_group_ids_2", "pp:method": "GET", "pp:path": "/api/v1/courses/{course_id}/outcome_imports/{id}/created_group_ids", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

@@ -17,7 +17,7 @@ func newAccountNotificationsUserCloseNotificationCmd(flags *rootFlags) *cobra.Co
 	cmd := &cobra.Command{
 		Use:         "user-close-notification <account_id> <id>",
 		Short:       "Close notification for user. Destroy notification for admin",
-		Example:     "  canvas-cli account_notifications user-close-notification 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli account_notifications user-close-notification 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "account_notifications.user_close_notification", "pp:method": "DELETE", "pp:path": "/api/v1/accounts/{account_id}/account_notifications/{id}"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

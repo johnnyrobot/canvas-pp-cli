@@ -21,7 +21,7 @@ func newGradingPeriodsUpdateCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "update <course_id> <id>",
 		Short:       "Update a single grading period",
-		Example:     "  canvas-cli grading_periods update 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 --grading-periods-start-date 2026-01-15",
+		Example:     "  canvas-pp-cli grading_periods update 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 --grading-periods-start-date 2026-01-15",
 		Annotations: map[string]string{"pp:endpoint": "grading_periods.update", "pp:method": "PUT", "pp:path": "/api/v1/courses/{course_id}/grading_periods/{id}"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

@@ -16,7 +16,7 @@ func newQuizQuestionsDeleteQuestionsCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "delete-questions <course_id> <quiz_id> <id>",
 		Short:       "204 No Content response code is returned if the deletion was successful.",
-		Example:     "  canvas-cli quiz_questions delete-questions 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli quiz_questions delete-questions 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "quiz_questions.delete_questions", "pp:method": "DELETE", "pp:path": "/api/v1/courses/{course_id}/quizzes/{quiz_id}/questions/{id}"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

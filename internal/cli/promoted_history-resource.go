@@ -17,7 +17,7 @@ func newHistoryResourcePromotedCmd(flags *rootFlags) *cobra.Command {
 		Use:         "history-resource <user_id>",
 		Short:       "List recent history for a user",
 		Long:        "List recent history for a user",
-		Example:     "  canvas-cli history-resource 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli history-resource 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "history_resource.index", "pp:method": "GET", "pp:path": "/api/v1/users/{user_id}/history", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := flags.newClient()

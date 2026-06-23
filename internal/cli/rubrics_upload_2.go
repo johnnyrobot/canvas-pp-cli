@@ -18,7 +18,7 @@ func newRubricsUpload2Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "upload-2 <account_id>",
 		Short:       "Creates a rubric using a CSV file",
-		Example:     "  canvas-cli rubrics upload-2 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli rubrics upload-2 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "rubrics.upload_2", "pp:method": "POST", "pp:path": "/api/v1/accounts/{account_id}/rubrics/upload"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

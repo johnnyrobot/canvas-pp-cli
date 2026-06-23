@@ -25,7 +25,7 @@ func newFilesSetUsageRightsCmd(flags *rootFlags) *cobra.Command {
 		Use:   "set-usage-rights <course_id>",
 		Short: "Set usage rights",
 		// TODO: replace placeholder example values before relying on this for live dogfood.
-		Example:     "  canvas-cli files set-usage-rights 550e8400-e29b-41d4-a716-446655440000 --file-ids example-value",
+		Example:     "  canvas-pp-cli files set-usage-rights 550e8400-e29b-41d4-a716-446655440000 --file-ids example-value",
 		Annotations: map[string]string{"pp:endpoint": "files.set_usage_rights", "pp:method": "PUT", "pp:path": "/api/v1/courses/{course_id}/usage_rights"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

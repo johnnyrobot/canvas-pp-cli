@@ -33,7 +33,7 @@ func newDeveloperKeysCreateCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "create <account_id>",
 		Short:       "Create a Developer Key",
-		Example:     "  canvas-cli developer_keys create 550e8400-e29b-41d4-a716-446655440000 --developer-key your-token-here",
+		Example:     "  canvas-pp-cli developer_keys create 550e8400-e29b-41d4-a716-446655440000 --developer-key your-token-here",
 		Annotations: map[string]string{"pp:endpoint": "developer_keys.create", "pp:method": "POST", "pp:path": "/api/v1/accounts/{account_id}/developer_keys"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

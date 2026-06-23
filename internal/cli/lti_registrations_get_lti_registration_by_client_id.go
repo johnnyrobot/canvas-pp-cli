@@ -16,7 +16,7 @@ func newLtiRegistrationsGetLtiRegistrationByClientIdCmd(flags *rootFlags) *cobra
 	cmd := &cobra.Command{
 		Use:         "get-lti-registration-by-client-id <account_id> <client_id>",
 		Short:       "Returns details about the specified LTI registration, including the configuration and account binding.",
-		Example:     "  canvas-cli lti_registrations get-lti-registration-by-client-id 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli lti_registrations get-lti-registration-by-client-id 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "lti_registrations.get_lti_registration_by_client_id", "pp:method": "GET", "pp:path": "/api/v1/accounts/{account_id}/lti_registration_by_client_id/{client_id}", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

@@ -17,7 +17,7 @@ func newQuizIpFiltersPromotedCmd(flags *rootFlags) *cobra.Command {
 		Use:         "quiz-ip-filters <course_id> <quiz_id>",
 		Short:       "Get a list of available IP filters for this Quiz.",
 		Long:        "Get a list of available IP filters for this Quiz.",
-		Example:     "  canvas-cli quiz-ip-filters 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli quiz-ip-filters 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "quiz_ip_filters.get_ip_filters", "pp:method": "GET", "pp:path": "/api/v1/courses/{course_id}/quizzes/{quiz_id}/ip_filters", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := flags.newClient()

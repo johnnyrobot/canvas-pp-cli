@@ -18,7 +18,7 @@ func newAccountsRestoreUserCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "restore-user <account_id> <user_id>",
 		Short:       "Restore a deleted user from a root account",
-		Example:     "  canvas-cli accounts restore-user 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli accounts restore-user 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "accounts.restore_user", "pp:method": "PUT", "pp:path": "/api/v1/accounts/{account_id}/users/{user_id}/restore"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

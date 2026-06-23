@@ -18,7 +18,7 @@ func newOutcomeGroupsLinkIndex2Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "link-index-2 <course_id>",
 		Short:       "Get all outcome links for context",
-		Example:     "  canvas-cli outcome_groups link-index-2 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli outcome_groups link-index-2 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "outcome_groups.link_index_2", "pp:method": "GET", "pp:path": "/api/v1/courses/{course_id}/outcome_group_links", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

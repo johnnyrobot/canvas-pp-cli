@@ -20,8 +20,8 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"canvas-cli/internal/client"
-	"canvas-cli/internal/cliutil"
+	"canvas-pp-cli/internal/client"
+	"canvas-pp-cli/internal/cliutil"
 )
 
 // canvasObj is a decoded Canvas JSON object kept as raw values for lazy,

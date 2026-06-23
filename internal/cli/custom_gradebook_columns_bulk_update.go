@@ -20,7 +20,7 @@ func newCustomGradebookColumnsBulkUpdateCmd(flags *rootFlags) *cobra.Command {
 		Use:   "bulk-update <course_id>",
 		Short: "Bulk update column data",
 		// TODO: replace placeholder example values before relying on this for live dogfood.
-		Example:     "  canvas-cli custom_gradebook_columns bulk-update 550e8400-e29b-41d4-a716-446655440000 --column-data example-value",
+		Example:     "  canvas-pp-cli custom_gradebook_columns bulk-update 550e8400-e29b-41d4-a716-446655440000 --column-data example-value",
 		Annotations: map[string]string{"pp:endpoint": "custom_gradebook_columns.bulk_update", "pp:method": "PUT", "pp:path": "/api/v1/courses/{course_id}/custom_gradebook_column_data"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

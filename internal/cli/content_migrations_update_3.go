@@ -20,7 +20,7 @@ func newContentMigrationsUpdate3Cmd(flags *rootFlags) *cobra.Command {
 		Use:   "update-3 <group_id> <content_migration_id> <id>",
 		Short: "Update a migration issue",
 		// TODO: replace placeholder example values before relying on this for live dogfood.
-		Example:     "  canvas-cli content_migrations update-3 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 --workflow-state example-value",
+		Example:     "  canvas-pp-cli content_migrations update-3 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 --workflow-state example-value",
 		Annotations: map[string]string{"pp:endpoint": "content_migrations.update_3", "pp:method": "PUT", "pp:path": "/api/v1/groups/{group_id}/content_migrations/{content_migration_id}/migration_issues/{id}"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

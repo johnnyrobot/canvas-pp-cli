@@ -18,7 +18,7 @@ func newAiConversationsCreateCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "create <course_id> <ai_experience_id>",
 		Short:       "Create AI conversation",
-		Example:     "  canvas-cli ai_conversations create 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli ai_conversations create 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "ai_conversations.create", "pp:method": "POST", "pp:path": "/api/v1/courses/{course_id}/ai_experiences/{ai_experience_id}/conversations"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

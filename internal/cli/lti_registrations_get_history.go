@@ -16,7 +16,7 @@ func newLtiRegistrationsGetHistoryCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "get-history <account_id> <id>",
 		Short:       "Returns the history entries for the specified LTI registration. This endpoint provides comprehensive change tracking for",
-		Example:     "  canvas-cli lti_registrations get-history 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli lti_registrations get-history 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "lti_registrations.get_history", "pp:method": "GET", "pp:path": "/api/v1/accounts/{account_id}/lti_registrations/{id}/history", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

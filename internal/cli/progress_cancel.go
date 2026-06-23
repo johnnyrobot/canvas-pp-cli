@@ -18,7 +18,7 @@ func newProgressCancelCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "cancel <id>",
 		Short:       "Cancel progress",
-		Example:     "  canvas-cli progress cancel 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli progress cancel 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "progress.cancel", "pp:method": "POST", "pp:path": "/api/v1/progress/{id}/cancel"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

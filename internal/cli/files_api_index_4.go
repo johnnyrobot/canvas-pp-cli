@@ -23,7 +23,7 @@ func newFilesApiIndex4Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "api-index-4 <id>",
 		Short:       "List files",
-		Example:     "  canvas-cli files api-index-4 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli files api-index-4 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "files.api_index_4", "pp:method": "GET", "pp:path": "/api/v1/folders/{id}/files", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

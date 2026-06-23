@@ -19,7 +19,7 @@ func newMediaObjectsIndex6Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "index-6",
 		Short:       "List Media Objects",
-		Example:     "  canvas-cli media_objects index-6",
+		Example:     "  canvas-pp-cli media_objects index-6",
 		Annotations: map[string]string{"pp:endpoint": "media_objects.index_6", "pp:method": "GET", "pp:path": "/api/v1/media_attachments", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := flags.newClient()

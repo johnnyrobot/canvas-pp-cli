@@ -45,7 +45,7 @@ func newNovelRosterCmd(flags *rootFlags) *cobra.Command {
 		Short: "Unified course roster: enrollments + sections + grades in one row per student",
 		Long: "Builds one row per student joining enrollments, the enrolled user, the section, " +
 			"and the current/final score — a view no single Canvas endpoint returns. Read-only.",
-		Example: "  canvas-cli roster 12345 --agent\n  canvas-cli roster 12345 --anonymize --select students.name,students.current_score",
+		Example: "  canvas-pp-cli roster 12345 --agent\n  canvas-pp-cli roster 12345 --anonymize --select students.name,students.current_score",
 		Annotations: map[string]string{
 			"mcp:read-only":          "true",
 			"pp:happy-args":          "course_id=12345",

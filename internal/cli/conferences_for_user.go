@@ -17,7 +17,7 @@ func newConferencesForUserCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "for-user",
 		Short:       "List conferences for the current user",
-		Example:     "  canvas-cli conferences for-user",
+		Example:     "  canvas-pp-cli conferences for-user",
 		Annotations: map[string]string{"pp:endpoint": "conferences.for_user", "pp:method": "GET", "pp:path": "/api/v1/conferences", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := flags.newClient()

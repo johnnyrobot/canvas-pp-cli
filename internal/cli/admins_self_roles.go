@@ -16,7 +16,7 @@ func newAdminsSelfRolesCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "self-roles <account_id>",
 		Short:       "List my admin roles",
-		Example:     "  canvas-cli admins self-roles 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli admins self-roles 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "admins.self_roles", "pp:method": "GET", "pp:path": "/api/v1/accounts/{account_id}/admins/self", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

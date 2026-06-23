@@ -17,7 +17,7 @@ func newQuizzesGetQuizzesCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "get-quizzes <course_id>",
 		Short:       "Returns the paginated list of Quizzes in this course.",
-		Example:     "  canvas-cli quizzes get-quizzes 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli quizzes get-quizzes 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "quizzes.get_quizzes", "pp:method": "GET", "pp:path": "/api/v1/courses/{course_id}/quizzes", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

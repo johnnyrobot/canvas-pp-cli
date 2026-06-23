@@ -20,7 +20,7 @@ func newQuizzesPostValidateAccessCodeCmd(flags *rootFlags) *cobra.Command {
 		Use:   "post-validate-access-code <course_id> <id>",
 		Short: "Accepts an access code and returns a boolean indicating whether that access code is correct",
 		// TODO: replace placeholder example values before relying on this for live dogfood.
-		Example:     "  canvas-cli quizzes post-validate-access-code 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 --access-code example-value",
+		Example:     "  canvas-pp-cli quizzes post-validate-access-code 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 --access-code example-value",
 		Annotations: map[string]string{"pp:endpoint": "quizzes.post_validate_access_code", "pp:method": "POST", "pp:path": "/api/v1/courses/{course_id}/quizzes/{id}/validate_access_code"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

@@ -20,7 +20,7 @@ func newAssignmentsBatchUpdateCmd(flags *rootFlags) *cobra.Command {
 		Use:   "batch-update <course_id>",
 		Short: "Batch update overrides in a course",
 		// TODO: replace placeholder example values before relying on this for live dogfood.
-		Example:     "  canvas-cli assignments batch-update 550e8400-e29b-41d4-a716-446655440000 --assignment-overrides example-value",
+		Example:     "  canvas-pp-cli assignments batch-update 550e8400-e29b-41d4-a716-446655440000 --assignment-overrides example-value",
 		Annotations: map[string]string{"pp:endpoint": "assignments.batch_update", "pp:method": "PUT", "pp:path": "/api/v1/courses/{course_id}/assignments/overrides"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

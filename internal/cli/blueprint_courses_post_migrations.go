@@ -23,7 +23,7 @@ func newBlueprintCoursesPostMigrationsCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "post-migrations <course_id> <template_id>",
 		Short:       "Begins a migration to push recently updated content to all associated courses. Only one migration can be running at a ti",
-		Example:     "  canvas-cli blueprint_courses post-migrations 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli blueprint_courses post-migrations 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "blueprint_courses.post_migrations", "pp:method": "POST", "pp:path": "/api/v1/courses/{course_id}/blueprint_templates/{template_id}/migrations"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

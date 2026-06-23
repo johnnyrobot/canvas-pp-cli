@@ -31,7 +31,7 @@ func newModulesCreate2Cmd(flags *rootFlags) *cobra.Command {
 		Use:   "create-2 <course_id> <module_id>",
 		Short: "Create a module item",
 		// TODO: replace placeholder example values before relying on this for live dogfood.
-		Example:     "  canvas-cli modules create-2 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 --module-item-type example-value",
+		Example:     "  canvas-pp-cli modules create-2 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 --module-item-type example-value",
 		Annotations: map[string]string{"pp:endpoint": "modules.create_2", "pp:method": "POST", "pp:path": "/api/v1/courses/{course_id}/modules/{module_id}/items"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

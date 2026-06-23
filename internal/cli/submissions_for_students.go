@@ -29,7 +29,7 @@ func newSubmissionsForStudentsCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "for-students <course_id>",
 		Short:       "List submissions for multiple assignments",
-		Example:     "  canvas-cli submissions for-students 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli submissions for-students 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "submissions.for_students", "pp:method": "GET", "pp:path": "/api/v1/courses/{course_id}/students/submissions", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

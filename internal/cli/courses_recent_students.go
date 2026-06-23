@@ -16,7 +16,7 @@ func newCoursesRecentStudentsCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "recent-students <course_id>",
 		Short:       "List recently logged in students",
-		Example:     "  canvas-cli courses recent-students 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli courses recent-students 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "courses.recent_students", "pp:method": "GET", "pp:path": "/api/v1/courses/{course_id}/recent_students", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

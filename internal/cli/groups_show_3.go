@@ -16,7 +16,7 @@ func newGroupsShow3Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "show-3 <group_id> <user_id>",
 		Short:       "Get a single group membership",
-		Example:     "  canvas-cli groups show-3 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli groups show-3 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "groups.show_3", "pp:method": "GET", "pp:path": "/api/v1/groups/{group_id}/users/{user_id}", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

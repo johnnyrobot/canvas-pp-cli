@@ -23,7 +23,7 @@ func newGradingStandardsUpdate2Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "update-2 <account_id> <grading_standard_id>",
 		Short:       "Update a grading standard",
-		Example:     "  canvas-cli grading_standards update-2 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli grading_standards update-2 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "grading_standards.update_2", "pp:method": "PUT", "pp:path": "/api/v1/accounts/{account_id}/grading_standards/{grading_standard_id}"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

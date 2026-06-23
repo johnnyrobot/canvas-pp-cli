@@ -20,7 +20,7 @@ func newContentSecurityPolicySettingsSetCspLockCmd(flags *rootFlags) *cobra.Comm
 	cmd := &cobra.Command{
 		Use:         "set-csp-lock <account_id>",
 		Short:       "Lock or unlock current CSP settings for sub-accounts and courses",
-		Example:     "  canvas-cli content_security_policy_settings set-csp-lock 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli content_security_policy_settings set-csp-lock 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "content_security_policy_settings.set_csp_lock", "pp:method": "PUT", "pp:path": "/api/v1/accounts/{account_id}/csp_settings/lock"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

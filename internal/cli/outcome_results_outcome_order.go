@@ -18,7 +18,7 @@ func newOutcomeResultsOutcomeOrderCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "outcome-order <course_id>",
 		Short:       "Set outcome ordering for LMGB",
-		Example:     "  canvas-cli outcome_results outcome-order 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli outcome_results outcome-order 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "outcome_results.outcome_order", "pp:method": "POST", "pp:path": "/api/v1/courses/{course_id}/assign_outcome_order"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

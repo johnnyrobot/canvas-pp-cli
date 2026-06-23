@@ -22,7 +22,7 @@ func newLtiResourceLinksPutLtiResourceLinksCmd(flags *rootFlags) *cobra.Command 
 	cmd := &cobra.Command{
 		Use:         "put-lti-resource-links <course_id> <id>",
 		Short:       "Update the specified resource link with the provided parameters.",
-		Example:     "  canvas-cli lti_resource_links put-lti-resource-links 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli lti_resource_links put-lti-resource-links 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "lti_resource_links.put_lti_resource_links", "pp:method": "PUT", "pp:path": "/api/v1/courses/{course_id}/lti_resource_links/{id}"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

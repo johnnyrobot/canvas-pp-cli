@@ -17,7 +17,7 @@ func newLtiResourceLinksGetLtiResourceLinks2Cmd(flags *rootFlags) *cobra.Command
 	cmd := &cobra.Command{
 		Use:         "get-lti-resource-links-2 <course_id> <id>",
 		Short:       "Return details about the specified resource link. The ID can be in the standard Canvas format ('1'), or in these special",
-		Example:     "  canvas-cli lti_resource_links get-lti-resource-links-2 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli lti_resource_links get-lti-resource-links-2 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "lti_resource_links.get_lti_resource_links_2", "pp:method": "GET", "pp:path": "/api/v1/courses/{course_id}/lti_resource_links/{id}", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

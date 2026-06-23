@@ -16,7 +16,7 @@ func newCoursesStudentViewStudentCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "student-view-student <course_id>",
 		Short:       "Return test student for course",
-		Example:     "  canvas-cli courses student-view-student 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli courses student-view-student 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "courses.student_view_student", "pp:method": "GET", "pp:path": "/api/v1/courses/{course_id}/student_view_student", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

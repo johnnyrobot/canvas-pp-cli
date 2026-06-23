@@ -23,7 +23,7 @@ func newPagesUpdateFrontPageCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "update-front-page <course_id>",
 		Short:       "Update/create front page",
-		Example:     "  canvas-cli pages update-front-page 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli pages update-front-page 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "pages.update_front_page", "pp:method": "PUT", "pp:path": "/api/v1/courses/{course_id}/front_page"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

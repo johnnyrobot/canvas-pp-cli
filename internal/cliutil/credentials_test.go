@@ -13,8 +13,8 @@ import (
 	"testing"
 	"time"
 
-	"canvas-cli/internal/cliutil"
-	"canvas-cli/internal/config"
+	"canvas-pp-cli/internal/cliutil"
+	"canvas-pp-cli/internal/config"
 )
 
 func resetCredentialEnv(t *testing.T) (home, configPath string) {
@@ -42,7 +42,7 @@ func resetCredentialEnv(t *testing.T) (home, configPath string) {
 	} else {
 		t.Fatalf("reset home override: %v", err)
 	}
-	return home, filepath.Join(home, ".config", "canvas-cli", "config.toml")
+	return home, filepath.Join(home, ".config", "canvas-pp-cli", "config.toml")
 }
 
 func TestCredentialsFileWinsWhenLegacyConfigAlsoHasSecrets(t *testing.T) {
@@ -75,7 +75,7 @@ func TestCorruptCredentialsFallsBackToLegacyConfig(t *testing.T) {
 	if err := os.WriteFile(configPath, []byte("base_url = \"https://legacy.example\"\n"+legacyCredentialTOML("legacy-secret")), 0o600); err != nil {
 		t.Fatalf("write legacy config: %v", err)
 	}
-	credentialsPath := filepath.Join(home, ".local", "share", "canvas-cli", "credentials.toml")
+	credentialsPath := filepath.Join(home, ".local", "share", "canvas-pp-cli", "credentials.toml")
 	if err := os.MkdirAll(filepath.Dir(credentialsPath), 0o700); err != nil {
 		t.Fatalf("mkdir credentials dir: %v", err)
 	}
@@ -100,7 +100,7 @@ func TestCorruptCredentialsFallsBackToLegacyConfig(t *testing.T) {
 func TestCorruptCredentialsFallsBackToEnvCredential(t *testing.T) {
 	home, _ := resetCredentialEnv(t)
 	t.Setenv("CANVAS_API_TOKEN", "env-secret")
-	credentialsPath := filepath.Join(home, ".local", "share", "canvas-cli", "credentials.toml")
+	credentialsPath := filepath.Join(home, ".local", "share", "canvas-pp-cli", "credentials.toml")
 	if err := os.MkdirAll(filepath.Dir(credentialsPath), 0o700); err != nil {
 		t.Fatalf("mkdir credentials dir: %v", err)
 	}
@@ -130,7 +130,7 @@ func TestEmptyCredentialsFileDoesNotClearLegacyConfig(t *testing.T) {
 	if err := os.WriteFile(configPath, []byte("base_url = \"https://legacy.example\"\n"+legacyCredentialTOML("legacy-secret")), 0o600); err != nil {
 		t.Fatalf("write legacy config: %v", err)
 	}
-	credentialsPath := filepath.Join(home, ".local", "share", "canvas-cli", "credentials.toml")
+	credentialsPath := filepath.Join(home, ".local", "share", "canvas-pp-cli", "credentials.toml")
 	if err := os.MkdirAll(filepath.Dir(credentialsPath), 0o700); err != nil {
 		t.Fatalf("mkdir credentials dir: %v", err)
 	}
@@ -218,7 +218,7 @@ func TestAuthWriteScrubsLegacyConfigWhenRelocated(t *testing.T) {
 	}
 
 	// Active config at relocated path should also be secret-free.
-	activeConfigPath := filepath.Join(newConfigDir, "canvas-cli", "config.toml")
+	activeConfigPath := filepath.Join(newConfigDir, "canvas-pp-cli", "config.toml")
 	activeData, err := os.ReadFile(activeConfigPath)
 	if err != nil {
 		t.Fatalf("read active config: %v", err)
@@ -232,7 +232,7 @@ func TestAuthWriteScrubsLegacyConfigWhenRelocated(t *testing.T) {
 	}
 
 	// Credentials file should exist in the new data dir.
-	credsPath := filepath.Join(newDataDir, "canvas-cli", "credentials.toml")
+	credsPath := filepath.Join(newDataDir, "canvas-pp-cli", "credentials.toml")
 	if _, err := os.Stat(credsPath); err != nil {
 		t.Fatalf("credentials file not found at relocated data dir: %v", err)
 	}

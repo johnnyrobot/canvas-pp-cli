@@ -16,7 +16,7 @@ func newPollSessionsGetClosedCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "get-closed",
 		Short:       "A paginated list of all closed poll sessions available to the current user.",
-		Example:     "  canvas-cli poll_sessions get-closed",
+		Example:     "  canvas-pp-cli poll_sessions get-closed",
 		Annotations: map[string]string{"pp:endpoint": "poll_sessions.get_closed", "pp:method": "GET", "pp:path": "/api/v1/poll_sessions/closed", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := flags.newClient()

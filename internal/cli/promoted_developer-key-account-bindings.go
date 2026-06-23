@@ -18,7 +18,7 @@ func newDeveloperKeyAccountBindingsPromotedCmd(flags *rootFlags) *cobra.Command 
 		Use:         "developer-key-account-bindings <account_id> <developer_key_id>",
 		Short:       "Create a Developer Key Account Binding",
 		Long:        "Create a Developer Key Account Binding",
-		Example:     "  canvas-cli developer-key-account-bindings 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli developer-key-account-bindings 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "developer_key_account_bindings.create_or_update", "pp:method": "POST", "pp:path": "/api/v1/accounts/{account_id}/developer_keys/{developer_key_id}/developer_key_account_bindings"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := flags.newClient()

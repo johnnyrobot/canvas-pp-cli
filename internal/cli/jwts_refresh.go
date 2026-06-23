@@ -20,7 +20,7 @@ func newJwtsRefreshCmd(flags *rootFlags) *cobra.Command {
 		Use:   "refresh",
 		Short: "Refresh JWT",
 		// TODO: replace placeholder example values before relying on this for live dogfood.
-		Example:     "  canvas-cli jwts refresh --jwt example-value",
+		Example:     "  canvas-pp-cli jwts refresh --jwt example-value",
 		Annotations: map[string]string{"pp:endpoint": "jwts.refresh", "pp:method": "POST", "pp:path": "/api/v1/jwts/refresh"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

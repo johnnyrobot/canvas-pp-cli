@@ -32,7 +32,7 @@ func newAppointmentGroupsCreateCmd(flags *rootFlags) *cobra.Command {
 		Use:   "create",
 		Short: "Create an appointment group",
 		// TODO: replace placeholder example values before relying on this for live dogfood.
-		Example:     "  canvas-cli appointment_groups create --appointment-group-context-codes example-value",
+		Example:     "  canvas-pp-cli appointment_groups create --appointment-group-context-codes example-value",
 		Annotations: map[string]string{"pp:endpoint": "appointment_groups.create", "pp:method": "POST", "pp:path": "/api/v1/appointment_groups"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

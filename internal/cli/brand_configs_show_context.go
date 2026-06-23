@@ -16,7 +16,7 @@ func newBrandConfigsShowContextCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "show-context <account_id>",
 		Short:       "Get the brand config variables for a sub-account or course",
-		Example:     "  canvas-cli brand_configs show-context 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli brand_configs show-context 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "brand_configs.show_context", "pp:method": "GET", "pp:path": "/api/v1/accounts/{account_id}/brand_variables", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

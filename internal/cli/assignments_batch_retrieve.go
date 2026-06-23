@@ -19,7 +19,7 @@ func newAssignmentsBatchRetrieveCmd(flags *rootFlags) *cobra.Command {
 		Use:   "batch-retrieve <course_id>",
 		Short: "Batch retrieve overrides in a course",
 		// TODO: replace placeholder example values before relying on this for live dogfood.
-		Example:     "  canvas-cli assignments batch-retrieve 550e8400-e29b-41d4-a716-446655440000 --assignment-overrides-id example-value --assignment-overrides-assignment-id example-value",
+		Example:     "  canvas-pp-cli assignments batch-retrieve 550e8400-e29b-41d4-a716-446655440000 --assignment-overrides-id example-value --assignment-overrides-assignment-id example-value",
 		Annotations: map[string]string{"pp:endpoint": "assignments.batch_retrieve", "pp:method": "GET", "pp:path": "/api/v1/courses/{course_id}/assignments/overrides", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

@@ -18,7 +18,7 @@ func newCoursesDestroyCmd(flags *rootFlags) *cobra.Command {
 		Use:   "destroy <id>",
 		Short: "Delete/Conclude a course",
 		// TODO: replace placeholder example values before relying on this for live dogfood.
-		Example:     "  canvas-cli courses destroy 550e8400-e29b-41d4-a716-446655440000 --event example-value",
+		Example:     "  canvas-pp-cli courses destroy 550e8400-e29b-41d4-a716-446655440000 --event example-value",
 		Annotations: map[string]string{"pp:endpoint": "courses.destroy", "pp:method": "DELETE", "pp:path": "/api/v1/courses/{id}"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

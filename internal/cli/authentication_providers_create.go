@@ -18,7 +18,7 @@ func newAuthenticationProvidersCreateCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "create <account_id>",
 		Short:       "Add authentication provider",
-		Example:     "  canvas-cli authentication_providers create 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli authentication_providers create 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "authentication_providers.create", "pp:method": "POST", "pp:path": "/api/v1/accounts/{account_id}/authentication_providers"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

@@ -16,7 +16,7 @@ func newFavoritesRemoveFavoriteGroupsCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "remove-favorite-groups <id>",
 		Short:       "Remove group from favorites",
-		Example:     "  canvas-cli favorites remove-favorite-groups 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli favorites remove-favorite-groups 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "favorites.remove_favorite_groups", "pp:method": "DELETE", "pp:path": "/api/v1/users/self/favorites/groups/{id}"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

@@ -28,7 +28,7 @@ func newLearningObjectDatesUpdate4Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "update-4 <course_id> <url_or_id>",
 		Short:       "Update a learning object's date information",
-		Example:     "  canvas-cli learning_object_dates update-4 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli learning_object_dates update-4 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "learning_object_dates.update_4", "pp:method": "PUT", "pp:path": "/api/v1/courses/{course_id}/pages/{url_or_id}/date_details"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

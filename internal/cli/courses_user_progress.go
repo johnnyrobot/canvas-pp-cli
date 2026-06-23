@@ -16,7 +16,7 @@ func newCoursesUserProgressCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "user-progress <course_id> <user_id>",
 		Short:       "Get user progress",
-		Example:     "  canvas-cli courses user-progress 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli courses user-progress 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "courses.user_progress", "pp:method": "GET", "pp:path": "/api/v1/courses/{course_id}/users/{user_id}/progress", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

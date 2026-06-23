@@ -22,7 +22,7 @@ func newLtiResourceLinksPostBulkCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "post-bulk <course_id>",
 		Short:       "Create up to 100 new LTI Resource Links in the specified course with the provided parameters.",
-		Example:     "  canvas-cli lti_resource_links post-bulk 550e8400-e29b-41d4-a716-446655440000 --url https://example.com/resource",
+		Example:     "  canvas-pp-cli lti_resource_links post-bulk 550e8400-e29b-41d4-a716-446655440000 --url https://example.com/resource",
 		Annotations: map[string]string{"pp:endpoint": "lti_resource_links.post_bulk", "pp:method": "POST", "pp:path": "/api/v1/courses/{course_id}/lti_resource_links/bulk"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

@@ -16,7 +16,7 @@ func newBlueprintCoursesGetBlueprintSubscriptionsCmd(flags *rootFlags) *cobra.Co
 	cmd := &cobra.Command{
 		Use:         "get-blueprint-subscriptions <course_id>",
 		Short:       "Returns a list of blueprint subscriptions for the given course. (Currently a course may have no more than one.)",
-		Example:     "  canvas-cli blueprint_courses get-blueprint-subscriptions 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli blueprint_courses get-blueprint-subscriptions 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "blueprint_courses.get_blueprint_subscriptions", "pp:method": "GET", "pp:path": "/api/v1/courses/{course_id}/blueprint_subscriptions", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

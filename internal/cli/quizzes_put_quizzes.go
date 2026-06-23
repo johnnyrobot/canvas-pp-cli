@@ -19,7 +19,7 @@ func newQuizzesPutQuizzesCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "put-quizzes <course_id> <id>",
 		Short:       "Modify an existing quiz. See the documentation for quiz creation.",
-		Example:     "  canvas-cli quizzes put-quizzes 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli quizzes put-quizzes 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "quizzes.put_quizzes", "pp:method": "PUT", "pp:path": "/api/v1/courses/{course_id}/quizzes/{id}"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

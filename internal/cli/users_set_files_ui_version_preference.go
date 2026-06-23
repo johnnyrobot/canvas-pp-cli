@@ -19,7 +19,7 @@ func newUsersSetFilesUiVersionPreferenceCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "set-files-ui-version-preference <id>",
 		Short:       "Update files UI version preference",
-		Example:     "  canvas-cli users set-files-ui-version-preference 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli users set-files-ui-version-preference 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "users.set_files_ui_version_preference", "pp:method": "PUT", "pp:path": "/api/v1/users/{id}/files_ui_version_preference"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

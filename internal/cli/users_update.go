@@ -33,7 +33,7 @@ func newUsersUpdateCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "update <id>",
 		Short:       "Edit a user",
-		Example:     "  canvas-cli users update 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli users update 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "users.update", "pp:method": "PUT", "pp:path": "/api/v1/users/{id}"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

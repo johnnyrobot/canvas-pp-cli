@@ -23,7 +23,7 @@ func newLtiContextcontrolsPostControlsCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "post-controls <current_account_id> <registration_id>",
 		Short:       "Create a new LTI ContextControl for the specified LTI registration in this context.",
-		Example:     "  canvas-cli lti_contextcontrols post-controls 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli lti_contextcontrols post-controls 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "lti_contextcontrols.post_controls", "pp:method": "POST", "pp:path": "/api/v1/accounts/{current_account_id}/lti_registrations/{registration_id}/controls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

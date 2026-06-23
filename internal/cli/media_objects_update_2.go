@@ -19,7 +19,7 @@ func newMediaObjectsUpdate2Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "update-2 <attachment_id>",
 		Short:       "Update Media Tracks",
-		Example:     "  canvas-cli media_objects update-2 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli media_objects update-2 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "media_objects.update_2", "pp:method": "PUT", "pp:path": "/api/v1/media_attachments/{attachment_id}/media_tracks"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

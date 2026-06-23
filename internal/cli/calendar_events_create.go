@@ -37,7 +37,7 @@ func newCalendarEventsCreateCmd(flags *rootFlags) *cobra.Command {
 		Use:   "create",
 		Short: "Create a calendar event",
 		// TODO: replace placeholder example values before relying on this for live dogfood.
-		Example:     "  canvas-cli calendar_events create --calendar-event-context-code example-value",
+		Example:     "  canvas-pp-cli calendar_events create --calendar-event-context-code example-value",
 		Annotations: map[string]string{"pp:endpoint": "calendar_events.create", "pp:method": "POST", "pp:path": "/api/v1/calendar_events"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

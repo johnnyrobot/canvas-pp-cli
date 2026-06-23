@@ -16,7 +16,7 @@ func newCommunicationChannelsIndexCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "index <user_id>",
 		Short:       "List user communication channels",
-		Example:     "  canvas-cli communication_channels index 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli communication_channels index 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "communication_channels.index", "pp:method": "GET", "pp:path": "/api/v1/users/{user_id}/communication_channels", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

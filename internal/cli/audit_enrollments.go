@@ -52,7 +52,7 @@ func newNovelAuditEnrollmentsCmd(flags *rootFlags) *cobra.Command {
 		Long: "Scans an account's courses and enrollments for anomalies that no single endpoint surfaces: courses " +
 			"with no teacher (--ghost-teachers) and active students who have never accessed the course " +
 			"(--orphans, last_activity_at is null). With neither flag, runs both. Read-only.",
-		Example: "  canvas-cli audit-enrollments --account 1 --ghost-teachers --agent\n  canvas-cli audit-enrollments --account 1 --orphans --anonymize",
+		Example: "  canvas-pp-cli audit-enrollments --account 1 --ghost-teachers --agent\n  canvas-pp-cli audit-enrollments --account 1 --orphans --anonymize",
 		Annotations: map[string]string{
 			"mcp:read-only":          "true",
 			"pp:happy-args":          "--account=1",

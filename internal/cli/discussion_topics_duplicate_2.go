@@ -18,7 +18,7 @@ func newDiscussionTopicsDuplicate2Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "duplicate-2 <group_id> <topic_id>",
 		Short:       "Duplicate discussion topic",
-		Example:     "  canvas-cli discussion_topics duplicate-2 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli discussion_topics duplicate-2 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "discussion_topics.duplicate_2", "pp:method": "POST", "pp:path": "/api/v1/groups/{group_id}/discussion_topics/{topic_id}/duplicate"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

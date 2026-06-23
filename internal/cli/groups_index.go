@@ -18,7 +18,7 @@ func newGroupsIndexCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "index",
 		Short:       "List your groups",
-		Example:     "  canvas-cli groups index",
+		Example:     "  canvas-pp-cli groups index",
 		Annotations: map[string]string{"pp:endpoint": "groups.index", "pp:method": "GET", "pp:path": "/api/v1/users/self/groups", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := flags.newClient()

@@ -23,7 +23,7 @@ func newErrorReportsPromotedCmd(flags *rootFlags) *cobra.Command {
 		Short: "Create Error Report",
 		Long:  "Create Error Report",
 		// TODO: replace placeholder example values before relying on this for live dogfood.
-		Example:     "  canvas-cli error-reports --error-subject example-value",
+		Example:     "  canvas-pp-cli error-reports --error-subject example-value",
 		Annotations: map[string]string{"pp:endpoint": "error_reports.create", "pp:method": "POST", "pp:path": "/api/v1/error_reports"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with a required flag/body prints help

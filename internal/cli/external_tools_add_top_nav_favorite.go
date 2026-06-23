@@ -18,7 +18,7 @@ func newExternalToolsAddTopNavFavoriteCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "add-top-nav-favorite <account_id> <id>",
 		Short:       "Add tool to Top Navigation Favorites",
-		Example:     "  canvas-cli external_tools add-top-nav-favorite 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli external_tools add-top-nav-favorite 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "external_tools.add_top_nav_favorite", "pp:method": "POST", "pp:path": "/api/v1/accounts/{account_id}/external_tools/top_nav_favorites/{id}"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

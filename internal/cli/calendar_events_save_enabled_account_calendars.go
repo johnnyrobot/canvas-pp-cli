@@ -20,7 +20,7 @@ func newCalendarEventsSaveEnabledAccountCalendarsCmd(flags *rootFlags) *cobra.Co
 	cmd := &cobra.Command{
 		Use:         "save-enabled-account-calendars",
 		Short:       "Save enabled account calendars",
-		Example:     "  canvas-cli calendar_events save-enabled-account-calendars",
+		Example:     "  canvas-pp-cli calendar_events save-enabled-account-calendars",
 		Annotations: map[string]string{"pp:endpoint": "calendar_events.save_enabled_account_calendars", "pp:method": "POST", "pp:path": "/api/v1/calendar_events/save_enabled_account_calendars"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if !stdinBody {

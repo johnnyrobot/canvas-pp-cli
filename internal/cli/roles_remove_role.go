@@ -18,7 +18,7 @@ func newRolesRemoveRoleCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "remove-role <account_id> <id>",
 		Short:       "Deactivate a role",
-		Example:     "  canvas-cli roles remove-role 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 --role-id 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli roles remove-role 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 --role-id 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "roles.remove_role", "pp:method": "DELETE", "pp:path": "/api/v1/accounts/{account_id}/roles/{id}"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

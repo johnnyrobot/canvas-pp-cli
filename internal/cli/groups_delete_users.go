@@ -16,7 +16,7 @@ func newGroupsDeleteUsersCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "delete-users <group_id>",
 		Short:       "***",
-		Example:     "  canvas-cli groups delete-users 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli groups delete-users 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "groups.delete_users", "pp:method": "DELETE", "pp:path": "/api/v1/groups/{group_id}/users"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

@@ -16,7 +16,7 @@ func newBrandConfigsShowCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "show",
 		Short:       "Get the brand config variables that should be used for this domain",
-		Example:     "  canvas-cli brand_configs show",
+		Example:     "  canvas-pp-cli brand_configs show",
 		Annotations: map[string]string{"pp:endpoint": "brand_configs.show", "pp:method": "GET", "pp:path": "/api/v1/brand_variables", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := flags.newClient()

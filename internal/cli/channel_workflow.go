@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"time"
 
-	"canvas-cli/internal/store"
+	"canvas-pp-cli/internal/store"
 	"github.com/spf13/cobra"
 )
 
@@ -35,10 +35,10 @@ func newWorkflowArchiveCmd(flags *rootFlags) *cobra.Command {
 local SQLite database. Supports incremental sync (only new data since last run)
 and full resync. After archiving, use 'search' for instant full-text search.`,
 		Example: `  # Archive all resources
-  canvas-cli workflow archive
+  canvas-pp-cli workflow archive
 
   # Full re-archive (ignore previous sync state)
-  canvas-cli workflow archive --full`,
+  canvas-pp-cli workflow archive --full`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := flags.newClient()
 			if err != nil {
@@ -47,7 +47,7 @@ and full resync. After archiving, use 'search' for instant full-text search.`,
 			c.NoCache = true
 
 			if dbPath == "" {
-				dbPath = defaultDBPath("canvas-cli")
+				dbPath = defaultDBPath("canvas-pp-cli")
 			}
 			s, err := store.OpenWithContext(cmd.Context(), dbPath)
 			if err != nil {
@@ -115,13 +115,13 @@ func newWorkflowStatusCmd(flags *rootFlags) *cobra.Command {
 		Short:       "Show local archive status and sync state for all resources",
 		Annotations: map[string]string{"mcp:read-only": "true"},
 		Example: `  # Show archive status
-  canvas-cli workflow status
+  canvas-pp-cli workflow status
 
   # Show status as JSON
-  canvas-cli workflow status --json`,
+  canvas-pp-cli workflow status --json`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if dbPath == "" {
-				dbPath = defaultDBPath("canvas-cli")
+				dbPath = defaultDBPath("canvas-pp-cli")
 			}
 			s, err := store.OpenWithContext(cmd.Context(), dbPath)
 			if err != nil {

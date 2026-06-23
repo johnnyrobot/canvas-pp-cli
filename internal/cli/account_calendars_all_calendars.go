@@ -18,7 +18,7 @@ func newAccountCalendarsAllCalendarsCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "all-calendars <account_id>",
 		Short:       "List all account calendars",
-		Example:     "  canvas-cli account_calendars all-calendars 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli account_calendars all-calendars 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "account_calendars.all_calendars", "pp:method": "GET", "pp:path": "/api/v1/accounts/{account_id}/account_calendars", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

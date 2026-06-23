@@ -18,7 +18,7 @@ func newCoursesResetContentCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "reset-content <course_id>",
 		Short:       "Reset a course",
-		Example:     "  canvas-cli courses reset-content 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli courses reset-content 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "courses.reset_content", "pp:method": "POST", "pp:path": "/api/v1/courses/{course_id}/reset_content"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

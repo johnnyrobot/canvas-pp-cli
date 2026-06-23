@@ -25,7 +25,7 @@ func newAnnouncementsPromotedCmd(flags *rootFlags) *cobra.Command {
 		Short: "List announcements",
 		Long:  "List announcements",
 		// TODO: replace placeholder example values before relying on this for live dogfood.
-		Example:     "  canvas-cli announcements --context-codes example-value",
+		Example:     "  canvas-pp-cli announcements --context-codes example-value",
 		Annotations: map[string]string{"pp:endpoint": "announcements.index", "pp:method": "GET", "pp:path": "/api/v1/announcements", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with a required flag/body prints help

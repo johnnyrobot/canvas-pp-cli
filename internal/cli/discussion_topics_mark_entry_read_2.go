@@ -19,7 +19,7 @@ func newDiscussionTopicsMarkEntryRead2Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "mark-entry-read-2 <group_id> <topic_id> <entry_id>",
 		Short:       "Mark entry as read",
-		Example:     "  canvas-cli discussion_topics mark-entry-read-2 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli discussion_topics mark-entry-read-2 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "discussion_topics.mark_entry_read_2", "pp:method": "PUT", "pp:path": "/api/v1/groups/{group_id}/discussion_topics/{topic_id}/entries/{entry_id}/read"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

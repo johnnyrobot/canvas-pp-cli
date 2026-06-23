@@ -22,7 +22,7 @@ func newProficiencyRatingsCreate2Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "create-2 <course_id>",
 		Short:       "Create/update proficiency ratings",
-		Example:     "  canvas-cli proficiency_ratings create-2 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli proficiency_ratings create-2 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "proficiency_ratings.create_2", "pp:method": "POST", "pp:path": "/api/v1/courses/{course_id}/outcome_proficiency"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

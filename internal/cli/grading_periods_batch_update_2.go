@@ -24,7 +24,7 @@ func newGradingPeriodsBatchUpdate2Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "batch-update-2 <set_id>",
 		Short:       "Batch update grading periods",
-		Example:     "  canvas-cli grading_periods batch-update-2 550e8400-e29b-41d4-a716-446655440000 --grading-periods-title example-resource",
+		Example:     "  canvas-pp-cli grading_periods batch-update-2 550e8400-e29b-41d4-a716-446655440000 --grading-periods-title example-resource",
 		Annotations: map[string]string{"pp:endpoint": "grading_periods.batch_update_2", "pp:method": "PUT", "pp:path": "/api/v1/grading_period_sets/{set_id}/grading_periods/batch_update"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

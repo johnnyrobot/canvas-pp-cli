@@ -16,7 +16,7 @@ func newFeatureFlagsEnabledFeaturesCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "enabled-features <course_id>",
 		Short:       "List enabled features",
-		Example:     "  canvas-cli feature_flags enabled-features 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli feature_flags enabled-features 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "feature_flags.enabled_features", "pp:method": "GET", "pp:path": "/api/v1/courses/{course_id}/features/enabled", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

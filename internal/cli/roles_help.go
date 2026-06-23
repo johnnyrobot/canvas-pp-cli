@@ -17,7 +17,7 @@ func newRolesHelpCmd(flags *rootFlags) *cobra.Command {
 		Use:   "help <context_type> <permission>",
 		Short: "Get help text for permissions",
 		// TODO: replace placeholder example values before relying on this for live dogfood.
-		Example:     "  canvas-cli roles help example-value example-value",
+		Example:     "  canvas-pp-cli roles help example-value example-value",
 		Annotations: map[string]string{"pp:endpoint": "roles.help", "pp:method": "GET", "pp:path": "/api/v1/permissions/{context_type}/{permission}/help", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

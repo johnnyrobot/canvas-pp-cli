@@ -18,7 +18,7 @@ func newServicesStartKalturaSessionCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "start-kaltura-session",
 		Short:       "Start Kaltura session",
-		Example:     "  canvas-cli services start-kaltura-session",
+		Example:     "  canvas-pp-cli services start-kaltura-session",
 		Annotations: map[string]string{"pp:endpoint": "services.start_kaltura_session", "pp:method": "POST", "pp:path": "/api/v1/services/kaltura_session"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if !stdinBody {

@@ -16,7 +16,7 @@ func newDiscussionTopicsDestroyCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "destroy <course_id> <topic_id>",
 		Short:       "Delete a topic",
-		Example:     "  canvas-cli discussion_topics destroy 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli discussion_topics destroy 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "discussion_topics.destroy", "pp:method": "DELETE", "pp:path": "/api/v1/courses/{course_id}/discussion_topics/{topic_id}"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

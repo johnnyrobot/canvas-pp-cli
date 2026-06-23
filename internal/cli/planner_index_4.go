@@ -16,7 +16,7 @@ func newPlannerIndex4Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "index-4",
 		Short:       "List planner overrides",
-		Example:     "  canvas-cli planner index-4",
+		Example:     "  canvas-pp-cli planner index-4",
 		Annotations: map[string]string{"pp:endpoint": "planner.index_4", "pp:method": "GET", "pp:path": "/api/v1/planner/overrides", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := flags.newClient()

@@ -17,7 +17,7 @@ func newCourseReportsLastCmd(flags *rootFlags) *cobra.Command {
 		Use:   "last <course_id> <report_type>",
 		Short: "Status of last Report",
 		// TODO: replace placeholder example values before relying on this for live dogfood.
-		Example:     "  canvas-cli course_reports last 550e8400-e29b-41d4-a716-446655440000 example-value",
+		Example:     "  canvas-pp-cli course_reports last 550e8400-e29b-41d4-a716-446655440000 example-value",
 		Annotations: map[string]string{"pp:endpoint": "course_reports.last", "pp:method": "GET", "pp:path": "/api/v1/courses/{course_id}/reports/{report_type}", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

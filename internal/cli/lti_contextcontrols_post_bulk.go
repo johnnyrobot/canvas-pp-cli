@@ -23,7 +23,7 @@ func newLtiContextcontrolsPostBulkCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "post-bulk <account_id> <registration_id>",
 		Short:       "Create up to 100 new LTI ContextControls for the specified LTI registration in this context. Control parameters are sent",
-		Example:     "  canvas-cli lti_contextcontrols post-bulk 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli lti_contextcontrols post-bulk 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "lti_contextcontrols.post_bulk", "pp:method": "POST", "pp:path": "/api/v1/accounts/{account_id}/lti_registrations/{registration_id}/controls/bulk"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

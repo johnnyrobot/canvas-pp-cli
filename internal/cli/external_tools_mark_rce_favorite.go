@@ -18,7 +18,7 @@ func newExternalToolsMarkRceFavoriteCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "mark-rce-favorite <account_id> <id>",
 		Short:       "Mark tool as RCE Favorite",
-		Example:     "  canvas-cli external_tools mark-rce-favorite 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli external_tools mark-rce-favorite 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "external_tools.mark_rce_favorite", "pp:method": "POST", "pp:path": "/api/v1/accounts/{account_id}/external_tools/rce_favorites/{id}"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

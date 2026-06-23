@@ -16,7 +16,7 @@ func newContentSecurityPolicySettingsGetCspSettingsCmd(flags *rootFlags) *cobra.
 	cmd := &cobra.Command{
 		Use:         "get-csp-settings <course_id>",
 		Short:       "Get current settings for account or course",
-		Example:     "  canvas-cli content_security_policy_settings get-csp-settings 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli content_security_policy_settings get-csp-settings 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "content_security_policy_settings.get_csp_settings", "pp:method": "GET", "pp:path": "/api/v1/courses/{course_id}/csp_settings", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

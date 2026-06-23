@@ -21,7 +21,7 @@ func newOutcomeImportsCreateCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "create <account_id> <learning_outcome_group_id>",
 		Short:       "Import Outcomes",
-		Example:     "  canvas-cli outcome_imports create 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli outcome_imports create 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "outcome_imports.create", "pp:method": "POST", "pp:path": "/api/v1/accounts/{account_id}/outcome_imports(/group/{learning_outcome_group_id})"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

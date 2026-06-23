@@ -17,7 +17,7 @@ func newFilesApiDestroyCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "api-destroy <id>",
 		Short:       "Delete folder",
-		Example:     "  canvas-cli files api-destroy 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli files api-destroy 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "files.api_destroy", "pp:method": "DELETE", "pp:path": "/api/v1/folders/{id}"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

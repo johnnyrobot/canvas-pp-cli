@@ -16,7 +16,7 @@ func newPollsGetPollsCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "get-polls",
 		Short:       "Returns the paginated list of polls for the current user.",
-		Example:     "  canvas-cli polls get-polls",
+		Example:     "  canvas-pp-cli polls get-polls",
 		Annotations: map[string]string{"pp:endpoint": "polls.get_polls", "pp:method": "GET", "pp:path": "/api/v1/polls", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := flags.newClient()

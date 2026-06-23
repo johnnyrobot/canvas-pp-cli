@@ -18,7 +18,7 @@ func newSubmissionsMarkDocumentAnnotationsRead2Cmd(flags *rootFlags) *cobra.Comm
 	cmd := &cobra.Command{
 		Use:         "mark-document-annotations-read-2 <section_id> <assignment_id> <user_id>",
 		Short:       "Mark document annotations as read",
-		Example:     "  canvas-cli submissions mark-document-annotations-read-2 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli submissions mark-document-annotations-read-2 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "submissions.mark_document_annotations_read_2", "pp:method": "PUT", "pp:path": "/api/v1/sections/{section_id}/assignments/{assignment_id}/submissions/{user_id}/document_annotations/read"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

@@ -17,7 +17,7 @@ func newAppointmentGroupsGroupsCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "groups <id>",
 		Short:       "List student group participants",
-		Example:     "  canvas-cli appointment_groups groups 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli appointment_groups groups 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "appointment_groups.groups", "pp:method": "GET", "pp:path": "/api/v1/appointment_groups/{id}/groups", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

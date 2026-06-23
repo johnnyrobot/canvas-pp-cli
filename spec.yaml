@@ -13,7 +13,7 @@ auth:
   - CANVAS_ACCESS_TOKEN
 config:
   format: toml
-  path: ~/.config/canvas-cli/config.toml
+  path: ~/.config/canvas-pp-cli/config.toml
 resources:
   access_tokens:
     description: '{'

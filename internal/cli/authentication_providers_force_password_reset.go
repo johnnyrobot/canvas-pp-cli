@@ -18,7 +18,7 @@ func newAuthenticationProvidersForcePasswordResetCmd(flags *rootFlags) *cobra.Co
 	cmd := &cobra.Command{
 		Use:         "force-password-reset <account_id>",
 		Short:       "Force password reset",
-		Example:     "  canvas-cli authentication_providers force-password-reset 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli authentication_providers force-password-reset 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "authentication_providers.force_password_reset", "pp:method": "POST", "pp:path": "/api/v1/accounts/{account_id}/authentication_providers/force_password_reset"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

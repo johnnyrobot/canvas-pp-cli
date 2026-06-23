@@ -16,7 +16,7 @@ func newRubricsUploadStatusCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "upload-status <course_id> <id>",
 		Short:       "Get the status of a rubric import",
-		Example:     "  canvas-cli rubrics upload-status 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli rubrics upload-status 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "rubrics.upload_status", "pp:method": "GET", "pp:path": "/api/v1/courses/{course_id}/rubrics/upload/{id}", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

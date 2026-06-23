@@ -20,7 +20,7 @@ func newGroupsInviteCmd(flags *rootFlags) *cobra.Command {
 		Use:   "invite <group_id>",
 		Short: "Invite others to a group",
 		// TODO: replace placeholder example values before relying on this for live dogfood.
-		Example:     "  canvas-cli groups invite 550e8400-e29b-41d4-a716-446655440000 --invitees example-value",
+		Example:     "  canvas-pp-cli groups invite 550e8400-e29b-41d4-a716-446655440000 --invitees example-value",
 		Annotations: map[string]string{"pp:endpoint": "groups.invite", "pp:method": "POST", "pp:path": "/api/v1/groups/{group_id}/invite"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

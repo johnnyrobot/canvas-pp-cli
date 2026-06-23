@@ -22,7 +22,7 @@ func newCommunicationChannelsCreateCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "create <user_id>",
 		Short:       "Create a communication channel",
-		Example:     "  canvas-cli communication_channels create 550e8400-e29b-41d4-a716-446655440000 --communication-channel-address 123 Test St, Anytown, ST 12345",
+		Example:     "  canvas-pp-cli communication_channels create 550e8400-e29b-41d4-a716-446655440000 --communication-channel-address 123 Test St, Anytown, ST 12345",
 		Annotations: map[string]string{"pp:endpoint": "communication_channels.create", "pp:method": "POST", "pp:path": "/api/v1/users/{user_id}/communication_channels"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

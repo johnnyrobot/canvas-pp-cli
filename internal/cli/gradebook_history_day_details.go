@@ -16,7 +16,7 @@ func newGradebookHistoryDayDetailsCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "day-details <course_id> <date>",
 		Short:       "Details for a given date in gradebook history for this course",
-		Example:     "  canvas-cli gradebook_history day-details 550e8400-e29b-41d4-a716-446655440000 2026-01-15",
+		Example:     "  canvas-pp-cli gradebook_history day-details 550e8400-e29b-41d4-a716-446655440000 2026-01-15",
 		Annotations: map[string]string{"pp:endpoint": "gradebook_history.day_details", "pp:method": "GET", "pp:path": "/api/v1/courses/{course_id}/gradebook_history/{date}", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

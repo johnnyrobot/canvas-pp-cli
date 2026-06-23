@@ -19,7 +19,7 @@ func newPeerReviewsCreateCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "create <course_id> <assignment_id> <submission_id>",
 		Short:       "Create Peer Review",
-		Example:     "  canvas-cli peer_reviews create 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli peer_reviews create 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "peer_reviews.create", "pp:method": "POST", "pp:path": "/api/v1/courses/{course_id}/assignments/{assignment_id}/submissions/{submission_id}/peer_reviews"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

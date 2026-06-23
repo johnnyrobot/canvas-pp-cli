@@ -16,7 +16,7 @@ func newUsersTerminateSessionsCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "terminate-sessions <id>",
 		Short:       "Terminate all user sessions",
-		Example:     "  canvas-cli users terminate-sessions 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli users terminate-sessions 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "users.terminate_sessions", "pp:method": "DELETE", "pp:path": "/api/v1/users/{id}/sessions"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

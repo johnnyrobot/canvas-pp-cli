@@ -17,7 +17,7 @@ func newOutcomeGroupsOutcomesCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "outcomes <id>",
 		Short:       "List linked outcomes",
-		Example:     "  canvas-cli outcome_groups outcomes 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli outcome_groups outcomes 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "outcome_groups.outcomes", "pp:method": "GET", "pp:path": "/api/v1/global/outcome_groups/{id}/outcomes", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

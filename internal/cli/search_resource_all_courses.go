@@ -19,7 +19,7 @@ func newSearchResourceAllCoursesCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "all-courses",
 		Short:       "List all courses",
-		Example:     "  canvas-cli search_resource all-courses",
+		Example:     "  canvas-pp-cli search_resource all-courses",
 		Annotations: map[string]string{"pp:endpoint": "search_resource.all_courses", "pp:method": "GET", "pp:path": "/api/v1/search/all_courses", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := flags.newClient()

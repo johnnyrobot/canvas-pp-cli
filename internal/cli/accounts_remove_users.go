@@ -16,7 +16,7 @@ func newAccountsRemoveUsersCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "remove-users <account_id>",
 		Short:       "Delete multiple users from the root account",
-		Example:     "  canvas-cli accounts remove-users 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli accounts remove-users 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "accounts.remove_users", "pp:method": "DELETE", "pp:path": "/api/v1/accounts/{account_id}/users"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

@@ -16,7 +16,7 @@ func newServicesShowKalturaConfigCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "show-kaltura-config",
 		Short:       "Get Kaltura config",
-		Example:     "  canvas-cli services show-kaltura-config",
+		Example:     "  canvas-pp-cli services show-kaltura-config",
 		Annotations: map[string]string{"pp:endpoint": "services.show_kaltura_config", "pp:method": "GET", "pp:path": "/api/v1/services/kaltura", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := flags.newClient()

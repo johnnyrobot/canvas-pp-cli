@@ -33,7 +33,7 @@ func newDeveloperKeysUpdateCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "update <id>",
 		Short:       "Update a Developer Key",
-		Example:     "  canvas-cli developer_keys update 550e8400-e29b-41d4-a716-446655440000 --developer-key your-token-here",
+		Example:     "  canvas-pp-cli developer_keys update 550e8400-e29b-41d4-a716-446655440000 --developer-key your-token-here",
 		Annotations: map[string]string{"pp:endpoint": "developer_keys.update", "pp:method": "PUT", "pp:path": "/api/v1/developer_keys/{id}"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

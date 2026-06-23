@@ -22,7 +22,7 @@ func newPollchoicesPutPollChoicesCmd(flags *rootFlags) *cobra.Command {
 		Use:   "put-poll-choices <poll_id> <id>",
 		Short: "Update an existing poll choice for this poll",
 		// TODO: replace placeholder example values before relying on this for live dogfood.
-		Example:     "  canvas-cli pollchoices put-poll-choices 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 --poll-choices-text example-value",
+		Example:     "  canvas-pp-cli pollchoices put-poll-choices 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 --poll-choices-text example-value",
 		Annotations: map[string]string{"pp:endpoint": "pollchoices.put_poll_choices", "pp:method": "PUT", "pp:path": "/api/v1/polls/{poll_id}/poll_choices/{id}"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

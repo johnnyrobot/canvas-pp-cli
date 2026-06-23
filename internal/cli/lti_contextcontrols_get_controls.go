@@ -16,7 +16,7 @@ func newLtiContextcontrolsGetControlsCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "get-controls <account_id> <registration_id>",
 		Short:       "List all LTI ContextControls for the given LTI Registration. These controls are partitioned by LTI Deployment, and have",
-		Example:     "  canvas-cli lti_contextcontrols get-controls 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli lti_contextcontrols get-controls 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "lti_contextcontrols.get_controls", "pp:method": "GET", "pp:path": "/api/v1/accounts/{account_id}/lti_registrations/{registration_id}/controls", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

@@ -17,7 +17,7 @@ func newUsersExpireMobileSessionsCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "expire-mobile-sessions",
 		Short:       "Log users out of all mobile apps",
-		Example:     "  canvas-cli users expire-mobile-sessions",
+		Example:     "  canvas-pp-cli users expire-mobile-sessions",
 		Annotations: map[string]string{"pp:endpoint": "users.expire_mobile_sessions", "pp:method": "DELETE", "pp:path": "/api/v1/users/mobile_sessions"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := flags.newClient()

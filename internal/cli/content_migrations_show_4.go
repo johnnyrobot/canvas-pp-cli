@@ -16,7 +16,7 @@ func newContentMigrationsShow4Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "show-4 <user_id> <content_migration_id> <id>",
 		Short:       "Get a migration issue",
-		Example:     "  canvas-cli content_migrations show-4 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli content_migrations show-4 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "content_migrations.show_4", "pp:method": "GET", "pp:path": "/api/v1/users/{user_id}/content_migrations/{content_migration_id}/migration_issues/{id}", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

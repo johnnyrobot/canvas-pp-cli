@@ -21,7 +21,7 @@ func newAiConversationsCreateFeedbackCmd(flags *rootFlags) *cobra.Command {
 		Use:   "create-feedback <course_id> <ai_experience_id> <id> <message_id>",
 		Short: "Create feedback on a conversation message",
 		// TODO: replace placeholder example values before relying on this for live dogfood.
-		Example:     "  canvas-cli ai_conversations create-feedback 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 --vote example-value",
+		Example:     "  canvas-pp-cli ai_conversations create-feedback 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 --vote example-value",
 		Annotations: map[string]string{"pp:endpoint": "ai_conversations.create_feedback", "pp:method": "POST", "pp:path": "/api/v1/courses/{course_id}/ai_experiences/{ai_experience_id}/conversations/{id}/messages/{message_id}/feedback"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

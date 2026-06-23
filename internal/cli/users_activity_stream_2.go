@@ -17,7 +17,7 @@ func newUsersActivityStream2Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "activity-stream-2",
 		Short:       "List the activity stream",
-		Example:     "  canvas-cli users activity-stream-2",
+		Example:     "  canvas-pp-cli users activity-stream-2",
 		Annotations: map[string]string{"pp:endpoint": "users.activity_stream_2", "pp:method": "GET", "pp:path": "/api/v1/users/activity_stream", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := flags.newClient()

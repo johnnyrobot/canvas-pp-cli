@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"canvas-cli/internal/cliutil"
+	"canvas-pp-cli/internal/cliutil"
 	mcplib "github.com/mark3labs/mcp-go/mcp"
 )
 
@@ -50,7 +50,7 @@ func TestMCPPathResolutionMatchesCLIResolverWithPlatformDefaults(t *testing.T) {
 	if err != nil {
 		t.Fatalf("newMCPConfig() error = %v", err)
 	}
-	if want := filepath.Join(home, ".config", "canvas-cli", "config.toml"); cfg.Path != want {
+	if want := filepath.Join(home, ".config", "canvas-pp-cli", "config.toml"); cfg.Path != want {
 		t.Fatalf("MCP config path = %q, want %q", cfg.Path, want)
 	}
 
@@ -58,7 +58,7 @@ func TestMCPPathResolutionMatchesCLIResolverWithPlatformDefaults(t *testing.T) {
 	if err != nil {
 		t.Fatalf("mcpDBPath() error = %v", err)
 	}
-	if want := filepath.Join(home, ".local", "share", "canvas-cli", "data.db"); gotDB != want {
+	if want := filepath.Join(home, ".local", "share", "canvas-pp-cli", "data.db"); gotDB != want {
 		t.Fatalf("MCP db path = %q, want %q", gotDB, want)
 	}
 }

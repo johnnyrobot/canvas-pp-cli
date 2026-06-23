@@ -21,7 +21,7 @@ func newOutcomeGroupsCreate2Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "create-2 <account_id> <id>",
 		Short:       "Create a subgroup",
-		Example:     "  canvas-cli outcome_groups create-2 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 --title example-resource",
+		Example:     "  canvas-pp-cli outcome_groups create-2 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 --title example-resource",
 		Annotations: map[string]string{"pp:endpoint": "outcome_groups.create_2", "pp:method": "POST", "pp:path": "/api/v1/accounts/{account_id}/outcome_groups/{id}/subgroups"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

@@ -16,7 +16,7 @@ func newAuthenticationProvidersShowSsoSettingsCmd(flags *rootFlags) *cobra.Comma
 	cmd := &cobra.Command{
 		Use:         "show-sso-settings <account_id>",
 		Short:       "Show account auth settings",
-		Example:     "  canvas-cli authentication_providers show-sso-settings 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli authentication_providers show-sso-settings 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "authentication_providers.show_sso_settings", "pp:method": "GET", "pp:path": "/api/v1/accounts/{account_id}/sso_settings", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

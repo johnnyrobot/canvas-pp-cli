@@ -16,7 +16,7 @@ func newBlueprintCoursesGetMigrationsCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "get-migrations <course_id> <template_id>",
 		Short:       "Shows a paginated list of migrations for the template, starting with the most recent. This endpoint can be called on a b",
-		Example:     "  canvas-cli blueprint_courses get-migrations 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli blueprint_courses get-migrations 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "blueprint_courses.get_migrations", "pp:method": "GET", "pp:path": "/api/v1/courses/{course_id}/blueprint_templates/{template_id}/migrations", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

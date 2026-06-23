@@ -16,7 +16,7 @@ func newOutcomeGroupsRedirect3Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "redirect-3 <course_id>",
 		Short:       "Redirect to root outcome group for context",
-		Example:     "  canvas-cli outcome_groups redirect-3 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli outcome_groups redirect-3 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "outcome_groups.redirect_3", "pp:method": "GET", "pp:path": "/api/v1/courses/{course_id}/root_outcome_group", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

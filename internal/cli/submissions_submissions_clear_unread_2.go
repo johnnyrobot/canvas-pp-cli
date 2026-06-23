@@ -18,7 +18,7 @@ func newSubmissionsSubmissionsClearUnread2Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "submissions-clear-unread-2 <section_id> <user_id>",
 		Short:       "Clear unread status for all submissions.",
-		Example:     "  canvas-cli submissions submissions-clear-unread-2 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli submissions submissions-clear-unread-2 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "submissions.submissions_clear_unread_2", "pp:method": "PUT", "pp:path": "/api/v1/sections/{section_id}/submissions/{user_id}/clear_unread"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

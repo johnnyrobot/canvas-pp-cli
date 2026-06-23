@@ -17,7 +17,7 @@ func newRolesManageablePermissionsCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "manageable-permissions <account_id>",
 		Short:       "List assignable permissions",
-		Example:     "  canvas-cli roles manageable-permissions 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli roles manageable-permissions 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "roles.manageable_permissions", "pp:method": "GET", "pp:path": "/api/v1/accounts/{account_id}/roles/permissions", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

@@ -22,7 +22,7 @@ func newBookmarksPostBookmarksCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "post-bookmarks",
 		Short:       "Creates a bookmark.",
-		Example:     "  canvas-cli bookmarks post-bookmarks",
+		Example:     "  canvas-pp-cli bookmarks post-bookmarks",
 		Annotations: map[string]string{"pp:endpoint": "bookmarks.post_bookmarks", "pp:method": "POST", "pp:path": "/api/v1/users/self/bookmarks"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if !stdinBody {

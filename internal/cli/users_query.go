@@ -21,7 +21,7 @@ func newUsersQueryCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "query <user_id>",
 		Short:       "BETA - Initiate page views query",
-		Example:     "  canvas-cli users query 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli users query 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "users.query", "pp:method": "POST", "pp:path": "/api/v1/users/{user_id}/page_views/query", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

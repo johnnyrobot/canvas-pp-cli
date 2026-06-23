@@ -16,7 +16,7 @@ func newDiscoveryPagesShowCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "show",
 		Short:       "Get Discovery Page",
-		Example:     "  canvas-cli discovery_pages show",
+		Example:     "  canvas-pp-cli discovery_pages show",
 		Annotations: map[string]string{"pp:endpoint": "discovery_pages.show", "pp:method": "GET", "pp:path": "/api/v1/discovery_pages", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := flags.newClient()

@@ -16,7 +16,7 @@ func newPollSessionsGetOpenedCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "get-opened",
 		Short:       "A paginated list of all opened poll sessions available to the current user.",
-		Example:     "  canvas-cli poll_sessions get-opened",
+		Example:     "  canvas-pp-cli poll_sessions get-opened",
 		Annotations: map[string]string{"pp:endpoint": "poll_sessions.get_opened", "pp:method": "GET", "pp:path": "/api/v1/poll_sessions/opened", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := flags.newClient()

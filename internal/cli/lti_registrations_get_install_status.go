@@ -16,7 +16,7 @@ func newLtiRegistrationsGetInstallStatusCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "get-install-status <account_id> <client_id>",
 		Short:       "Returns the local installation status for a Site Admin LTI registration. If the developer key's registration is in Site",
-		Example:     "  canvas-cli lti_registrations get-install-status 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli lti_registrations get-install-status 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "lti_registrations.get_install_status", "pp:method": "GET", "pp:path": "/api/v1/accounts/{account_id}/lti_registrations/install_status/{client_id}", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

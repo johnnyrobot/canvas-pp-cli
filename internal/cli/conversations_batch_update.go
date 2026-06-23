@@ -21,7 +21,7 @@ func newConversationsBatchUpdateCmd(flags *rootFlags) *cobra.Command {
 		Use:   "batch-update",
 		Short: "Batch update conversations",
 		// TODO: replace placeholder example values before relying on this for live dogfood.
-		Example:     "  canvas-cli conversations batch-update --conversation-ids example-value",
+		Example:     "  canvas-pp-cli conversations batch-update --conversation-ids example-value",
 		Annotations: map[string]string{"pp:endpoint": "conversations.batch_update", "pp:method": "PUT", "pp:path": "/api/v1/conversations"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

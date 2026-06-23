@@ -34,7 +34,7 @@ func newEnrollmentsCreateCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "create <course_id>",
 		Short:       "Enroll a user",
-		Example:     "  canvas-cli enrollments create 12345 --enrollment-user-id 987 --enrollment-type StudentEnrollment --dry-run",
+		Example:     "  canvas-pp-cli enrollments create 12345 --enrollment-user-id 987 --enrollment-type StudentEnrollment --dry-run",
 		Annotations: map[string]string{"pp:endpoint": "enrollments.create", "pp:method": "POST", "pp:path": "/api/v1/courses/{course_id}/enrollments"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

@@ -20,7 +20,7 @@ func newAccountsUpdateUsersCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "update-users <account_id>",
 		Short:       "Update multiple users",
-		Example:     "  canvas-cli accounts update-users 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli accounts update-users 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "accounts.update_users", "pp:method": "PUT", "pp:path": "/api/v1/accounts/{account_id}/users/bulk_update"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

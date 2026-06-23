@@ -21,7 +21,7 @@ func newAccountDomainLookupsPromotedCmd(flags *rootFlags) *cobra.Command {
 		Use:         "account-domain-lookups",
 		Short:       "Search account domains",
 		Long:        "Search account domains",
-		Example:     "  canvas-cli account-domain-lookups",
+		Example:     "  canvas-pp-cli account-domain-lookups",
 		Annotations: map[string]string{"pp:endpoint": "account_domain_lookups.search", "pp:method": "GET", "pp:path": "/api/v1/accounts/search", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := flags.newClient()

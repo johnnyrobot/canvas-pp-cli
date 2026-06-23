@@ -17,7 +17,7 @@ func newUserObserveesDestroyCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "destroy <user_id> <observee_id>",
 		Short:       "Remove an observee",
-		Example:     "  canvas-cli user_observees destroy 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli user_observees destroy 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "user_observees.destroy", "pp:method": "DELETE", "pp:path": "/api/v1/users/{user_id}/observees/{observee_id}"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

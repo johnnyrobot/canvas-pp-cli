@@ -18,7 +18,7 @@ func newLtiRegistrationsGetContextSearchCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "get-context-search <account_id> <registration_id> <deployment_id>",
 		Short:       "This is a utility endpoint used by the Canvas Apps UI and may not serve general use cases.",
-		Example:     "  canvas-cli lti_registrations get-context-search 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli lti_registrations get-context-search 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "lti_registrations.get_context_search", "pp:method": "GET", "pp:path": "/api/v1/accounts/{account_id}/lti_registrations/{registration_id}/deployments/{deployment_id}/context_search", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

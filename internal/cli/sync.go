@@ -4,9 +4,9 @@
 package cli
 
 import (
-	"canvas-cli/internal/client"
-	"canvas-cli/internal/cliutil"
-	"canvas-cli/internal/store"
+	"canvas-pp-cli/internal/client"
+	"canvas-pp-cli/internal/cliutil"
+	"canvas-pp-cli/internal/store"
 	"context"
 	"encoding/json"
 	"errors"
@@ -85,22 +85,22 @@ Resource scoping:
   the dependent by name; the parent table must already be populated
   from a prior sync.`,
 		Example: `  # Sync all resources
-  canvas-cli sync
+  canvas-pp-cli sync
 
   # Sync specific resources only
-  canvas-cli sync --resources channels,messages
+  canvas-pp-cli sync --resources channels,messages
 
   # Full resync (ignore previous checkpoint)
-  canvas-cli sync --full
+  canvas-pp-cli sync --full
 
   # Incremental sync: only records from the last 7 days
-  canvas-cli sync --since 7d
+  canvas-pp-cli sync --since 7d
 
   # Parallel sync with 8 workers
-  canvas-cli sync --concurrency 8
+  canvas-pp-cli sync --concurrency 8
 
   # Latest-only: refresh head of each resource, no historical backfill
-  canvas-cli sync --latest-only`,
+  canvas-pp-cli sync --latest-only`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			userParams, err := parseSyncUserParams(paramFlags, resourceParamFlags, globalParamFlags)
 			if err != nil {
@@ -114,7 +114,7 @@ Resource scoping:
 			c.NoCache = true
 
 			if dbPath == "" {
-				dbPath = defaultDBPath("canvas-cli")
+				dbPath = defaultDBPath("canvas-pp-cli")
 			}
 
 			db, err := store.OpenWithContext(cmd.Context(), dbPath)

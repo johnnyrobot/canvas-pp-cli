@@ -22,7 +22,7 @@ func newLtiRegistrationsPutApplyCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "put-apply <account_id> <id> <update_request_id>",
 		Short:       "Applies a registration update request to an existing registration, replacing the existing configuration and overlay with",
-		Example:     "  canvas-cli lti_registrations put-apply 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli lti_registrations put-apply 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "lti_registrations.put_apply", "pp:method": "PUT", "pp:path": "/api/v1/accounts/{account_id}/lti_registrations/{id}/update_requests/{update_request_id}/apply"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

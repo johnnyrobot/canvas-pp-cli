@@ -17,7 +17,7 @@ func newAccountsIndexCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "index",
 		Short:       "List accounts",
-		Example:     "  canvas-cli accounts index",
+		Example:     "  canvas-pp-cli accounts index",
 		Annotations: map[string]string{"pp:endpoint": "accounts.index", "pp:method": "GET", "pp:path": "/api/v1/accounts", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := flags.newClient()

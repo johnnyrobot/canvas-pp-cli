@@ -23,7 +23,7 @@ func newAssignmentsUpdate2Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "update-2 <course_id> <assignment_id> <id>",
 		Short:       "Update an assignment override",
-		Example:     "  canvas-cli assignments update-2 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli assignments update-2 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "assignments.update_2", "pp:method": "PUT", "pp:path": "/api/v1/courses/{course_id}/assignments/{assignment_id}/overrides/{id}"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

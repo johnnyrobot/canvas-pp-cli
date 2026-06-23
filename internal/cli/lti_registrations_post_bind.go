@@ -20,7 +20,7 @@ func newLtiRegistrationsPostBindCmd(flags *rootFlags) *cobra.Command {
 		Use:   "post-bind <account_id> <id>",
 		Short: "Enable or disable the specified LTI registration for the specified root account. To enable an inherited registration (eg",
 		// TODO: replace placeholder example values before relying on this for live dogfood.
-		Example:     "  canvas-cli lti_registrations post-bind 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 --workflow-state example-value",
+		Example:     "  canvas-pp-cli lti_registrations post-bind 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 --workflow-state example-value",
 		Annotations: map[string]string{"pp:endpoint": "lti_registrations.post_bind", "pp:method": "POST", "pp:path": "/api/v1/accounts/{account_id}/lti_registrations/{id}/bind"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

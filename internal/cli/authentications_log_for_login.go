@@ -18,7 +18,7 @@ func newAuthenticationsLogForLoginCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "for-login <login_id>",
 		Short:       "Query by login.",
-		Example:     "  canvas-cli authentications_log for-login 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli authentications_log for-login 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "authentications_log.for_login", "pp:method": "GET", "pp:path": "/api/v1/audit/authentication/logins/{login_id}", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

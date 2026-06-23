@@ -16,7 +16,7 @@ func newFilesMediaFolder2Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "media-folder-2 <group_id>",
 		Short:       "Get uploaded media folder for user",
-		Example:     "  canvas-cli files media-folder-2 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli files media-folder-2 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "files.media_folder_2", "pp:method": "GET", "pp:path": "/api/v1/groups/{group_id}/folders/media", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

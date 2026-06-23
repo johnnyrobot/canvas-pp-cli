@@ -8,7 +8,7 @@ import (
 	"os"
 	"sort"
 
-	"canvas-cli/internal/cliutil"
+	"canvas-pp-cli/internal/cliutil"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 )
@@ -139,7 +139,7 @@ func buildAgentContext(rootCmd *cobra.Command) agentContext {
 	return agentContext{
 		SchemaVersion: agentContextSchemaVersion,
 		CLI: agentContextCLI{
-			Name:        "canvas-cli",
+			Name:        "canvas-pp-cli",
 			Description: "The whole Canvas REST API in one Go binary — plus a local store, offline search, and cross-resource commands (roster, at-risk, standings) that no single Canvas endpoint returns.",
 			Version:     rootCmd.Version,
 		},

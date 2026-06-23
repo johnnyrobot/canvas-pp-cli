@@ -19,7 +19,7 @@ func newModulesIndex2Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "index-2 <course_id> <module_id>",
 		Short:       "List module items",
-		Example:     "  canvas-cli modules index-2 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli modules index-2 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "modules.index_2", "pp:method": "GET", "pp:path": "/api/v1/courses/{course_id}/modules/{module_id}/items", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

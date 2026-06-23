@@ -16,7 +16,7 @@ func newCanvasCareerExperiencesEnabledCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "enabled",
 		Short:       "Check if Canvas Career is enabled",
-		Example:     "  canvas-cli canvas_career_experiences enabled",
+		Example:     "  canvas-pp-cli canvas_career_experiences enabled",
 		Annotations: map[string]string{"pp:endpoint": "canvas_career_experiences.enabled", "pp:method": "GET", "pp:path": "/api/v1/career/enabled", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := flags.newClient()

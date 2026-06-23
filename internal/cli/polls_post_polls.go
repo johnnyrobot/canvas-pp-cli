@@ -21,7 +21,7 @@ func newPollsPostPollsCmd(flags *rootFlags) *cobra.Command {
 		Use:   "post-polls",
 		Short: "Create a new poll for the current user",
 		// TODO: replace placeholder example values before relying on this for live dogfood.
-		Example:     "  canvas-cli polls post-polls --polls-question example-value",
+		Example:     "  canvas-pp-cli polls post-polls --polls-question example-value",
 		Annotations: map[string]string{"pp:endpoint": "polls.post_polls", "pp:method": "POST", "pp:path": "/api/v1/polls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

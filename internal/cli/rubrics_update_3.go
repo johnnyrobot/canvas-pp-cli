@@ -26,7 +26,7 @@ func newRubricsUpdate3Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "update-3 <course_id> <id>",
 		Short:       "Update a RubricAssociation",
-		Example:     "  canvas-cli rubrics update-3 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli rubrics update-3 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "rubrics.update_3", "pp:method": "PUT", "pp:path": "/api/v1/courses/{course_id}/rubric_associations/{id}"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

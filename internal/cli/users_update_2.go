@@ -19,7 +19,7 @@ func newUsersUpdate2Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "update-2 <course_id>",
 		Short:       "Set course nickname",
-		Example:     "  canvas-cli users update-2 550e8400-e29b-41d4-a716-446655440000 --nickname example-resource",
+		Example:     "  canvas-pp-cli users update-2 550e8400-e29b-41d4-a716-446655440000 --nickname example-resource",
 		Annotations: map[string]string{"pp:endpoint": "users.update_2", "pp:method": "PUT", "pp:path": "/api/v1/users/self/course_nicknames/{course_id}"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

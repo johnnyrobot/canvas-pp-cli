@@ -16,7 +16,7 @@ func newAnnouncementExternalFeedsDestroy2Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "destroy-2 <group_id> <external_feed_id>",
 		Short:       "Delete an external feed",
-		Example:     "  canvas-cli announcement_external_feeds destroy-2 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli announcement_external_feeds destroy-2 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "announcement_external_feeds.destroy_2", "pp:method": "DELETE", "pp:path": "/api/v1/groups/{group_id}/external_feeds/{external_feed_id}"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

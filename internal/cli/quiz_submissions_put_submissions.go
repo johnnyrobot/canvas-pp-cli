@@ -21,7 +21,7 @@ func newQuizSubmissionsPutSubmissionsCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "put-submissions <course_id> <quiz_id> <id>",
 		Short:       "Update the amount of points a student has scored for questions they've answered, provide comments for the student about",
-		Example:     "  canvas-cli quiz_submissions put-submissions 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli quiz_submissions put-submissions 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "quiz_submissions.put_submissions", "pp:method": "PUT", "pp:path": "/api/v1/courses/{course_id}/quizzes/{quiz_id}/submissions/{id}"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

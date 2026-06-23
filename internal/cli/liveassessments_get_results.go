@@ -17,7 +17,7 @@ func newLiveassessmentsGetResultsCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "get-results <course_id> <assessment_id>",
 		Short:       "Returns a paginated list of live assessment results",
-		Example:     "  canvas-cli liveassessments get-results 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-pp-cli liveassessments get-results 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "liveassessments.get_results", "pp:method": "GET", "pp:path": "/api/v1/courses/{course_id}/live_assessments/{assessment_id}/results", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {
