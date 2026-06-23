@@ -1,5 +1,5 @@
 {
-  "dir": "\u003ccli-dir\u003e/canvas-pp-cli",
+  "dir": "\u003ccli-dir\u003e/canvas-cli",
   "workflows": null,
   "verdict": "workflow-pass",
   "issues": [

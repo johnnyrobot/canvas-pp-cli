@@ -28,7 +28,7 @@ func newLoginsUpdateCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "update <account_id> <id>",
 		Short:       "Edit a user login",
-		Example:     "  canvas-pp-cli logins update 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli logins update 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "logins.update", "pp:method": "PUT", "pp:path": "/api/v1/accounts/{account_id}/logins/{id}"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

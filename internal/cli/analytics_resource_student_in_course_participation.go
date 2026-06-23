@@ -16,7 +16,7 @@ func newAnalyticsResourceStudentInCourseParticipationCmd(flags *rootFlags) *cobr
 	cmd := &cobra.Command{
 		Use:         "student-in-course-participation <course_id> <student_id>",
 		Short:       "Get user-in-a-course-level participation data",
-		Example:     "  canvas-pp-cli analytics_resource student-in-course-participation 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli analytics_resource student-in-course-participation 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "analytics_resource.student_in_course_participation", "pp:method": "GET", "pp:path": "/api/v1/courses/{course_id}/analytics/users/{student_id}/activity", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

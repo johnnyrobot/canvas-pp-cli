@@ -18,7 +18,7 @@ func newModulesItemSequenceCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "item-sequence <course_id>",
 		Short:       "Get module item sequence",
-		Example:     "  canvas-pp-cli modules item-sequence 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli modules item-sequence 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "modules.item_sequence", "pp:method": "GET", "pp:path": "/api/v1/courses/{course_id}/module_item_sequence", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

@@ -16,7 +16,7 @@ func newLtiRegistrationsGetLatestUpdateRequestCmd(flags *rootFlags) *cobra.Comma
 	cmd := &cobra.Command{
 		Use:         "get-latest-update-request <account_id> <id>",
 		Short:       "Retrieves the most recent update request for a registration, regardless of its status. Returns 404 if there are no updat",
-		Example:     "  canvas-pp-cli lti_registrations get-latest-update-request 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli lti_registrations get-latest-update-request 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "lti_registrations.get_latest_update_request", "pp:method": "GET", "pp:path": "/api/v1/accounts/{account_id}/lti_registrations/{id}/latest_update_request", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

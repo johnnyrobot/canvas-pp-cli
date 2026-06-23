@@ -106,7 +106,7 @@ func newNovelStandingsCmd(flags *rootFlags) *cobra.Command {
 			"grades, and rolls the distribution up by course or section. Department analytics is coarse and " +
 			"account-scoped; this is consistent per-course math aggregated locally. Read-only. " +
 			"Pass = C or better (score >= 70); DFW = D/F (score < 70).",
-		Example: "  canvas-pp-cli standings --term 7 --by course --agent\n  canvas-pp-cli standings --term 7 --account 1 --by section",
+		Example: "  canvas-cli standings --term 7 --by course --agent\n  canvas-cli standings --term 7 --account 1 --by section",
 		Annotations: map[string]string{
 			"mcp:read-only":          "true",
 			"pp:happy-args":          "--term=1;--account=1",

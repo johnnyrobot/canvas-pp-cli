@@ -28,7 +28,7 @@ func newOutcomeGroupsLink2Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "link-2 <id> <outcome_id>",
 		Short:       "Create/link an outcome",
-		Example:     "  canvas-pp-cli outcome_groups link-2 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli outcome_groups link-2 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "outcome_groups.link_2", "pp:method": "PUT", "pp:path": "/api/v1/global/outcome_groups/{id}/outcomes/{outcome_id}"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

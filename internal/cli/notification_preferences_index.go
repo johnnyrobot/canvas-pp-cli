@@ -16,7 +16,7 @@ func newNotificationPreferencesIndexCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "index <user_id> <communication_channel_id>",
 		Short:       "List preferences",
-		Example:     "  canvas-pp-cli notification_preferences index 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli notification_preferences index 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "notification_preferences.index", "pp:method": "GET", "pp:path": "/api/v1/users/{user_id}/communication_channels/{communication_channel_id}/notification_preferences", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

@@ -44,7 +44,7 @@ func newContentMigrationsCreate3Cmd(flags *rootFlags) *cobra.Command {
 		Use:   "create-3 <group_id>",
 		Short: "Create a content migration",
 		// TODO: replace placeholder example values before relying on this for live dogfood.
-		Example:     "  canvas-pp-cli content_migrations create-3 550e8400-e29b-41d4-a716-446655440000 --migration-type example-value",
+		Example:     "  canvas-cli content_migrations create-3 550e8400-e29b-41d4-a716-446655440000 --migration-type example-value",
 		Annotations: map[string]string{"pp:endpoint": "content_migrations.create_3", "pp:method": "POST", "pp:path": "/api/v1/groups/{group_id}/content_migrations"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

@@ -16,7 +16,7 @@ func newExternalToolsShow2Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "show-2 <account_id> <external_tool_id>",
 		Short:       "Get a single external tool",
-		Example:     "  canvas-pp-cli external_tools show-2 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli external_tools show-2 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "external_tools.show_2", "pp:method": "GET", "pp:path": "/api/v1/accounts/{account_id}/external_tools/{external_tool_id}", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

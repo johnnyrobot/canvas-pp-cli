@@ -23,7 +23,7 @@ func newAccountsCreateCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "create <account_id>",
 		Short:       "Create a new sub-account",
-		Example:     "  canvas-pp-cli accounts create 550e8400-e29b-41d4-a716-446655440000 --account-name example-resource",
+		Example:     "  canvas-cli accounts create 550e8400-e29b-41d4-a716-446655440000 --account-name example-resource",
 		Annotations: map[string]string{"pp:endpoint": "accounts.create", "pp:method": "POST", "pp:path": "/api/v1/accounts/{account_id}/sub_accounts"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

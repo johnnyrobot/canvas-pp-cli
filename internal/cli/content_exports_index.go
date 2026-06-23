@@ -16,7 +16,7 @@ func newContentExportsIndexCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "index <course_id>",
 		Short:       "List content exports",
-		Example:     "  canvas-pp-cli content_exports index 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli content_exports index 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "content_exports.index", "pp:method": "GET", "pp:path": "/api/v1/courses/{course_id}/content_exports", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

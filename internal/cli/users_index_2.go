@@ -16,7 +16,7 @@ func newUsersIndex2Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "index-2",
 		Short:       "List course nicknames",
-		Example:     "  canvas-pp-cli users index-2",
+		Example:     "  canvas-cli users index-2",
 		Annotations: map[string]string{"pp:endpoint": "users.index_2", "pp:method": "GET", "pp:path": "/api/v1/users/self/course_nicknames", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := flags.newClient()

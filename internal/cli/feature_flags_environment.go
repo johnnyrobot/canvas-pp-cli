@@ -16,7 +16,7 @@ func newFeatureFlagsEnvironmentCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "environment",
 		Short:       "List environment features",
-		Example:     "  canvas-pp-cli feature_flags environment",
+		Example:     "  canvas-cli feature_flags environment",
 		Annotations: map[string]string{"pp:endpoint": "feature_flags.environment", "pp:method": "GET", "pp:path": "/api/v1/features/environment", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := flags.newClient()

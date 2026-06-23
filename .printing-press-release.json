@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "slug": "canvas",
-  "cli_name": "canvas-pp-cli",
+  "cli_name": "canvas-cli",
   "version": "",
   "released_at": "",
   "source_commit": "",

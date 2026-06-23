@@ -14,7 +14,7 @@ import (
 	"strings"
 	"time"
 
-	"canvas-pp-cli/internal/cliutil"
+	"canvas-cli/internal/cliutil"
 	"github.com/spf13/cobra"
 )
 
@@ -81,7 +81,7 @@ func postFeedback(url string, entry FeedbackEntry) error {
 		return fmt.Errorf("building feedback request: %w", err)
 	}
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("User-Agent", "canvas-pp-cli/feedback")
+	req.Header.Set("User-Agent", "canvas-cli/feedback")
 	client := &http.Client{Timeout: 15 * time.Second}
 	resp, err := client.Do(req)
 	if err != nil {
@@ -131,7 +131,7 @@ maintainer sees it.`,
 
 			entry := FeedbackEntry{
 				Text:      text,
-				CLI:       "canvas-pp-cli",
+				CLI:       "canvas-cli",
 				Version:   version,
 				AgentID:   os.Getenv("AGENT_ID"),
 				Timestamp: time.Now().UTC(),
@@ -187,9 +187,9 @@ func newFeedbackListCmd(flags *rootFlags) *cobra.Command {
 		Annotations: map[string]string{
 			"mcp:read-only": "true",
 		},
-		Example: `  canvas-pp-cli feedback list
-  canvas-pp-cli feedback list --limit 5
-  canvas-pp-cli feedback list --json`,
+		Example: `  canvas-cli feedback list
+  canvas-cli feedback list --limit 5
+  canvas-cli feedback list --json`,
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			p, err := feedbackFilePath()
 			if err != nil {

@@ -18,7 +18,7 @@ func newQuizStatisticsPromotedCmd(flags *rootFlags) *cobra.Command {
 		Use:         "quiz-statistics <course_id> <quiz_id>",
 		Short:       "This endpoint provides statistics for all quiz versions, or for a specific quiz version, in which case the output is gua",
 		Long:        "This endpoint provides statistics for all quiz versions, or for a specific quiz version, in which case the output is gua",
-		Example:     "  canvas-pp-cli quiz-statistics 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli quiz-statistics 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "quiz_statistics.get_statistics", "pp:method": "GET", "pp:path": "/api/v1/courses/{course_id}/quizzes/{quiz_id}/statistics", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := flags.newClient()

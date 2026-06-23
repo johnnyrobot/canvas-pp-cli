@@ -16,7 +16,7 @@ func newContentExportsShow2Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "show-2 <group_id> <id>",
 		Short:       "Show content export",
-		Example:     "  canvas-pp-cli content_exports show-2 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli content_exports show-2 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "content_exports.show_2", "pp:method": "GET", "pp:path": "/api/v1/groups/{group_id}/content_exports/{id}", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

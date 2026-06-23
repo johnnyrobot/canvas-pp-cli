@@ -20,7 +20,7 @@ func newFeatureFlagsUpdateCmd(flags *rootFlags) *cobra.Command {
 		Use:   "update <course_id> <feature>",
 		Short: "Set feature flag",
 		// TODO: replace placeholder example values before relying on this for live dogfood.
-		Example:     "  canvas-pp-cli feature_flags update 550e8400-e29b-41d4-a716-446655440000 example-value",
+		Example:     "  canvas-cli feature_flags update 550e8400-e29b-41d4-a716-446655440000 example-value",
 		Annotations: map[string]string{"pp:endpoint": "feature_flags.update", "pp:method": "PUT", "pp:path": "/api/v1/courses/{course_id}/features/flags/{feature}"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

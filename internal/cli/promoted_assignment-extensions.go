@@ -19,7 +19,7 @@ func newAssignmentExtensionsPromotedCmd(flags *rootFlags) *cobra.Command {
 		Use:         "assignment-extensions <course_id> <assignment_id>",
 		Short:       "Set extensions for student assignment submissions",
 		Long:        "Set extensions for student assignment submissions",
-		Example:     "  canvas-pp-cli assignment-extensions 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli assignment-extensions 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "assignment_extensions.create", "pp:method": "POST", "pp:path": "/api/v1/courses/{course_id}/assignments/{assignment_id}/extensions"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with a required flag/body prints help

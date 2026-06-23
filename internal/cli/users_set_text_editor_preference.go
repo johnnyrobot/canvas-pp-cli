@@ -19,7 +19,7 @@ func newUsersSetTextEditorPreferenceCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "set-text-editor-preference <id>",
 		Short:       "Update text editor preference",
-		Example:     "  canvas-pp-cli users set-text-editor-preference 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli users set-text-editor-preference 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "users.set_text_editor_preference", "pp:method": "PUT", "pp:path": "/api/v1/users/{id}/text_editor_preference"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

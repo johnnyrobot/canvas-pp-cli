@@ -17,7 +17,7 @@ func newSectionsUncrosslistCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "uncrosslist <id>",
 		Short:       "De-cross-list a Section",
-		Example:     "  canvas-pp-cli sections uncrosslist 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli sections uncrosslist 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "sections.uncrosslist", "pp:method": "DELETE", "pp:path": "/api/v1/sections/{id}/crosslist"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

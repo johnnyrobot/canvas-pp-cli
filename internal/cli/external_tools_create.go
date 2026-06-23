@@ -37,7 +37,7 @@ func newExternalToolsCreateCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "create <course_id>",
 		Short:       "Create an external tool",
-		Example:     "  canvas-pp-cli external_tools create 550e8400-e29b-41d4-a716-446655440000 --client-id 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli external_tools create 550e8400-e29b-41d4-a716-446655440000 --client-id 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "external_tools.create", "pp:method": "POST", "pp:path": "/api/v1/courses/{course_id}/external_tools"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

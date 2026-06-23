@@ -17,7 +17,7 @@ func newFeatureFlagsIndexCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "index <course_id>",
 		Short:       "List features",
-		Example:     "  canvas-pp-cli feature_flags index 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli feature_flags index 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "feature_flags.index", "pp:method": "GET", "pp:path": "/api/v1/courses/{course_id}/features", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

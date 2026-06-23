@@ -19,7 +19,7 @@ func newCoursesPreviewHtmlCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "preview-html <course_id>",
 		Short:       "Preview processed html",
-		Example:     "  canvas-pp-cli courses preview-html 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli courses preview-html 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "courses.preview_html", "pp:method": "POST", "pp:path": "/api/v1/courses/{course_id}/preview_html"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

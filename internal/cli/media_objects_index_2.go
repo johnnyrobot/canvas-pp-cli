@@ -17,7 +17,7 @@ func newMediaObjectsIndex2Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "index-2 <attachment_id>",
 		Short:       "List media tracks for a Media Object or Attachment",
-		Example:     "  canvas-pp-cli media_objects index-2 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli media_objects index-2 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "media_objects.index_2", "pp:method": "GET", "pp:path": "/api/v1/media_attachments/{attachment_id}/media_tracks", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

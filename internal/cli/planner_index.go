@@ -21,7 +21,7 @@ func newPlannerIndexCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "index",
 		Short:       "List planner items",
-		Example:     "  canvas-pp-cli planner index",
+		Example:     "  canvas-cli planner index",
 		Annotations: map[string]string{"pp:endpoint": "planner.index", "pp:method": "GET", "pp:path": "/api/v1/planner/items", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := flags.newClient()

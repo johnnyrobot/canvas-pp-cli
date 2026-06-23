@@ -22,7 +22,7 @@ func newGradeChangeLogQueryCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "query",
 		Short:       "Advanced query",
-		Example:     "  canvas-pp-cli grade_change_log query",
+		Example:     "  canvas-cli grade_change_log query",
 		Annotations: map[string]string{"pp:endpoint": "grade_change_log.query", "pp:method": "GET", "pp:path": "/api/v1/audit/grade_change", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := flags.newClient()

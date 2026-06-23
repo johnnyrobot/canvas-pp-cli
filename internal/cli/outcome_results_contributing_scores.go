@@ -19,7 +19,7 @@ func newOutcomeResultsContributingScoresCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "contributing-scores <course_id> <outcome_id>",
 		Short:       "Get contributing scores",
-		Example:     "  canvas-pp-cli outcome_results contributing-scores 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli outcome_results contributing-scores 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "outcome_results.contributing_scores", "pp:method": "GET", "pp:path": "/api/v1/courses/{course_id}/outcomes/{outcome_id}/contributing_scores", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

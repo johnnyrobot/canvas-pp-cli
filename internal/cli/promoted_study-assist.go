@@ -17,7 +17,7 @@ func newStudyAssistPromotedCmd(flags *rootFlags) *cobra.Command {
 		Use:         "study-assist <course_id>",
 		Short:       "Request a study assist response",
 		Long:        "Request a study assist response",
-		Example:     "  canvas-pp-cli study-assist 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli study-assist 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "study_assist.create", "pp:method": "POST", "pp:path": "/api/v1/courses/{course_id}/study_assist"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := flags.newClient()

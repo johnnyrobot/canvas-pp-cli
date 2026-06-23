@@ -18,7 +18,7 @@ func newUsersSetDashboardPositionsCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "set-dashboard-positions <id>",
 		Short:       "Update dashboard positions",
-		Example:     "  canvas-pp-cli users set-dashboard-positions 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli users set-dashboard-positions 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "users.set_dashboard_positions", "pp:method": "PUT", "pp:path": "/api/v1/users/{id}/dashboard_positions"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

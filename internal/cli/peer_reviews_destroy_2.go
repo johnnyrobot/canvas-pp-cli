@@ -17,7 +17,7 @@ func newPeerReviewsDestroy2Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "destroy-2 <section_id> <assignment_id> <submission_id>",
 		Short:       "Delete Peer Review",
-		Example:     "  canvas-pp-cli peer_reviews destroy-2 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 --user-id 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli peer_reviews destroy-2 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 --user-id 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "peer_reviews.destroy_2", "pp:method": "DELETE", "pp:path": "/api/v1/sections/{section_id}/assignments/{assignment_id}/submissions/{submission_id}/peer_reviews"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

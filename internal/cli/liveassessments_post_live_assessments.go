@@ -18,7 +18,7 @@ func newLiveassessmentsPostLiveAssessmentsCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "post-live-assessments <course_id>",
 		Short:       "Creates or finds an existing live assessment with the given key and aligns it with the linked outcome",
-		Example:     "  canvas-pp-cli liveassessments post-live-assessments 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli liveassessments post-live-assessments 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "liveassessments.post_live_assessments", "pp:method": "POST", "pp:path": "/api/v1/courses/{course_id}/live_assessments"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

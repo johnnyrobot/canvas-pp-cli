@@ -16,7 +16,7 @@ func newCollaborationsPotentialCollaborators2Cmd(flags *rootFlags) *cobra.Comman
 	cmd := &cobra.Command{
 		Use:         "potential-collaborators-2 <group_id>",
 		Short:       "List potential members",
-		Example:     "  canvas-pp-cli collaborations potential-collaborators-2 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli collaborations potential-collaborators-2 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "collaborations.potential_collaborators_2", "pp:method": "GET", "pp:path": "/api/v1/groups/{group_id}/potential_collaborators", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

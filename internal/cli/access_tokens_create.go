@@ -21,7 +21,7 @@ func newAccessTokensCreateCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "create <user_id>",
 		Short:       "Create an access token",
-		Example:     "  canvas-pp-cli access_tokens create 550e8400-e29b-41d4-a716-446655440000 --token-purpose your-token-here",
+		Example:     "  canvas-cli access_tokens create 550e8400-e29b-41d4-a716-446655440000 --token-purpose your-token-here",
 		Annotations: map[string]string{"pp:endpoint": "access_tokens.create", "pp:method": "POST", "pp:path": "/api/v1/users/{user_id}/tokens"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

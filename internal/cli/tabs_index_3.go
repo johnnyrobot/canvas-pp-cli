@@ -17,7 +17,7 @@ func newTabsIndex3Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "index-3 <group_id>",
 		Short:       "List available tabs for a course or group",
-		Example:     "  canvas-pp-cli tabs index-3 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli tabs index-3 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "tabs.index_3", "pp:method": "GET", "pp:path": "/api/v1/groups/{group_id}/tabs", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

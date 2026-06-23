@@ -37,7 +37,7 @@ func newAccountsCoursesApiCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "courses-api <account_id>",
 		Short:       "List active courses in an account",
-		Example:     "  canvas-pp-cli accounts courses-api 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli accounts courses-api 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "accounts.courses_api", "pp:method": "GET", "pp:path": "/api/v1/accounts/{account_id}/courses", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

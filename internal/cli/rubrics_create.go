@@ -28,7 +28,7 @@ func newRubricsCreateCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "create <course_id>",
 		Short:       "Create a single rubric",
-		Example:     "  canvas-pp-cli rubrics create 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli rubrics create 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "rubrics.create", "pp:method": "POST", "pp:path": "/api/v1/courses/{course_id}/rubrics"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

@@ -16,7 +16,7 @@ func newAccountsEnvironmentCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "environment",
 		Short:       "List environment settings",
-		Example:     "  canvas-pp-cli accounts environment",
+		Example:     "  canvas-cli accounts environment",
 		Annotations: map[string]string{"pp:endpoint": "accounts.environment", "pp:method": "GET", "pp:path": "/api/v1/settings/environment", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := flags.newClient()

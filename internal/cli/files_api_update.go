@@ -26,7 +26,7 @@ func newFilesApiUpdateCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "api-update <id>",
 		Short:       "Update file",
-		Example:     "  canvas-pp-cli files api-update 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli files api-update 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "files.api_update", "pp:method": "PUT", "pp:path": "/api/v1/files/{id}"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

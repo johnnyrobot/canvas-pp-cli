@@ -16,7 +16,7 @@ func newExternalToolsRemoveTopNavFavoriteCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "remove-top-nav-favorite <account_id> <id>",
 		Short:       "Remove tool from Top Navigation Favorites",
-		Example:     "  canvas-pp-cli external_tools remove-top-nav-favorite 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli external_tools remove-top-nav-favorite 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "external_tools.remove_top_nav_favorite", "pp:method": "DELETE", "pp:path": "/api/v1/accounts/{account_id}/external_tools/top_nav_favorites/{id}"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

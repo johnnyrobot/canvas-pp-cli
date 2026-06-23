@@ -16,7 +16,7 @@ func newUsersClearCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "clear",
 		Short:       "Clear course nicknames",
-		Example:     "  canvas-pp-cli users clear",
+		Example:     "  canvas-cli users clear",
 		Annotations: map[string]string{"pp:endpoint": "users.clear", "pp:method": "DELETE", "pp:path": "/api/v1/users/self/course_nicknames"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := flags.newClient()

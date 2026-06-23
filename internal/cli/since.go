@@ -12,7 +12,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"canvas-pp-cli/internal/cliutil"
+	"canvas-cli/internal/cliutil"
 )
 
 type sinceChange struct {
@@ -49,7 +49,7 @@ func newNovelSinceCmd(flags *rootFlags) *cobra.Command {
 		Long: "A standup-style digest of recent course activity in <window> (e.g. 24h, 7d). Diffs across submissions, " +
 			"announcements, and enrollments at once — activity streams are per-user and ephemeral, so no single " +
 			"endpoint answers this. Read-only.",
-		Example: "  canvas-pp-cli since 24h --course 12345 --agent\n  canvas-pp-cli since 7d --agent",
+		Example: "  canvas-cli since 24h --course 12345 --agent\n  canvas-cli since 7d --agent",
 		Annotations: map[string]string{
 			"mcp:read-only":          "true",
 			"pp:happy-args":          "window=24h;--course=12345",

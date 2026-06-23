@@ -17,7 +17,7 @@ func newAccessibilityCourseScansPromotedCmd(flags *rootFlags) *cobra.Command {
 		Use:         "accessibility-course-scans <user_id>",
 		Short:       "Trigger accessibility course scan",
 		Long:        "Trigger accessibility course scan",
-		Example:     "  canvas-pp-cli accessibility-course-scans 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli accessibility-course-scans 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "accessibility_course_scans.create", "pp:method": "POST", "pp:path": "/api/v1/users/{user_id}/educator_accessibility_course_scan"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := flags.newClient()

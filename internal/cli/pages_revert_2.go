@@ -18,7 +18,7 @@ func newPagesRevert2Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "revert-2 <group_id> <url_or_id> <revision_id>",
 		Short:       "Revert to revision",
-		Example:     "  canvas-pp-cli pages revert-2 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli pages revert-2 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "pages.revert_2", "pp:method": "POST", "pp:path": "/api/v1/groups/{group_id}/pages/{url_or_id}/revisions/{revision_id}"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

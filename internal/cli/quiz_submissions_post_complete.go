@@ -21,7 +21,7 @@ func newQuizSubmissionsPostCompleteCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "post-complete <course_id> <quiz_id> <id>",
 		Short:       "Complete the quiz submission by marking it as complete and grading it. When the quiz submission has been marked as compl",
-		Example:     "  canvas-pp-cli quiz_submissions post-complete 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 --validation-token your-token-here",
+		Example:     "  canvas-cli quiz_submissions post-complete 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 --validation-token your-token-here",
 		Annotations: map[string]string{"pp:endpoint": "quiz_submissions.post_complete", "pp:method": "POST", "pp:path": "/api/v1/courses/{course_id}/quizzes/{quiz_id}/submissions/{id}/complete"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

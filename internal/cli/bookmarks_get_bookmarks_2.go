@@ -16,7 +16,7 @@ func newBookmarksGetBookmarks2Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "get-bookmarks-2 <id>",
 		Short:       "Returns the details for a bookmark.",
-		Example:     "  canvas-pp-cli bookmarks get-bookmarks-2 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli bookmarks get-bookmarks-2 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "bookmarks.get_bookmarks_2", "pp:method": "GET", "pp:path": "/api/v1/users/self/bookmarks/{id}", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

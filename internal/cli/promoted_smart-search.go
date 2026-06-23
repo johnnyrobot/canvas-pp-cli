@@ -21,7 +21,7 @@ func newSmartSearchPromotedCmd(flags *rootFlags) *cobra.Command {
 		Short: "Search course content",
 		Long:  "Search course content",
 		// TODO: replace placeholder example values before relying on this for live dogfood.
-		Example:     "  canvas-pp-cli smart-search 550e8400-e29b-41d4-a716-446655440000 --q example-value",
+		Example:     "  canvas-cli smart-search 550e8400-e29b-41d4-a716-446655440000 --q example-value",
 		Annotations: map[string]string{"pp:endpoint": "smart_search.search", "pp:method": "GET", "pp:path": "/api/v1/courses/{course_id}/smartsearch", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with a required flag/body prints help

@@ -16,7 +16,7 @@ func newContentMigrationsAvailableMigratorsCmd(flags *rootFlags) *cobra.Command 
 	cmd := &cobra.Command{
 		Use:         "available-migrators <account_id>",
 		Short:       "List Migration Systems",
-		Example:     "  canvas-pp-cli content_migrations available-migrators 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli content_migrations available-migrators 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "content_migrations.available_migrators", "pp:method": "GET", "pp:path": "/api/v1/accounts/{account_id}/content_migrations/migrators", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

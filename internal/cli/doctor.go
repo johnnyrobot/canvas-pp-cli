@@ -13,10 +13,10 @@ import (
 	"strings"
 	"time"
 
-	"canvas-pp-cli/internal/client"
-	"canvas-pp-cli/internal/cliutil"
-	"canvas-pp-cli/internal/config"
-	"canvas-pp-cli/internal/store"
+	"canvas-cli/internal/client"
+	"canvas-cli/internal/cliutil"
+	"canvas-cli/internal/config"
+	"canvas-cli/internal/store"
 	"github.com/spf13/cobra"
 )
 
@@ -142,10 +142,10 @@ func newDoctorCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "doctor",
 		Short: "Check CLI health",
-		Example: `  canvas-pp-cli doctor
-  canvas-pp-cli doctor --json
-  canvas-pp-cli doctor --fail-on warn
-  canvas-pp-cli doctor --fail-on stale`,
+		Example: `  canvas-cli doctor
+  canvas-cli doctor --json
+  canvas-cli doctor --fail-on warn
+  canvas-cli doctor --fail-on stale`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			report := map[string]any{}
 			pathsReport := collectPathsReport()
@@ -289,7 +289,7 @@ func newDoctorCmd(flags *rootFlags) *cobra.Command {
 					} else {
 						suggestion := suggestReadCommand(cmd.Root())
 						if suggestion != "" {
-							report["credentials"] = fmt.Sprintf("present, not verified. Run `%s %s` to confirm the token works end-to-end.", "canvas-pp-cli", suggestion)
+							report["credentials"] = fmt.Sprintf("present, not verified. Run `%s %s` to confirm the token works end-to-end.", "canvas-cli", suggestion)
 						} else {
 							report["credentials"] = "present, not verified. Run any read command to confirm the token works end-to-end."
 						}
@@ -609,14 +609,14 @@ func doctorExitForFailOn(failOn string, report map[string]any) error {
 // because the alternative is no freshness story at all.
 func collectCacheReport(ctx context.Context, staleAfterSpec string) map[string]any {
 	report := map[string]any{}
-	dbPath := defaultDBPath("canvas-pp-cli")
+	dbPath := defaultDBPath("canvas-cli")
 	report["db_path"] = dbPath
 
 	fi, err := os.Stat(dbPath)
 	if err != nil {
 		if os.IsNotExist(err) {
 			report["status"] = "unknown"
-			report["hint"] = "Database not created yet; run 'canvas-pp-cli sync' to hydrate."
+			report["hint"] = "Database not created yet; run 'canvas-cli sync' to hydrate."
 			return report
 		}
 		report["status"] = "error"
@@ -649,7 +649,7 @@ func collectCacheReport(ctx context.Context, staleAfterSpec string) map[string]a
 		// sync_state may not exist on a fresh DB that has migrated but not
 		// yet had any sync runs — treat as unknown rather than error.
 		report["status"] = "unknown"
-		report["hint"] = "No sync state recorded; run 'canvas-pp-cli sync' to populate."
+		report["hint"] = "No sync state recorded; run 'canvas-cli sync' to populate."
 		return report
 	}
 	defer rows.Close()
@@ -689,13 +689,13 @@ func collectCacheReport(ctx context.Context, staleAfterSpec string) map[string]a
 	switch {
 	case !haveAny && len(resources) == 0:
 		report["status"] = "unknown"
-		report["hint"] = "sync_state is empty; run 'canvas-pp-cli sync' to hydrate."
+		report["hint"] = "sync_state is empty; run 'canvas-cli sync' to hydrate."
 	case fresh:
 		report["status"] = "fresh"
 	default:
 		report["status"] = "stale"
 		report["oldest_age"] = oldest.Round(time.Minute).String()
-		report["hint"] = "Some resources are older than stale_after; run 'canvas-pp-cli sync' to refresh."
+		report["hint"] = "Some resources are older than stale_after; run 'canvas-cli sync' to refresh."
 	}
 	return report
 }

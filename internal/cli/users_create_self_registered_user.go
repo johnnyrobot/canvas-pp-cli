@@ -28,7 +28,7 @@ func newUsersCreateSelfRegisteredUserCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "create-self-registered-user <account_id>",
 		Short:       "[DEPRECATED] Self register a user",
-		Example:     "  canvas-pp-cli users create-self-registered-user 550e8400-e29b-41d4-a716-446655440000 --user-name example-resource",
+		Example:     "  canvas-cli users create-self-registered-user 550e8400-e29b-41d4-a716-446655440000 --user-name example-resource",
 		Annotations: map[string]string{"pp:endpoint": "users.create_self_registered_user", "pp:method": "POST", "pp:path": "/api/v1/accounts/{account_id}/self_registration"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

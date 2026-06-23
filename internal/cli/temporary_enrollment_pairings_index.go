@@ -17,7 +17,7 @@ func newTemporaryEnrollmentPairingsIndexCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "index <account_id>",
 		Short:       "List temporary enrollment pairings",
-		Example:     "  canvas-pp-cli temporary_enrollment_pairings index 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli temporary_enrollment_pairings index 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "temporary_enrollment_pairings.index", "pp:method": "GET", "pp:path": "/api/v1/accounts/{account_id}/temporary_enrollment_pairings", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

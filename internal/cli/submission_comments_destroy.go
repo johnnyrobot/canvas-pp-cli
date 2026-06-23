@@ -16,7 +16,7 @@ func newSubmissionCommentsDestroyCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "destroy <course_id> <assignment_id> <user_id> <id>",
 		Short:       "Delete a submission comment",
-		Example:     "  canvas-pp-cli submission_comments destroy 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli submission_comments destroy 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "submission_comments.destroy", "pp:method": "DELETE", "pp:path": "/api/v1/courses/{course_id}/assignments/{assignment_id}/submissions/{user_id}/comments/{id}"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

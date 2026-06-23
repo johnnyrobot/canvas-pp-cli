@@ -18,7 +18,7 @@ func newFilesCreateFileCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "create-file <folder_id>",
 		Short:       "Upload a file",
-		Example:     "  canvas-pp-cli files create-file 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli files create-file 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "files.create_file", "pp:method": "POST", "pp:path": "/api/v1/folders/{folder_id}/files"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

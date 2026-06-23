@@ -16,7 +16,7 @@ func newConversationsBatchesCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "batches",
 		Short:       "Get running batches",
-		Example:     "  canvas-pp-cli conversations batches",
+		Example:     "  canvas-cli conversations batches",
 		Annotations: map[string]string{"pp:endpoint": "conversations.batches", "pp:method": "GET", "pp:path": "/api/v1/conversations/batches", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := flags.newClient()

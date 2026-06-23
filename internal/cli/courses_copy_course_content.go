@@ -21,7 +21,7 @@ func newCoursesCopyCourseContentCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "copy-course-content <course_id>",
 		Short:       "Copy course content",
-		Example:     "  canvas-pp-cli courses copy-course-content 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli courses copy-course-content 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "courses.copy_course_content", "pp:method": "POST", "pp:path": "/api/v1/courses/{course_id}/course_copy"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

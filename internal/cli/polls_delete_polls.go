@@ -16,7 +16,7 @@ func newPollsDeletePollsCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "delete-polls <id>",
 		Short:       "204 No Content response code is returned if the deletion was successful.",
-		Example:     "  canvas-pp-cli polls delete-polls 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli polls delete-polls 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "polls.delete_polls", "pp:method": "DELETE", "pp:path": "/api/v1/polls/{id}"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

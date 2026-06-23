@@ -16,7 +16,7 @@ func newRubricsIndex2Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "index-2 <course_id>",
 		Short:       "List rubrics",
-		Example:     "  canvas-pp-cli rubrics index-2 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli rubrics index-2 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "rubrics.index_2", "pp:method": "GET", "pp:path": "/api/v1/courses/{course_id}/rubrics", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

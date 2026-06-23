@@ -21,7 +21,7 @@ func newFilesApiShow2Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "api-show-2 <id>",
 		Short:       "Get file",
-		Example:     "  canvas-pp-cli files api-show-2 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli files api-show-2 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "files.api_show_2", "pp:method": "POST", "pp:path": "/api/v1/files/{id}"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

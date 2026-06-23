@@ -16,7 +16,7 @@ func newLtiRegistrationsDeleteBindCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "delete-bind <account_id> <id>",
 		Short:       "Deletes the account binding for this registration, effectively removing it from the account.",
-		Example:     "  canvas-pp-cli lti_registrations delete-bind 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli lti_registrations delete-bind 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "lti_registrations.delete_bind", "pp:method": "DELETE", "pp:path": "/api/v1/accounts/{account_id}/lti_registrations/{id}/bind"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

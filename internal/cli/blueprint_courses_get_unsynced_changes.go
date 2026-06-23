@@ -16,7 +16,7 @@ func newBlueprintCoursesGetUnsyncedChangesCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "get-unsynced-changes <course_id> <template_id>",
 		Short:       "Retrieve a list of learning objects that have changed since the last blueprint sync operation. If no syncs have been com",
-		Example:     "  canvas-pp-cli blueprint_courses get-unsynced-changes 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli blueprint_courses get-unsynced-changes 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "blueprint_courses.get_unsynced_changes", "pp:method": "GET", "pp:path": "/api/v1/courses/{course_id}/blueprint_templates/{template_id}/unsynced_changes", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

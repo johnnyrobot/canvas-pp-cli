@@ -1,4 +1,4 @@
-module canvas-pp-cli
+module canvas-cli
 
 go 1.26
 

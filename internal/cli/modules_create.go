@@ -24,7 +24,7 @@ func newModulesCreateCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "create <course_id>",
 		Short:       "Create a module",
-		Example:     "  canvas-pp-cli modules create 550e8400-e29b-41d4-a716-446655440000 --module-name example-resource",
+		Example:     "  canvas-cli modules create 550e8400-e29b-41d4-a716-446655440000 --module-name example-resource",
 		Annotations: map[string]string{"pp:endpoint": "modules.create", "pp:method": "POST", "pp:path": "/api/v1/courses/{course_id}/modules"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

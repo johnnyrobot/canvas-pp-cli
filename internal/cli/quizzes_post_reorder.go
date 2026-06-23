@@ -20,7 +20,7 @@ func newQuizzesPostReorderCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "post-reorder <course_id> <id>",
 		Short:       "Change order of the quiz questions or groups within the quiz",
-		Example:     "  canvas-pp-cli quizzes post-reorder 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli quizzes post-reorder 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "quizzes.post_reorder", "pp:method": "POST", "pp:path": "/api/v1/courses/{course_id}/quizzes/{id}/reorder"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

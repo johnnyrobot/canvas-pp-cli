@@ -23,7 +23,7 @@ func newCoursesIndexCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "index",
 		Short:       "List your courses",
-		Example:     "  canvas-pp-cli courses index --agent",
+		Example:     "  canvas-cli courses index --agent",
 		Annotations: map[string]string{"pp:endpoint": "courses.index", "pp:method": "GET", "pp:path": "/api/v1/courses", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := flags.newClient()

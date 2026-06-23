@@ -17,7 +17,7 @@ func newSisImportErrorsIndex2Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "index-2 <account_id>",
 		Short:       "Get SIS import error list",
-		Example:     "  canvas-pp-cli sis_import_errors index-2 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli sis_import_errors index-2 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "sis_import_errors.index_2", "pp:method": "GET", "pp:path": "/api/v1/accounts/{account_id}/sis_import_errors", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

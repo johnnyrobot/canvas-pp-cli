@@ -18,7 +18,7 @@ func newLoginsForgotPasswordCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "forgot-password",
 		Short:       "Kickoff password recovery flow",
-		Example:     "  canvas-pp-cli logins forgot-password",
+		Example:     "  canvas-cli logins forgot-password",
 		Annotations: map[string]string{"pp:endpoint": "logins.forgot_password", "pp:method": "POST", "pp:path": "/api/v1/users/reset_password"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if !stdinBody {

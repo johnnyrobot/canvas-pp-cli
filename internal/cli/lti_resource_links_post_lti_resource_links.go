@@ -21,7 +21,7 @@ func newLtiResourceLinksPostLtiResourceLinksCmd(flags *rootFlags) *cobra.Command
 	cmd := &cobra.Command{
 		Use:         "post-lti-resource-links <course_id>",
 		Short:       "Create a new LTI Resource Link in the specified course with the provided parameters.",
-		Example:     "  canvas-pp-cli lti_resource_links post-lti-resource-links 550e8400-e29b-41d4-a716-446655440000 --url https://example.com/resource",
+		Example:     "  canvas-cli lti_resource_links post-lti-resource-links 550e8400-e29b-41d4-a716-446655440000 --url https://example.com/resource",
 		Annotations: map[string]string{"pp:endpoint": "lti_resource_links.post_lti_resource_links", "pp:method": "POST", "pp:path": "/api/v1/courses/{course_id}/lti_resource_links"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

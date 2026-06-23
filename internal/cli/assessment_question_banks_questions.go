@@ -16,7 +16,7 @@ func newAssessmentQuestionBanksQuestionsCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "questions <id>",
 		Short:       "List assessment questions for a question bank",
-		Example:     "  canvas-pp-cli assessment_question_banks questions 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli assessment_question_banks questions 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "assessment_question_banks.questions", "pp:method": "GET", "pp:path": "/api/v1/question_banks/{id}/questions", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

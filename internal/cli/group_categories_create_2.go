@@ -26,7 +26,7 @@ func newGroupCategoriesCreate2Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "create-2 <course_id>",
 		Short:       "Create a Group Category",
-		Example:     "  canvas-pp-cli group_categories create-2 550e8400-e29b-41d4-a716-446655440000 --name example-resource",
+		Example:     "  canvas-cli group_categories create-2 550e8400-e29b-41d4-a716-446655440000 --name example-resource",
 		Annotations: map[string]string{"pp:endpoint": "group_categories.create_2", "pp:method": "POST", "pp:path": "/api/v1/courses/{course_id}/group_categories"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

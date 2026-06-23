@@ -16,7 +16,7 @@ func newUsersIgnoreStreamItemCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "ignore-stream-item <id>",
 		Short:       "Hide a stream item",
-		Example:     "  canvas-pp-cli users ignore-stream-item 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli users ignore-stream-item 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "users.ignore_stream_item", "pp:method": "DELETE", "pp:path": "/api/v1/users/self/activity_stream/{id}"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

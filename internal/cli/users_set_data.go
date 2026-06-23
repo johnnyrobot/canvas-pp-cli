@@ -21,7 +21,7 @@ func newUsersSetDataCmd(flags *rootFlags) *cobra.Command {
 		Use:   "set-data <user_id>",
 		Short: "Store custom data",
 		// TODO: replace placeholder example values before relying on this for live dogfood.
-		Example:     "  canvas-pp-cli users set-data 550e8400-e29b-41d4-a716-446655440000 --ns example-value",
+		Example:     "  canvas-cli users set-data 550e8400-e29b-41d4-a716-446655440000 --ns example-value",
 		Annotations: map[string]string{"pp:endpoint": "users.set_data", "pp:method": "PUT", "pp:path": "/api/v1/users/{user_id}/custom_data(/*scope)"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

@@ -22,7 +22,7 @@ func newGroupsCreate3Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "create-3 <group_id>",
 		Short:       "Create a membership",
-		Example:     "  canvas-pp-cli groups create-3 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli groups create-3 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "groups.create_3", "pp:method": "POST", "pp:path": "/api/v1/groups/{group_id}/memberships"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

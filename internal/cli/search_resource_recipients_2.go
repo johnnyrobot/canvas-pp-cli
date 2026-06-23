@@ -23,7 +23,7 @@ func newSearchResourceRecipients2Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "recipients-2",
 		Short:       "Find recipients",
-		Example:     "  canvas-pp-cli search_resource recipients-2",
+		Example:     "  canvas-cli search_resource recipients-2",
 		Annotations: map[string]string{"pp:endpoint": "search_resource.recipients_2", "pp:method": "GET", "pp:path": "/api/v1/search/recipients", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := flags.newClient()

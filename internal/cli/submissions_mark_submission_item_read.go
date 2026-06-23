@@ -19,7 +19,7 @@ func newSubmissionsMarkSubmissionItemReadCmd(flags *rootFlags) *cobra.Command {
 		Use:   "mark-submission-item-read <course_id> <assignment_id> <user_id> <item>",
 		Short: "Mark submission item as read",
 		// TODO: replace placeholder example values before relying on this for live dogfood.
-		Example:     "  canvas-pp-cli submissions mark-submission-item-read 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 example-value",
+		Example:     "  canvas-cli submissions mark-submission-item-read 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 example-value",
 		Annotations: map[string]string{"pp:endpoint": "submissions.mark_submission_item_read", "pp:method": "PUT", "pp:path": "/api/v1/courses/{course_id}/assignments/{assignment_id}/submissions/{user_id}/read/{item}"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

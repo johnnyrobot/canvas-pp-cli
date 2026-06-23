@@ -16,7 +16,7 @@ func newUsersBatchQueryResultsCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "batch-query-results <query_id>",
 		Short:       "BETA - Get batch query results",
-		Example:     "  canvas-pp-cli users batch-query-results 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli users batch-query-results 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "users.batch_query_results", "pp:method": "GET", "pp:path": "/api/v1/users/page_views/query/{query_id}/results", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

@@ -19,7 +19,7 @@ func newSubmissionsMarkBulkSubmissionsAsReadCmd(flags *rootFlags) *cobra.Command
 	cmd := &cobra.Command{
 		Use:         "mark-bulk-submissions-as-read <course_id>",
 		Short:       "Mark bulk submissions as read",
-		Example:     "  canvas-pp-cli submissions mark-bulk-submissions-as-read 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli submissions mark-bulk-submissions-as-read 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "submissions.mark_bulk_submissions_as_read", "pp:method": "PUT", "pp:path": "/api/v1/courses/{course_id}/submissions/bulk_mark_read"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

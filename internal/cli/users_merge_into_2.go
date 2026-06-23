@@ -18,7 +18,7 @@ func newUsersMergeInto2Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "merge-into-2 <id> <destination_account_id> <destination_user_id>",
 		Short:       "Merge user into another user",
-		Example:     "  canvas-pp-cli users merge-into-2 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli users merge-into-2 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "users.merge_into_2", "pp:method": "PUT", "pp:path": "/api/v1/users/{id}/merge_into/accounts/{destination_account_id}/users/{destination_user_id}"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

@@ -18,7 +18,7 @@ func newPagesDuplicateCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "duplicate <course_id> <url_or_id>",
 		Short:       "Duplicate page",
-		Example:     "  canvas-pp-cli pages duplicate 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli pages duplicate 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "pages.duplicate", "pp:method": "POST", "pp:path": "/api/v1/courses/{course_id}/pages/{url_or_id}/duplicate"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

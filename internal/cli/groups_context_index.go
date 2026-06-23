@@ -19,7 +19,7 @@ func newGroupsContextIndexCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "context-index <account_id>",
 		Short:       "List the groups available in a context.",
-		Example:     "  canvas-pp-cli groups context-index 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli groups context-index 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "groups.context_index", "pp:method": "GET", "pp:path": "/api/v1/accounts/{account_id}/groups", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

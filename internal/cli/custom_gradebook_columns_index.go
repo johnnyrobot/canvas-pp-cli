@@ -17,7 +17,7 @@ func newCustomGradebookColumnsIndexCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "index <course_id>",
 		Short:       "List custom gradebook columns",
-		Example:     "  canvas-pp-cli custom_gradebook_columns index 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli custom_gradebook_columns index 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "custom_gradebook_columns.index", "pp:method": "GET", "pp:path": "/api/v1/courses/{course_id}/custom_gradebook_columns", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

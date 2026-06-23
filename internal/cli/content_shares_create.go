@@ -22,7 +22,7 @@ func newContentSharesCreateCmd(flags *rootFlags) *cobra.Command {
 		Use:   "create <user_id>",
 		Short: "Create a content share",
 		// TODO: replace placeholder example values before relying on this for live dogfood.
-		Example:     "  canvas-pp-cli content_shares create 550e8400-e29b-41d4-a716-446655440000 --receiver-ids example-value",
+		Example:     "  canvas-cli content_shares create 550e8400-e29b-41d4-a716-446655440000 --receiver-ids example-value",
 		Annotations: map[string]string{"pp:endpoint": "content_shares.create", "pp:method": "POST", "pp:path": "/api/v1/users/{user_id}/content_shares"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

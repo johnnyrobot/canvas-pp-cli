@@ -20,7 +20,7 @@ func newRolesActivateRoleCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "activate-role <account_id> <id>",
 		Short:       "Activate a role",
-		Example:     "  canvas-pp-cli roles activate-role 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli roles activate-role 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "roles.activate_role", "pp:method": "POST", "pp:path": "/api/v1/accounts/{account_id}/roles/{id}/activate"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

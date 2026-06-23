@@ -18,7 +18,7 @@ func newCoursesRestoreVersionCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "restore-version <course_id> <version_id>",
 		Short:       "Restore course syllabus version",
-		Example:     "  canvas-pp-cli courses restore-version 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli courses restore-version 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "courses.restore_version", "pp:method": "POST", "pp:path": "/api/v1/courses/{course_id}/restore/{version_id}"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

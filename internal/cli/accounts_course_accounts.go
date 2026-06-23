@@ -16,7 +16,7 @@ func newAccountsCourseAccountsCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "course-accounts",
 		Short:       "List accounts for course admins",
-		Example:     "  canvas-pp-cli accounts course-accounts",
+		Example:     "  canvas-cli accounts course-accounts",
 		Annotations: map[string]string{"pp:endpoint": "accounts.course_accounts", "pp:method": "GET", "pp:path": "/api/v1/course_accounts", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := flags.newClient()

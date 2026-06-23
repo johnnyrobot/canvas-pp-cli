@@ -16,7 +16,7 @@ func newCanvasCareerExperiencesExperienceSummaryCmd(flags *rootFlags) *cobra.Com
 	cmd := &cobra.Command{
 		Use:         "experience-summary",
 		Short:       "Get current and available experiences",
-		Example:     "  canvas-pp-cli canvas_career_experiences experience-summary",
+		Example:     "  canvas-cli canvas_career_experiences experience-summary",
 		Annotations: map[string]string{"pp:endpoint": "canvas_career_experiences.experience_summary", "pp:method": "GET", "pp:path": "/api/v1/career/experience_summary", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := flags.newClient()

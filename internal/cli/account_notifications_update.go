@@ -24,7 +24,7 @@ func newAccountNotificationsUpdateCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "update <account_id> <id>",
 		Short:       "Update a global notification",
-		Example:     "  canvas-pp-cli account_notifications update 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli account_notifications update 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "account_notifications.update", "pp:method": "PUT", "pp:path": "/api/v1/accounts/{account_id}/account_notifications/{id}"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

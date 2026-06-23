@@ -25,7 +25,7 @@ func newCalendarEventsSetCourseTimetableEventsCmd(flags *rootFlags) *cobra.Comma
 	cmd := &cobra.Command{
 		Use:         "set-course-timetable-events <course_id>",
 		Short:       "Create or update events directly for a course timetable",
-		Example:     "  canvas-pp-cli calendar_events set-course-timetable-events 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli calendar_events set-course-timetable-events 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "calendar_events.set_course_timetable_events", "pp:method": "POST", "pp:path": "/api/v1/courses/{course_id}/calendar_events/timetable_events"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

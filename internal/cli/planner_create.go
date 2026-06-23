@@ -24,7 +24,7 @@ func newPlannerCreateCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "create",
 		Short:       "Create a planner note",
-		Example:     "  canvas-pp-cli planner create",
+		Example:     "  canvas-cli planner create",
 		Annotations: map[string]string{"pp:endpoint": "planner.create", "pp:method": "POST", "pp:path": "/api/v1/planner_notes"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if !stdinBody {

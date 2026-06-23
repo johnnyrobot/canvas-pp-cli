@@ -17,7 +17,7 @@ func newAccountsHorizonAccountsCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "horizon-accounts",
 		Short:       "List horizon accounts",
-		Example:     "  canvas-pp-cli accounts horizon-accounts",
+		Example:     "  canvas-cli accounts horizon-accounts",
 		Annotations: map[string]string{"pp:endpoint": "accounts.horizon_accounts", "pp:method": "GET", "pp:path": "/api/v1/horizon_accounts", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := flags.newClient()

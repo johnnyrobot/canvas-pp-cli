@@ -19,7 +19,7 @@ func newFilesApiShow5Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "api-show-5 <user_id> <id>",
 		Short:       "Get file",
-		Example:     "  canvas-pp-cli files api-show-5 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli files api-show-5 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "files.api_show_5", "pp:method": "GET", "pp:path": "/api/v1/users/{user_id}/files/{id}", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

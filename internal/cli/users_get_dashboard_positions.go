@@ -16,7 +16,7 @@ func newUsersGetDashboardPositionsCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "get-dashboard-positions <id>",
 		Short:       "Get dashboard positions",
-		Example:     "  canvas-pp-cli users get-dashboard-positions 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli users get-dashboard-positions 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "users.get_dashboard_positions", "pp:method": "GET", "pp:path": "/api/v1/users/{id}/dashboard_positions", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

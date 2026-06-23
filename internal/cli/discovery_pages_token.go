@@ -24,7 +24,7 @@ func newDiscoveryPagesTokenCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "token",
 		Short:       "Generate Discovery Page Preview Token",
-		Example:     "  canvas-pp-cli discovery_pages token",
+		Example:     "  canvas-cli discovery_pages token",
 		Annotations: map[string]string{"pp:endpoint": "discovery_pages.token", "pp:method": "POST", "pp:path": "/api/v1/discovery_pages/token"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

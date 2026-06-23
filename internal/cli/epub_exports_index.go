@@ -16,7 +16,7 @@ func newEpubExportsIndexCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "index",
 		Short:       "List courses with their latest ePub export",
-		Example:     "  canvas-pp-cli epub_exports index",
+		Example:     "  canvas-cli epub_exports index",
 		Annotations: map[string]string{"pp:endpoint": "epub_exports.index", "pp:method": "GET", "pp:path": "/api/v1/epub_exports", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := flags.newClient()

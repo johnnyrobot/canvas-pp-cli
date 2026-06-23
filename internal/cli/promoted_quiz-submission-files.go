@@ -19,7 +19,7 @@ func newQuizSubmissionFilesPromotedCmd(flags *rootFlags) *cobra.Command {
 		Use:         "quiz-submission-files <course_id> <quiz_id>",
 		Short:       "Associate a new quiz submission file",
 		Long:        "Associate a new quiz submission file",
-		Example:     "  canvas-pp-cli quiz-submission-files 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli quiz-submission-files 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "quiz_submission_files.post_files", "pp:method": "POST", "pp:path": "/api/v1/courses/{course_id}/quizzes/{quiz_id}/submissions/self/files"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := flags.newClient()

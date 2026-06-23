@@ -63,7 +63,7 @@ func newAssignmentsCreateCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "create <course_id>",
 		Short:       "Create an assignment",
-		Example:     "  canvas-pp-cli assignments create 550e8400-e29b-41d4-a716-446655440000 --assignment-name example-resource",
+		Example:     "  canvas-cli assignments create 550e8400-e29b-41d4-a716-446655440000 --assignment-name example-resource",
 		Annotations: map[string]string{"pp:endpoint": "assignments.create", "pp:method": "POST", "pp:path": "/api/v1/courses/{course_id}/assignments"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

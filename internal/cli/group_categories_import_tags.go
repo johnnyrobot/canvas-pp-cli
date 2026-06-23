@@ -19,7 +19,7 @@ func newGroupCategoriesImportTagsCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "import-tags <course_id>",
 		Short:       "Import differentiation tags",
-		Example:     "  canvas-pp-cli group_categories import-tags 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli group_categories import-tags 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "group_categories.import_tags", "pp:method": "POST", "pp:path": "/api/v1/courses/{course_id}/group_categories/import_tags"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

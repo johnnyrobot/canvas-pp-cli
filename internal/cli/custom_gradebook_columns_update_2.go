@@ -20,7 +20,7 @@ func newCustomGradebookColumnsUpdate2Cmd(flags *rootFlags) *cobra.Command {
 		Use:   "update-2 <course_id> <id> <user_id>",
 		Short: "Update column data",
 		// TODO: replace placeholder example values before relying on this for live dogfood.
-		Example:     "  canvas-pp-cli custom_gradebook_columns update-2 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 --column-data-content example-value",
+		Example:     "  canvas-cli custom_gradebook_columns update-2 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 --column-data-content example-value",
 		Annotations: map[string]string{"pp:endpoint": "custom_gradebook_columns.update_2", "pp:method": "PUT", "pp:path": "/api/v1/courses/{course_id}/custom_gradebook_columns/{id}/data/{user_id}"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

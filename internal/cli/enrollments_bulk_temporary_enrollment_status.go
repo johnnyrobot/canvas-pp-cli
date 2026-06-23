@@ -20,7 +20,7 @@ func newEnrollmentsBulkTemporaryEnrollmentStatusCmd(flags *rootFlags) *cobra.Com
 		Use:   "bulk-temporary-enrollment-status",
 		Short: "Bulk Temporary Enrollment Status",
 		// TODO: replace placeholder example values before relying on this for live dogfood.
-		Example:     "  canvas-pp-cli enrollments bulk-temporary-enrollment-status --user-ids example-value",
+		Example:     "  canvas-cli enrollments bulk-temporary-enrollment-status --user-ids example-value",
 		Annotations: map[string]string{"pp:endpoint": "enrollments.bulk_temporary_enrollment_status", "pp:method": "GET", "pp:path": "/api/v1/temporary_enrollment_status", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

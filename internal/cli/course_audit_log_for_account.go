@@ -18,7 +18,7 @@ func newCourseAuditLogForAccountCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "for-account <account_id>",
 		Short:       "Query by account.",
-		Example:     "  canvas-pp-cli course_audit_log for-account 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli course_audit_log for-account 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "course_audit_log.for_account", "pp:method": "GET", "pp:path": "/api/v1/audit/course/accounts/{account_id}", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"canvas-pp-cli/internal/cliutil"
+	"canvas-cli/internal/cliutil"
 	"github.com/pelletier/go-toml/v2"
 )
 
@@ -184,7 +184,7 @@ func LegacyConfigPath() (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("resolve legacy config path: %w", err)
 	}
-	return filepath.Join(home, ".config", "canvas-pp-cli", "config.toml"), nil
+	return filepath.Join(home, ".config", "canvas-cli", "config.toml"), nil
 }
 
 func readConfigFile(path string, cfg *Config, owner string) error {

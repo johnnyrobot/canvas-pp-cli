@@ -20,7 +20,7 @@ func newAiConversationsPostMessageCmd(flags *rootFlags) *cobra.Command {
 		Use:   "post-message <course_id> <ai_experience_id> <id>",
 		Short: "Post message to conversation",
 		// TODO: replace placeholder example values before relying on this for live dogfood.
-		Example:     "  canvas-pp-cli ai_conversations post-message 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 --message example-value",
+		Example:     "  canvas-cli ai_conversations post-message 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 --message example-value",
 		Annotations: map[string]string{"pp:endpoint": "ai_conversations.post_message", "pp:method": "POST", "pp:path": "/api/v1/courses/{course_id}/ai_experiences/{ai_experience_id}/conversations/{id}/messages"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

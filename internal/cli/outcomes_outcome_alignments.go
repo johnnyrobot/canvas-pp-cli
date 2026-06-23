@@ -18,7 +18,7 @@ func newOutcomesOutcomeAlignmentsCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "outcome-alignments <course_id>",
 		Short:       "Get outcome alignments for a student or assignment",
-		Example:     "  canvas-pp-cli outcomes outcome-alignments 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli outcomes outcome-alignments 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "outcomes.outcome_alignments", "pp:method": "GET", "pp:path": "/api/v1/courses/{course_id}/outcome_alignments", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

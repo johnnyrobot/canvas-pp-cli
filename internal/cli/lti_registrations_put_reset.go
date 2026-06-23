@@ -18,7 +18,7 @@ func newLtiRegistrationsPutResetCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "put-reset <account_id> <id>",
 		Short:       "Reset the specified LTI registration to its default settings in this context. This removes all customizations that were",
-		Example:     "  canvas-pp-cli lti_registrations put-reset 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli lti_registrations put-reset 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "lti_registrations.put_reset", "pp:method": "PUT", "pp:path": "/api/v1/accounts/{account_id}/lti_registrations/{id}/reset"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

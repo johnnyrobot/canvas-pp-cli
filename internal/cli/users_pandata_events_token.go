@@ -19,7 +19,7 @@ func newUsersPandataEventsTokenCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "pandata-events-token",
 		Short:       "Get a Pandata Events jwt token and its expiration date",
-		Example:     "  canvas-pp-cli users pandata-events-token",
+		Example:     "  canvas-cli users pandata-events-token",
 		Annotations: map[string]string{"pp:endpoint": "users.pandata_events_token", "pp:method": "POST", "pp:path": "/api/v1/users/self/pandata_events_token"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if !stdinBody {

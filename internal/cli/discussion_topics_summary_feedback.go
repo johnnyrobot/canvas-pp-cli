@@ -20,7 +20,7 @@ func newDiscussionTopicsSummaryFeedbackCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "summary-feedback <course_id> <topic_id> <summary_id>",
 		Short:       "Summary Feedback",
-		Example:     "  canvas-pp-cli discussion_topics summary-feedback 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli discussion_topics summary-feedback 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "discussion_topics.summary_feedback", "pp:method": "POST", "pp:path": "/api/v1/courses/{course_id}/discussion_topics/{topic_id}/summaries/{summary_id}/feedback"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

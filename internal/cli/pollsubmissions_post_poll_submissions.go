@@ -19,7 +19,7 @@ func newPollsubmissionsPostPollSubmissionsCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "post-poll-submissions <poll_id> <poll_session_id>",
 		Short:       "Create a new poll submission for this poll session",
-		Example:     "  canvas-pp-cli pollsubmissions post-poll-submissions 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli pollsubmissions post-poll-submissions 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "pollsubmissions.post_poll_submissions", "pp:method": "POST", "pp:path": "/api/v1/polls/{poll_id}/poll_sessions/{poll_session_id}/poll_submissions"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

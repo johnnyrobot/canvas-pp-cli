@@ -16,7 +16,7 @@ func newProficiencyRatingsShow2Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "show-2 <course_id>",
 		Short:       "Get proficiency ratings",
-		Example:     "  canvas-pp-cli proficiency_ratings show-2 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli proficiency_ratings show-2 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "proficiency_ratings.show_2", "pp:method": "GET", "pp:path": "/api/v1/courses/{course_id}/outcome_proficiency", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

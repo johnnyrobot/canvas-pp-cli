@@ -19,7 +19,7 @@ func newEportfoliosModerateAllCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "moderate-all <user_id>",
 		Short:       "Moderate all ePortfolios for a User",
-		Example:     "  canvas-pp-cli eportfolios moderate-all 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli eportfolios moderate-all 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "eportfolios.moderate_all", "pp:method": "PUT", "pp:path": "/api/v1/users/{user_id}/eportfolios"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

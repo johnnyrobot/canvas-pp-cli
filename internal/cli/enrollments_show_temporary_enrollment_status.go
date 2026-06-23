@@ -17,7 +17,7 @@ func newEnrollmentsShowTemporaryEnrollmentStatusCmd(flags *rootFlags) *cobra.Com
 	cmd := &cobra.Command{
 		Use:         "show-temporary-enrollment-status <user_id>",
 		Short:       "Show Temporary Enrollment recipient and provider status",
-		Example:     "  canvas-pp-cli enrollments show-temporary-enrollment-status 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli enrollments show-temporary-enrollment-status 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "enrollments.show_temporary_enrollment_status", "pp:method": "GET", "pp:path": "/api/v1/users/{user_id}/temporary_enrollment_status", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

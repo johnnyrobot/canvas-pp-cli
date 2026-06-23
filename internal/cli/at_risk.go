@@ -14,8 +14,8 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"canvas-pp-cli/internal/client"
-	"canvas-pp-cli/internal/cliutil"
+	"canvas-cli/internal/client"
+	"canvas-cli/internal/cliutil"
 )
 
 type atRiskItem struct {
@@ -63,7 +63,7 @@ func newNovelAtRiskCmd(flags *rootFlags) *cobra.Command {
 		Long: "Aggregates Canvas's per-submission missing/late flags across a course (or every course you teach " +
 			"with --all-my-courses), optionally limited to assignments due within --since, and ranks students by " +
 			"concern count. No single Canvas endpoint spans all your courses or a time window. Read-only.",
-		Example: "  canvas-pp-cli at-risk --course 12345 --since 14d --agent\n  canvas-pp-cli at-risk --all-my-courses --since 30d --anonymize",
+		Example: "  canvas-cli at-risk --course 12345 --since 14d --agent\n  canvas-cli at-risk --all-my-courses --since 30d --anonymize",
 		Annotations: map[string]string{
 			"mcp:read-only":          "true",
 			"pp:happy-args":          "--course=12345;--since=14d",

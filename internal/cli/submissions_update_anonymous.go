@@ -29,7 +29,7 @@ func newSubmissionsUpdateAnonymousCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "update-anonymous <course_id> <assignment_id> <anonymous_id>",
 		Short:       "Grade or comment on a submission by anonymous id",
-		Example:     "  canvas-pp-cli submissions update-anonymous 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli submissions update-anonymous 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "submissions.update_anonymous", "pp:method": "PUT", "pp:path": "/api/v1/courses/{course_id}/assignments/{assignment_id}/anonymous_submissions/{anonymous_id}"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

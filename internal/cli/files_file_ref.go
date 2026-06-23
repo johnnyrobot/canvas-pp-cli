@@ -16,7 +16,7 @@ func newFilesFileRefCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "file-ref <course_id> <migration_id>",
 		Short:       "Translate file reference",
-		Example:     "  canvas-pp-cli files file-ref 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli files file-ref 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "files.file_ref", "pp:method": "GET", "pp:path": "/api/v1/courses/{course_id}/files/file_ref/{migration_id}", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

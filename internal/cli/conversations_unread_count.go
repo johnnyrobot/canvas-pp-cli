@@ -16,7 +16,7 @@ func newConversationsUnreadCountCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "unread-count",
 		Short:       "Unread count",
-		Example:     "  canvas-pp-cli conversations unread-count",
+		Example:     "  canvas-cli conversations unread-count",
 		Annotations: map[string]string{"pp:endpoint": "conversations.unread_count", "pp:method": "GET", "pp:path": "/api/v1/conversations/unread_count", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := flags.newClient()

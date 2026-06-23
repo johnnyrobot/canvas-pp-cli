@@ -20,7 +20,7 @@ func newCanvasCareerExperiencesSwitchExperienceCmd(flags *rootFlags) *cobra.Comm
 		Use:   "switch-experience",
 		Short: "Switch experience",
 		// TODO: replace placeholder example values before relying on this for live dogfood.
-		Example:     "  canvas-pp-cli canvas_career_experiences switch-experience --experience example-value",
+		Example:     "  canvas-cli canvas_career_experiences switch-experience --experience example-value",
 		Annotations: map[string]string{"pp:endpoint": "canvas_career_experiences.switch_experience", "pp:method": "POST", "pp:path": "/api/v1/career/switch_experience"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

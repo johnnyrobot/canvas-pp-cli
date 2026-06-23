@@ -16,7 +16,7 @@ func newPagesRevisionsCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "revisions <course_id> <url_or_id>",
 		Short:       "List revisions",
-		Example:     "  canvas-pp-cli pages revisions 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli pages revisions 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "pages.revisions", "pp:method": "GET", "pp:path": "/api/v1/courses/{course_id}/pages/{url_or_id}/revisions", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

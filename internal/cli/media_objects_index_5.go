@@ -19,7 +19,7 @@ func newMediaObjectsIndex5Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "index-5 <group_id>",
 		Short:       "List Media Objects",
-		Example:     "  canvas-pp-cli media_objects index-5 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli media_objects index-5 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "media_objects.index_5", "pp:method": "GET", "pp:path": "/api/v1/groups/{group_id}/media_objects", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

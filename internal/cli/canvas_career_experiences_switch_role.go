@@ -20,7 +20,7 @@ func newCanvasCareerExperiencesSwitchRoleCmd(flags *rootFlags) *cobra.Command {
 		Use:   "switch-role",
 		Short: "Switch role",
 		// TODO: replace placeholder example values before relying on this for live dogfood.
-		Example:     "  canvas-pp-cli canvas_career_experiences switch-role --role example-value",
+		Example:     "  canvas-cli canvas_career_experiences switch-role --role example-value",
 		Annotations: map[string]string{"pp:endpoint": "canvas_career_experiences.switch_role", "pp:method": "POST", "pp:path": "/api/v1/career/switch_role"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

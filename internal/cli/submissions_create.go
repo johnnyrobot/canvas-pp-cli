@@ -30,7 +30,7 @@ func newSubmissionsCreateCmd(flags *rootFlags) *cobra.Command {
 		Use:   "create <course_id> <assignment_id>",
 		Short: "Submit an assignment",
 		// TODO: replace placeholder example values before relying on this for live dogfood.
-		Example:     "  canvas-pp-cli submissions create 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 --submission-submission-type example-value",
+		Example:     "  canvas-cli submissions create 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 --submission-submission-type example-value",
 		Annotations: map[string]string{"pp:endpoint": "submissions.create", "pp:method": "POST", "pp:path": "/api/v1/courses/{course_id}/assignments/{assignment_id}/submissions"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

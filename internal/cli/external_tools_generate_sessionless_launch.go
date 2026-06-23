@@ -22,7 +22,7 @@ func newExternalToolsGenerateSessionlessLaunchCmd(flags *rootFlags) *cobra.Comma
 	cmd := &cobra.Command{
 		Use:         "generate-sessionless-launch <course_id>",
 		Short:       "Get a sessionless launch url for an external tool.",
-		Example:     "  canvas-pp-cli external_tools generate-sessionless-launch 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli external_tools generate-sessionless-launch 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "external_tools.generate_sessionless_launch", "pp:method": "GET", "pp:path": "/api/v1/courses/{course_id}/external_tools/sessionless_launch", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

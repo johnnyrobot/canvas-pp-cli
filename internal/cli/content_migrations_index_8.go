@@ -16,7 +16,7 @@ func newContentMigrationsIndex8Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "index-8 <user_id>",
 		Short:       "List content migrations",
-		Example:     "  canvas-pp-cli content_migrations index-8 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli content_migrations index-8 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "content_migrations.index_8", "pp:method": "GET", "pp:path": "/api/v1/users/{user_id}/content_migrations", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

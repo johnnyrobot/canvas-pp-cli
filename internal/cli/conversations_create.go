@@ -33,7 +33,7 @@ func newConversationsCreateCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "create",
 		Short:       "Create a conversation",
-		Example:     "  canvas-pp-cli conversations create --recipients Test User",
+		Example:     "  canvas-cli conversations create --recipients Test User",
 		Annotations: map[string]string{"pp:endpoint": "conversations.create", "pp:method": "POST", "pp:path": "/api/v1/conversations"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

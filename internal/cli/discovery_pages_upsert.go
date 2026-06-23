@@ -26,7 +26,7 @@ func newDiscoveryPagesUpsertCmd(flags *rootFlags) *cobra.Command {
 		Use:   "upsert",
 		Short: "Update Discovery Page",
 		// TODO: replace placeholder example values before relying on this for live dogfood.
-		Example:     "  canvas-pp-cli discovery_pages upsert --discovery-page-primary-label example-value",
+		Example:     "  canvas-cli discovery_pages upsert --discovery-page-primary-label example-value",
 		Annotations: map[string]string{"pp:endpoint": "discovery_pages.upsert", "pp:method": "PUT", "pp:path": "/api/v1/discovery_pages"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

@@ -22,7 +22,7 @@ func newQuizQuestionGroupsPostGroupsCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "post-groups <course_id> <quiz_id>",
 		Short:       "Create a new question group for this quiz",
-		Example:     "  canvas-pp-cli quiz_question_groups post-groups 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli quiz_question_groups post-groups 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "quiz_question_groups.post_groups", "pp:method": "POST", "pp:path": "/api/v1/courses/{course_id}/quizzes/{quiz_id}/groups"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

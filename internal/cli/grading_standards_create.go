@@ -23,7 +23,7 @@ func newGradingStandardsCreateCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "create <account_id>",
 		Short:       "Create a new grading standard",
-		Example:     "  canvas-pp-cli grading_standards create 550e8400-e29b-41d4-a716-446655440000 --title example-resource",
+		Example:     "  canvas-cli grading_standards create 550e8400-e29b-41d4-a716-446655440000 --title example-resource",
 		Annotations: map[string]string{"pp:endpoint": "grading_standards.create", "pp:method": "POST", "pp:path": "/api/v1/accounts/{account_id}/grading_standards"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

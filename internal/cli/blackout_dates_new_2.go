@@ -16,7 +16,7 @@ func newBlackoutDatesNew2Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "new-2 <account_id>",
 		Short:       "New Blackout Date",
-		Example:     "  canvas-pp-cli blackout_dates new-2 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli blackout_dates new-2 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "blackout_dates.new_2", "pp:method": "GET", "pp:path": "/api/v1/accounts/{account_id}/blackout_dates/new", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

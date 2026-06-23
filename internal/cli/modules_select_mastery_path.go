@@ -20,7 +20,7 @@ func newModulesSelectMasteryPathCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "select-mastery-path <course_id> <module_id> <id>",
 		Short:       "Select a mastery path",
-		Example:     "  canvas-pp-cli modules select-mastery-path 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli modules select-mastery-path 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "modules.select_mastery_path", "pp:method": "POST", "pp:path": "/api/v1/courses/{course_id}/modules/{module_id}/items/{id}/select_mastery_path"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

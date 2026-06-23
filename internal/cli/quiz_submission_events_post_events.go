@@ -20,7 +20,7 @@ func newQuizSubmissionEventsPostEventsCmd(flags *rootFlags) *cobra.Command {
 		Use:   "post-events <course_id> <quiz_id> <id>",
 		Short: "Store a set of events which were captured during a quiz taking session.",
 		// TODO: replace placeholder example values before relying on this for live dogfood.
-		Example:     "  canvas-pp-cli quiz_submission_events post-events 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 --quiz-submission-events example-value",
+		Example:     "  canvas-cli quiz_submission_events post-events 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 --quiz-submission-events example-value",
 		Annotations: map[string]string{"pp:endpoint": "quiz_submission_events.post_events", "pp:method": "POST", "pp:path": "/api/v1/courses/{course_id}/quizzes/{quiz_id}/submissions/{id}/events"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

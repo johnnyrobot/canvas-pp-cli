@@ -21,7 +21,7 @@ func newAnnouncementExternalFeedsCreate2Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "create-2 <group_id>",
 		Short:       "Create an external feed",
-		Example:     "  canvas-pp-cli announcement_external_feeds create-2 550e8400-e29b-41d4-a716-446655440000 --url https://example.com/resource",
+		Example:     "  canvas-cli announcement_external_feeds create-2 550e8400-e29b-41d4-a716-446655440000 --url https://example.com/resource",
 		Annotations: map[string]string{"pp:endpoint": "announcement_external_feeds.create_2", "pp:method": "POST", "pp:path": "/api/v1/groups/{group_id}/external_feeds"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

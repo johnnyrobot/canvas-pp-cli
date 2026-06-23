@@ -18,7 +18,7 @@ func newApiTokenScopesPromotedCmd(flags *rootFlags) *cobra.Command {
 		Use:         "api-token-scopes <account_id>",
 		Short:       "List scopes",
 		Long:        "List scopes",
-		Example:     "  canvas-pp-cli api-token-scopes 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli api-token-scopes 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "api_token_scopes.index", "pp:method": "GET", "pp:path": "/api/v1/accounts/{account_id}/scopes", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := flags.newClient()

@@ -22,7 +22,7 @@ func newQuizSubmissionQuestionsPostQuestionsCmd(flags *rootFlags) *cobra.Command
 	cmd := &cobra.Command{
 		Use:         "post-questions <quiz_submission_id>",
 		Short:       "Provide or update an answer to one or more QuizQuestions.",
-		Example:     "  canvas-pp-cli quiz_submission_questions post-questions 550e8400-e29b-41d4-a716-446655440000 --validation-token your-token-here",
+		Example:     "  canvas-cli quiz_submission_questions post-questions 550e8400-e29b-41d4-a716-446655440000 --validation-token your-token-here",
 		Annotations: map[string]string{"pp:endpoint": "quiz_submission_questions.post_questions", "pp:method": "POST", "pp:path": "/api/v1/quiz_submissions/{quiz_submission_id}/questions"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

@@ -16,7 +16,7 @@ func newLtiContextcontrolsDeleteControlsCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "delete-controls <account_id> <registration_id> <id>",
 		Short:       "Deletes a context control. Returns the control that is now deleted.",
-		Example:     "  canvas-pp-cli lti_contextcontrols delete-controls 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli lti_contextcontrols delete-controls 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "lti_contextcontrols.delete_controls", "pp:method": "DELETE", "pp:path": "/api/v1/accounts/{account_id}/lti_registrations/{registration_id}/controls/{id}"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

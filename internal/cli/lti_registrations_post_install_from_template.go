@@ -18,7 +18,7 @@ func newLtiRegistrationsPostInstallFromTemplateCmd(flags *rootFlags) *cobra.Comm
 	cmd := &cobra.Command{
 		Use:         "post-install-from-template <account_id> <id>",
 		Short:       "This endpoint installs a local copy of a 'template' LTI registration from Site Admin into the specified account. The loc",
-		Example:     "  canvas-pp-cli lti_registrations post-install-from-template 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli lti_registrations post-install-from-template 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "lti_registrations.post_install_from_template", "pp:method": "POST", "pp:path": "/api/v1/accounts/{account_id}/lti_registrations/{id}/install_from_template"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

@@ -20,7 +20,7 @@ func newCalendarEventsReserve2Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "reserve-2 <id> <participant_id>",
 		Short:       "Reserve a time slot",
-		Example:     "  canvas-pp-cli calendar_events reserve-2 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli calendar_events reserve-2 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "calendar_events.reserve_2", "pp:method": "POST", "pp:path": "/api/v1/calendar_events/{id}/reservations/{participant_id}"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

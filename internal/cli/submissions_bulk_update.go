@@ -27,7 +27,7 @@ func newSubmissionsBulkUpdateCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "bulk-update <course_id>",
 		Short:       "Grade or comment on multiple submissions",
-		Example:     "  canvas-pp-cli submissions bulk-update 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli submissions bulk-update 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "submissions.bulk_update", "pp:method": "POST", "pp:path": "/api/v1/courses/{course_id}/submissions/update_grades"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

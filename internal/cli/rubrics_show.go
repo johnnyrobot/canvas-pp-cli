@@ -18,7 +18,7 @@ func newRubricsShowCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "show <account_id> <id>",
 		Short:       "Get a single rubric",
-		Example:     "  canvas-pp-cli rubrics show 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli rubrics show 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "rubrics.show", "pp:method": "GET", "pp:path": "/api/v1/accounts/{account_id}/rubrics/{id}", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

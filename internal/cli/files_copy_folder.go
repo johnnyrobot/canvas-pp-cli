@@ -19,7 +19,7 @@ func newFilesCopyFolderCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "copy-folder <dest_folder_id>",
 		Short:       "Copy a folder",
-		Example:     "  canvas-pp-cli files copy-folder 550e8400-e29b-41d4-a716-446655440000 --source-folder-id 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli files copy-folder 550e8400-e29b-41d4-a716-446655440000 --source-folder-id 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "files.copy_folder", "pp:method": "POST", "pp:path": "/api/v1/folders/{dest_folder_id}/copy_folder"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

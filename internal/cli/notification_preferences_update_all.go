@@ -20,7 +20,7 @@ func newNotificationPreferencesUpdateAllCmd(flags *rootFlags) *cobra.Command {
 		Use:   "update-all <communication_channel_id>",
 		Short: "Update multiple preferences",
 		// TODO: replace placeholder example values before relying on this for live dogfood.
-		Example:     "  canvas-pp-cli notification_preferences update-all 550e8400-e29b-41d4-a716-446655440000 --notification-preferences-x-frequency example-value",
+		Example:     "  canvas-cli notification_preferences update-all 550e8400-e29b-41d4-a716-446655440000 --notification-preferences-x-frequency example-value",
 		Annotations: map[string]string{"pp:endpoint": "notification_preferences.update_all", "pp:method": "PUT", "pp:path": "/api/v1/users/self/communication_channels/{communication_channel_id}/notification_preferences"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

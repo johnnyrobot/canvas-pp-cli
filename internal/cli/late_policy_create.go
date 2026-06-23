@@ -25,7 +25,7 @@ func newLatePolicyCreateCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "create <id>",
 		Short:       "Create a late policy",
-		Example:     "  canvas-pp-cli late_policy create 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli late_policy create 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "late_policy.create", "pp:method": "POST", "pp:path": "/api/v1/courses/{id}/late_policy"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

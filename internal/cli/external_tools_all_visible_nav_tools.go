@@ -18,7 +18,7 @@ func newExternalToolsAllVisibleNavToolsCmd(flags *rootFlags) *cobra.Command {
 		Use:   "all-visible-nav-tools",
 		Short: "Get visible course navigation tools",
 		// TODO: replace placeholder example values before relying on this for live dogfood.
-		Example:     "  canvas-pp-cli external_tools all-visible-nav-tools --context-codes example-value",
+		Example:     "  canvas-cli external_tools all-visible-nav-tools --context-codes example-value",
 		Annotations: map[string]string{"pp:endpoint": "external_tools.all_visible_nav_tools", "pp:method": "GET", "pp:path": "/api/v1/external_tools/visible_course_nav_tools", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

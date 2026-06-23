@@ -16,7 +16,7 @@ func newUsersShowCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "show <course_id>",
 		Short:       "Get course nickname",
-		Example:     "  canvas-pp-cli users show 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli users show 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "users.show", "pp:method": "GET", "pp:path": "/api/v1/users/self/course_nicknames/{course_id}", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

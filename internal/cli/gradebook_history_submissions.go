@@ -16,7 +16,7 @@ func newGradebookHistorySubmissionsCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "submissions <course_id> <date> <grader_id> <assignment_id>",
 		Short:       "Lists submissions",
-		Example:     "  canvas-pp-cli gradebook_history submissions 550e8400-e29b-41d4-a716-446655440000 2026-01-15 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli gradebook_history submissions 550e8400-e29b-41d4-a716-446655440000 2026-01-15 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "gradebook_history.submissions", "pp:method": "GET", "pp:path": "/api/v1/courses/{course_id}/gradebook_history/{date}/graders/{grader_id}/assignments/{assignment_id}/submissions", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

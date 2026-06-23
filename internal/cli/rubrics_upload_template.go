@@ -16,7 +16,7 @@ func newRubricsUploadTemplateCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "upload-template",
 		Short:       "Templated file for importing a rubric",
-		Example:     "  canvas-pp-cli rubrics upload-template",
+		Example:     "  canvas-cli rubrics upload-template",
 		Annotations: map[string]string{"pp:endpoint": "rubrics.upload_template", "pp:method": "GET", "pp:path": "/api/v1/rubrics/upload_template", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := flags.newClient()

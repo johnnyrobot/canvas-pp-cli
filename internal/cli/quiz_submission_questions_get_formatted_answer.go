@@ -18,7 +18,7 @@ func newQuizSubmissionQuestionsGetFormattedAnswerCmd(flags *rootFlags) *cobra.Co
 		Use:   "get-formatted-answer <quiz_submission_id> <id>",
 		Short: "Matches the intended behavior of the UI when a numerical answer is entered and returns the resulting formatted number",
 		// TODO: replace placeholder example values before relying on this for live dogfood.
-		Example:     "  canvas-pp-cli quiz_submission_questions get-formatted-answer 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 --answer example-value",
+		Example:     "  canvas-cli quiz_submission_questions get-formatted-answer 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 --answer example-value",
 		Annotations: map[string]string{"pp:endpoint": "quiz_submission_questions.get_formatted_answer", "pp:method": "GET", "pp:path": "/api/v1/quiz_submissions/{quiz_submission_id}/questions/{id}/formatted_answer", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

@@ -42,7 +42,7 @@ func newDiscussionTopicsCreateCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "create <course_id>",
 		Short:       "Create a new discussion topic",
-		Example:     "  canvas-pp-cli discussion_topics create 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli discussion_topics create 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "discussion_topics.create", "pp:method": "POST", "pp:path": "/api/v1/courses/{course_id}/discussion_topics"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

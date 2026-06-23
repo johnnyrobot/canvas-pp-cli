@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"os"
 
-	"canvas-pp-cli/internal/cliutil"
-	"canvas-pp-cli/internal/config"
+	"canvas-cli/internal/cliutil"
+	"canvas-cli/internal/config"
 	"github.com/spf13/cobra"
 )
 
@@ -35,7 +35,7 @@ func newAuthSetupCmd(_ *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "setup",
 		Short:   "Print steps for obtaining a credential (use --launch to open the URL)",
-		Example: "  canvas-pp-cli auth setup\n  canvas-pp-cli auth setup --launch",
+		Example: "  canvas-cli auth setup\n  canvas-cli auth setup --launch",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			w := cmd.OutOrStdout()
 			fmt.Fprintln(w, "No setup URL is configured for this CLI; check the API's docs.")
@@ -58,7 +58,7 @@ func newAuthStatusCmd(flags *rootFlags) *cobra.Command {
 	return &cobra.Command{
 		Use:     "status",
 		Short:   "Show authentication status",
-		Example: "  canvas-pp-cli auth status",
+		Example: "  canvas-cli auth status",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cfg, err := config.Load(flags.configPath)
 			if err != nil {
@@ -107,7 +107,7 @@ func newAuthSetTokenCmd(flags *rootFlags) *cobra.Command {
 	return &cobra.Command{
 		Use:     "set-token <token>",
 		Short:   "Save an API token to the credentials file",
-		Example: "  canvas-pp-cli auth set-token YOUR_TOKEN_HERE",
+		Example: "  canvas-cli auth set-token YOUR_TOKEN_HERE",
 		Args:    cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cfg, err := config.Load(flags.configPath)
@@ -161,7 +161,7 @@ func newAuthLogoutCmd(flags *rootFlags) *cobra.Command {
 	return &cobra.Command{
 		Use:     "logout",
 		Short:   "Clear stored credentials",
-		Example: "  canvas-pp-cli auth logout",
+		Example: "  canvas-cli auth logout",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cfg, err := config.Load(flags.configPath)
 			if err != nil {

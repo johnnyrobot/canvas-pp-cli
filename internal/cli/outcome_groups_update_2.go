@@ -22,7 +22,7 @@ func newOutcomeGroupsUpdate2Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "update-2 <account_id> <id>",
 		Short:       "Update an outcome group",
-		Example:     "  canvas-pp-cli outcome_groups update-2 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli outcome_groups update-2 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "outcome_groups.update_2", "pp:method": "PUT", "pp:path": "/api/v1/accounts/{account_id}/outcome_groups/{id}"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

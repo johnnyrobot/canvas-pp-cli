@@ -16,7 +16,7 @@ func newBookmarksGetBookmarksCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "get-bookmarks",
 		Short:       "Returns the paginated list of bookmarks.",
-		Example:     "  canvas-pp-cli bookmarks get-bookmarks",
+		Example:     "  canvas-cli bookmarks get-bookmarks",
 		Annotations: map[string]string{"pp:endpoint": "bookmarks.get_bookmarks", "pp:method": "GET", "pp:path": "/api/v1/users/self/bookmarks", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := flags.newClient()

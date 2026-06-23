@@ -22,7 +22,7 @@ func newConversationsIndexCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "index",
 		Short:       "List conversations",
-		Example:     "  canvas-pp-cli conversations index",
+		Example:     "  canvas-cli conversations index",
 		Annotations: map[string]string{"pp:endpoint": "conversations.index", "pp:method": "GET", "pp:path": "/api/v1/conversations", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := flags.newClient()

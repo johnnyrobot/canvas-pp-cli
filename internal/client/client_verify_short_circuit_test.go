@@ -12,7 +12,7 @@ import (
 	"testing"
 	"time"
 
-	"canvas-pp-cli/internal/config"
+	"canvas-cli/internal/config"
 )
 
 // recordingRoundTripper counts how many times its RoundTrip method is

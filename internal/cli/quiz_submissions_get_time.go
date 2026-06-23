@@ -16,7 +16,7 @@ func newQuizSubmissionsGetTimeCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "get-time <course_id> <quiz_id> <id>",
 		Short:       "Get the current timing data for the quiz attempt, both the end_at timestamp and the time_left parameter.",
-		Example:     "  canvas-pp-cli quiz_submissions get-time 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli quiz_submissions get-time 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "quiz_submissions.get_time", "pp:method": "GET", "pp:path": "/api/v1/courses/{course_id}/quizzes/{quiz_id}/submissions/{id}/time", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

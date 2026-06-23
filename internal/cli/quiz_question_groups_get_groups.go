@@ -16,7 +16,7 @@ func newQuizQuestionGroupsGetGroupsCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "get-groups <course_id> <quiz_id>",
 		Short:       "Returns a list of question groups in a quiz.",
-		Example:     "  canvas-pp-cli quiz_question_groups get-groups 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli quiz_question_groups get-groups 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "quiz_question_groups.get_groups", "pp:method": "GET", "pp:path": "/api/v1/courses/{course_id}/quizzes/{quiz_id}/groups", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

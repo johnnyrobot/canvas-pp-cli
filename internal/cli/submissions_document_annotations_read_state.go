@@ -16,7 +16,7 @@ func newSubmissionsDocumentAnnotationsReadStateCmd(flags *rootFlags) *cobra.Comm
 	cmd := &cobra.Command{
 		Use:         "document-annotations-read-state <course_id> <assignment_id> <user_id>",
 		Short:       "Get document annotations read state",
-		Example:     "  canvas-pp-cli submissions document-annotations-read-state 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli submissions document-annotations-read-state 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "submissions.document_annotations_read_state", "pp:method": "GET", "pp:path": "/api/v1/courses/{course_id}/assignments/{assignment_id}/submissions/{user_id}/document_annotations/read", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

@@ -16,7 +16,7 @@ func newContentSharesUnreadCountCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "unread-count <user_id>",
 		Short:       "Get unread shares count",
-		Example:     "  canvas-pp-cli content_shares unread-count 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli content_shares unread-count 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "content_shares.unread_count", "pp:method": "GET", "pp:path": "/api/v1/users/{user_id}/content_shares/unread_count", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

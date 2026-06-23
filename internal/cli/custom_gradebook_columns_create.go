@@ -23,7 +23,7 @@ func newCustomGradebookColumnsCreateCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "create <course_id>",
 		Short:       "Create a custom gradebook column",
-		Example:     "  canvas-pp-cli custom_gradebook_columns create 550e8400-e29b-41d4-a716-446655440000 --column-title example-resource",
+		Example:     "  canvas-cli custom_gradebook_columns create 550e8400-e29b-41d4-a716-446655440000 --column-title example-resource",
 		Annotations: map[string]string{"pp:endpoint": "custom_gradebook_columns.create", "pp:method": "POST", "pp:path": "/api/v1/courses/{course_id}/custom_gradebook_columns"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

@@ -23,7 +23,7 @@ func newCourseQuizExtensionsPromotedCmd(flags *rootFlags) *cobra.Command {
 		Use:         "course-quiz-extensions <course_id>",
 		Short:       "Responses",
 		Long:        "Responses",
-		Example:     "  canvas-pp-cli course-quiz-extensions 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli course-quiz-extensions 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "course_quiz_extensions.post_quiz_extensions", "pp:method": "POST", "pp:path": "/api/v1/courses/{course_id}/quiz_extensions"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with a required flag/body prints help

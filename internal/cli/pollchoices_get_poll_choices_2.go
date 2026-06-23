@@ -16,7 +16,7 @@ func newPollchoicesGetPollChoices2Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "get-poll-choices-2 <poll_id> <id>",
 		Short:       "Returns the poll choice with the given id",
-		Example:     "  canvas-pp-cli pollchoices get-poll-choices-2 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli pollchoices get-poll-choices-2 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "pollchoices.get_poll_choices_2", "pp:method": "GET", "pp:path": "/api/v1/polls/{poll_id}/poll_choices/{id}", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

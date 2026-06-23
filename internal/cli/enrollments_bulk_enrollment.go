@@ -24,7 +24,7 @@ func newEnrollmentsBulkEnrollmentCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "bulk-enrollment <account_id>",
 		Short:       "Enroll multiple users to one or more courses",
-		Example:     "  canvas-pp-cli enrollments bulk-enrollment 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli enrollments bulk-enrollment 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "enrollments.bulk_enrollment", "pp:method": "POST", "pp:path": "/api/v1/accounts/{account_id}/bulk_enrollment"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

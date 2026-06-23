@@ -1,34 +1,34 @@
 # Canvas LMS Printed CLI Agent Guide
 
-This directory is a generated `canvas-pp-cli` printed CLI. It was produced by [CLI Printing Press](https://github.com/mvanhorn/cli-printing-press), so treat systemic fixes as upstream Printing Press fixes first. Keep local edits narrow and document why a generated-tree patch belongs here.
+This directory is a generated `canvas-cli` printed CLI. It was produced by [CLI Printing Press](https://github.com/mvanhorn/cli-printing-press), so treat systemic fixes as upstream Printing Press fixes first. Keep local edits narrow and document why a generated-tree patch belongs here.
 
 ## Local Operating Contract
 
 Start by asking the generated CLI for current runtime truth:
 
 ```bash
-canvas-pp-cli doctor --json
-canvas-pp-cli agent-context --pretty
+canvas-cli doctor --json
+canvas-cli agent-context --pretty
 ```
 
 Use runtime discovery instead of relying on a copied command list:
 
 ```bash
-canvas-pp-cli which "<capability>" --json
-canvas-pp-cli <command> --help
+canvas-cli which "<capability>" --json
+canvas-cli <command> --help
 ```
 
 Add `--agent` to command invocations for JSON, compact output, non-interactive defaults, no color, and confirmation-safe scripting:
 
 ```bash
-canvas-pp-cli <command> --agent
+canvas-cli <command> --agent
 ```
 
 Before running an unfamiliar command that may mutate remote state, inspect its help and prefer a dry run:
 
 ```bash
-canvas-pp-cli <command> --help
-canvas-pp-cli <command> --dry-run --agent
+canvas-cli <command> --help
+canvas-cli <command> --dry-run --agent
 ```
 
 Use `--yes --no-input` only after the target, arguments, and side effects are clear.

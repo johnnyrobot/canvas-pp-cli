@@ -16,7 +16,7 @@ func newContentMigrationsAssetIdMappingCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "asset-id-mapping <course_id> <id>",
 		Short:       "Get asset id mapping",
-		Example:     "  canvas-pp-cli content_migrations asset-id-mapping 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli content_migrations asset-id-mapping 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "content_migrations.asset_id_mapping", "pp:method": "GET", "pp:path": "/api/v1/courses/{course_id}/content_migrations/{id}/asset_id_mapping", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

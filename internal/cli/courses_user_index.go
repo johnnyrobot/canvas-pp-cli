@@ -21,7 +21,7 @@ func newCoursesUserIndexCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "user-index <user_id>",
 		Short:       "List courses for a user",
-		Example:     "  canvas-pp-cli courses user-index 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli courses user-index 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "courses.user_index", "pp:method": "GET", "pp:path": "/api/v1/users/{user_id}/courses", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

@@ -20,7 +20,7 @@ func newDiscussionTopicsAddReply2Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "add-reply-2 <group_id> <topic_id> <entry_id>",
 		Short:       "Post a reply",
-		Example:     "  canvas-pp-cli discussion_topics add-reply-2 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli discussion_topics add-reply-2 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "discussion_topics.add_reply_2", "pp:method": "POST", "pp:path": "/api/v1/groups/{group_id}/discussion_topics/{topic_id}/entries/{entry_id}/replies"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

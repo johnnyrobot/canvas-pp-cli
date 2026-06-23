@@ -16,7 +16,7 @@ func newFavoritesListFavoriteGroupsCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "list-favorite-groups",
 		Short:       "List favorite groups",
-		Example:     "  canvas-pp-cli favorites list-favorite-groups",
+		Example:     "  canvas-cli favorites list-favorite-groups",
 		Annotations: map[string]string{"pp:endpoint": "favorites.list_favorite_groups", "pp:method": "GET", "pp:path": "/api/v1/users/self/favorites/groups", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := flags.newClient()

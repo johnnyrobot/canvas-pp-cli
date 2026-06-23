@@ -16,7 +16,7 @@ func newOutcomeGroupsIndexCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "index <account_id>",
 		Short:       "Get all outcome groups for context",
-		Example:     "  canvas-pp-cli outcome_groups index 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli outcome_groups index 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "outcome_groups.index", "pp:method": "GET", "pp:path": "/api/v1/accounts/{account_id}/outcome_groups", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

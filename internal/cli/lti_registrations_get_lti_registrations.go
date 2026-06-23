@@ -21,7 +21,7 @@ func newLtiRegistrationsGetLtiRegistrationsCmd(flags *rootFlags) *cobra.Command 
 	cmd := &cobra.Command{
 		Use:         "get-lti-registrations <account_id>",
 		Short:       "Returns all LTI registrations in the specified account. Includes registrations created in this account, those set to 'al",
-		Example:     "  canvas-pp-cli lti_registrations get-lti-registrations 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli lti_registrations get-lti-registrations 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "lti_registrations.get_lti_registrations", "pp:method": "GET", "pp:path": "/api/v1/accounts/{account_id}/lti_registrations", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

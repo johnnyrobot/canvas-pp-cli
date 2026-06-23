@@ -18,7 +18,7 @@ func newOutcomeResultsEnqueueOutcomeRollupCalculationCmd(flags *rootFlags) *cobr
 	cmd := &cobra.Command{
 		Use:         "enqueue-outcome-rollup-calculation",
 		Short:       "Enqueue a delayed Outcome Rollup Calculation Job",
-		Example:     "  canvas-pp-cli outcome_results enqueue-outcome-rollup-calculation",
+		Example:     "  canvas-cli outcome_results enqueue-outcome-rollup-calculation",
 		Annotations: map[string]string{"pp:endpoint": "outcome_results.enqueue_outcome_rollup_calculation", "pp:method": "POST", "pp:path": "/api/v1/enqueue_outcome_rollup_calculation"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if !stdinBody {

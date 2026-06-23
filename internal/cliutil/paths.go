@@ -12,7 +12,7 @@ import (
 	"sync"
 )
 
-const appName = "canvas-pp-cli"
+const appName = "canvas-cli"
 const envPrefix = "CANVAS"
 
 type PathKind int

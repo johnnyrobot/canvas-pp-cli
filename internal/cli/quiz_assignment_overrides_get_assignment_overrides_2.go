@@ -17,7 +17,7 @@ func newQuizAssignmentOverridesGetAssignmentOverrides2Cmd(flags *rootFlags) *cob
 	cmd := &cobra.Command{
 		Use:         "get-assignment-overrides-2 <course_id>",
 		Short:       "Retrieve the actual due-at, unlock-at, and available-at dates for quizzes based on the assignment overrides active for t",
-		Example:     "  canvas-pp-cli quiz_assignment_overrides get-assignment-overrides-2 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli quiz_assignment_overrides get-assignment-overrides-2 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "quiz_assignment_overrides.get_assignment_overrides_2", "pp:method": "GET", "pp:path": "/api/v1/courses/{course_id}/new_quizzes/assignment_overrides", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

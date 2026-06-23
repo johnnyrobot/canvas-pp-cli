@@ -19,7 +19,7 @@ func newFilesRemoveUsageRightsCmd(flags *rootFlags) *cobra.Command {
 		Use:   "remove-usage-rights <course_id>",
 		Short: "Remove usage rights",
 		// TODO: replace placeholder example values before relying on this for live dogfood.
-		Example:     "  canvas-pp-cli files remove-usage-rights 550e8400-e29b-41d4-a716-446655440000 --file-ids example-value",
+		Example:     "  canvas-cli files remove-usage-rights 550e8400-e29b-41d4-a716-446655440000 --file-ids example-value",
 		Annotations: map[string]string{"pp:endpoint": "files.remove_usage_rights", "pp:method": "DELETE", "pp:path": "/api/v1/courses/{course_id}/usage_rights"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

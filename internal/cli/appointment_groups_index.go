@@ -20,7 +20,7 @@ func newAppointmentGroupsIndexCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "index",
 		Short:       "List appointment groups",
-		Example:     "  canvas-pp-cli appointment_groups index",
+		Example:     "  canvas-cli appointment_groups index",
 		Annotations: map[string]string{"pp:endpoint": "appointment_groups.index", "pp:method": "GET", "pp:path": "/api/v1/appointment_groups", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := flags.newClient()

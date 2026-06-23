@@ -16,7 +16,7 @@ func newUsersUpcomingEventsCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "upcoming-events",
 		Short:       "List upcoming assignments, calendar events",
-		Example:     "  canvas-pp-cli users upcoming-events",
+		Example:     "  canvas-cli users upcoming-events",
 		Annotations: map[string]string{"pp:endpoint": "users.upcoming_events", "pp:method": "GET", "pp:path": "/api/v1/users/self/upcoming_events", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := flags.newClient()

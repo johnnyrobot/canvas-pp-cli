@@ -21,7 +21,7 @@ func newQuizSubmissionQuestionsPutFlagCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "put-flag <quiz_submission_id> <id>",
 		Short:       "Set a flag on a quiz question to indicate that you want to return to it later.",
-		Example:     "  canvas-pp-cli quiz_submission_questions put-flag 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 --validation-token your-token-here",
+		Example:     "  canvas-cli quiz_submission_questions put-flag 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 --validation-token your-token-here",
 		Annotations: map[string]string{"pp:endpoint": "quiz_submission_questions.put_flag", "pp:method": "PUT", "pp:path": "/api/v1/quiz_submissions/{quiz_submission_id}/questions/{id}/flag"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

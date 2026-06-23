@@ -16,7 +16,7 @@ func newAnalyticsResourceDepartmentGradesCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "department-grades <account_id> <term_id>",
 		Short:       "Get department-level grade data",
-		Example:     "  canvas-pp-cli analytics_resource department-grades 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli analytics_resource department-grades 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "analytics_resource.department_grades", "pp:method": "GET", "pp:path": "/api/v1/accounts/{account_id}/analytics/terms/{term_id}/grades", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

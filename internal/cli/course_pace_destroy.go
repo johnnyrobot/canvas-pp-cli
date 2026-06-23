@@ -17,7 +17,7 @@ func newCoursePaceDestroyCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "destroy <course_id> <id>",
 		Short:       "Delete a Course pace",
-		Example:     "  canvas-pp-cli course_pace destroy 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 --course-pace-id 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli course_pace destroy 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 --course-pace-id 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "course_pace.destroy", "pp:method": "DELETE", "pp:path": "/api/v1/courses/{course_id}/course_pacing/{id}"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

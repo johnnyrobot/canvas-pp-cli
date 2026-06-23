@@ -23,7 +23,7 @@ func newOutcomeResultsMasteryDistributionCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "mastery-distribution <course_id>",
 		Short:       "Get mastery distribution",
-		Example:     "  canvas-pp-cli outcome_results mastery-distribution 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli outcome_results mastery-distribution 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "outcome_results.mastery_distribution", "pp:method": "GET", "pp:path": "/api/v1/courses/{course_id}/outcome_mastery_distribution", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

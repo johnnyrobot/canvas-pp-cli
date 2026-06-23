@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"strings"
 
-	"canvas-pp-cli/internal/store"
+	"canvas-cli/internal/store"
 	"github.com/spf13/cobra"
 )
 
@@ -95,16 +95,16 @@ otherwise searches local data. Falls back to local on network failure.
 In live mode: uses the API search endpoint only.
 In local mode: searches locally synced data only.`,
 		Example: `  # Search (uses API endpoint if available, local FTS otherwise)
-  canvas-pp-cli search "error timeout"
+  canvas-cli search "error timeout"
 
   # Force local search only
-  canvas-pp-cli search "payment failed" --data-source local
+  canvas-cli search "payment failed" --data-source local
 
   # Search a specific resource type locally
-  canvas-pp-cli search "critical" --type transactions --data-source local
+  canvas-cli search "critical" --type transactions --data-source local
 
   # JSON output for piping
-  canvas-pp-cli search "critical" --json --limit 20`,
+  canvas-cli search "critical" --json --limit 20`,
 		Annotations: map[string]string{"mcp:hidden": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {
@@ -136,12 +136,12 @@ In local mode: searches locally synced data only.`,
 
 			// Local FTS search
 			if dbPath == "" {
-				dbPath = defaultDBPath("canvas-pp-cli")
+				dbPath = defaultDBPath("canvas-cli")
 			}
 
 			db, err := store.OpenWithContext(cmd.Context(), dbPath)
 			if err != nil {
-				return fmt.Errorf("opening local database: %w\nRun 'canvas-pp-cli sync' first to populate the local database.", err)
+				return fmt.Errorf("opening local database: %w\nRun 'canvas-cli sync' first to populate the local database.", err)
 			}
 			defer db.Close()
 

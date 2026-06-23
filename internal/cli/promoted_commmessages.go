@@ -20,7 +20,7 @@ func newCommmessagesPromotedCmd(flags *rootFlags) *cobra.Command {
 		Use:         "commmessages",
 		Short:       "List of CommMessages for a user",
 		Long:        "List of CommMessages for a user",
-		Example:     "  canvas-pp-cli commmessages --user-id 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli commmessages --user-id 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "commmessages.index", "pp:method": "GET", "pp:path": "/api/v1/comm_messages", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with a required flag/body prints help

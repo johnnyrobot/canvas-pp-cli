@@ -17,7 +17,7 @@ func newAssignmentGroupsDestroyCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "destroy <course_id> <assignment_group_id>",
 		Short:       "Destroy an Assignment Group",
-		Example:     "  canvas-pp-cli assignment_groups destroy 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli assignment_groups destroy 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "assignment_groups.destroy", "pp:method": "DELETE", "pp:path": "/api/v1/courses/{course_id}/assignment_groups/{assignment_group_id}"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

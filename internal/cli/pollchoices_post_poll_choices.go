@@ -22,7 +22,7 @@ func newPollchoicesPostPollChoicesCmd(flags *rootFlags) *cobra.Command {
 		Use:   "post-poll-choices <poll_id>",
 		Short: "Create a new poll choice for this poll",
 		// TODO: replace placeholder example values before relying on this for live dogfood.
-		Example:     "  canvas-pp-cli pollchoices post-poll-choices 550e8400-e29b-41d4-a716-446655440000 --poll-choices-text example-value",
+		Example:     "  canvas-cli pollchoices post-poll-choices 550e8400-e29b-41d4-a716-446655440000 --poll-choices-text example-value",
 		Annotations: map[string]string{"pp:endpoint": "pollchoices.post_poll_choices", "pp:method": "POST", "pp:path": "/api/v1/polls/{poll_id}/poll_choices"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

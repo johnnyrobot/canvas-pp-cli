@@ -68,7 +68,7 @@ func newCoursesUpdateCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "update <id>",
 		Short:       "Update a course",
-		Example:     "  canvas-pp-cli courses update 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli courses update 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "courses.update", "pp:method": "PUT", "pp:path": "/api/v1/courses/{id}"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

@@ -16,7 +16,7 @@ func newLoginsDestroyCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "destroy <user_id> <id>",
 		Short:       "Delete a user login",
-		Example:     "  canvas-pp-cli logins destroy 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli logins destroy 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "logins.destroy", "pp:method": "DELETE", "pp:path": "/api/v1/users/{user_id}/logins/{id}"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

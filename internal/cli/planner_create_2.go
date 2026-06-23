@@ -23,7 +23,7 @@ func newPlannerCreate2Cmd(flags *rootFlags) *cobra.Command {
 		Use:   "create-2",
 		Short: "Create a planner override",
 		// TODO: replace placeholder example values before relying on this for live dogfood.
-		Example:     "  canvas-pp-cli planner create-2 --plannable-type example-value",
+		Example:     "  canvas-cli planner create-2 --plannable-type example-value",
 		Annotations: map[string]string{"pp:endpoint": "planner.create_2", "pp:method": "POST", "pp:path": "/api/v1/planner/overrides"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Bare invocation of a command with required input prints help

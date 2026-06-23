@@ -16,7 +16,7 @@ func newOutcomeGroupsRedirectCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "redirect",
 		Short:       "Redirect to root outcome group for context",
-		Example:     "  canvas-pp-cli outcome_groups redirect",
+		Example:     "  canvas-cli outcome_groups redirect",
 		Annotations: map[string]string{"pp:endpoint": "outcome_groups.redirect", "pp:method": "GET", "pp:path": "/api/v1/global/root_outcome_group", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := flags.newClient()

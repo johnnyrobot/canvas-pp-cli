@@ -18,7 +18,7 @@ func newGroupsCreateFileCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "create-file <group_id>",
 		Short:       "Upload a file",
-		Example:     "  canvas-pp-cli groups create-file 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli groups create-file 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "groups.create_file", "pp:method": "POST", "pp:path": "/api/v1/groups/{group_id}/files"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

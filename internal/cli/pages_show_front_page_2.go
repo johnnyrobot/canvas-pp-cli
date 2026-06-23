@@ -16,7 +16,7 @@ func newPagesShowFrontPage2Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "show-front-page-2 <group_id>",
 		Short:       "Show front page",
-		Example:     "  canvas-pp-cli pages show-front-page-2 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli pages show-front-page-2 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "pages.show_front_page_2", "pp:method": "GET", "pp:path": "/api/v1/groups/{group_id}/front_page", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

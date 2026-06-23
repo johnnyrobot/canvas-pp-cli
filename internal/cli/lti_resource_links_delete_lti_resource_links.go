@@ -16,7 +16,7 @@ func newLtiResourceLinksDeleteLtiResourceLinksCmd(flags *rootFlags) *cobra.Comma
 	cmd := &cobra.Command{
 		Use:         "delete-lti-resource-links <course_id> <id>",
 		Short:       "Delete the specified resource link. The ID can be in the standard Canvas format ('1'), or in these special formats:",
-		Example:     "  canvas-pp-cli lti_resource_links delete-lti-resource-links 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli lti_resource_links delete-lti-resource-links 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "lti_resource_links.delete_lti_resource_links", "pp:method": "DELETE", "pp:path": "/api/v1/courses/{course_id}/lti_resource_links/{id}"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

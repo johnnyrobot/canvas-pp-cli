@@ -16,7 +16,7 @@ func newAccountsManageableAccountsCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "manageable-accounts",
 		Short:       "Get accounts that admins can manage",
-		Example:     "  canvas-pp-cli accounts manageable-accounts",
+		Example:     "  canvas-cli accounts manageable-accounts",
 		Annotations: map[string]string{"pp:endpoint": "accounts.manageable_accounts", "pp:method": "GET", "pp:path": "/api/v1/manageable_accounts", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := flags.newClient()

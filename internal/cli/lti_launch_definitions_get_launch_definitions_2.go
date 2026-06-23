@@ -19,7 +19,7 @@ func newLtiLaunchDefinitionsGetLaunchDefinitions2Cmd(flags *rootFlags) *cobra.Co
 	cmd := &cobra.Command{
 		Use:         "get-launch-definitions-2 <account_id>",
 		Short:       "List all tools available in this context for the given placements, in the form of Launch Definitions. Used primarily by",
-		Example:     "  canvas-pp-cli lti_launch_definitions get-launch-definitions-2 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli lti_launch_definitions get-launch-definitions-2 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "lti_launch_definitions.get_launch_definitions_2", "pp:method": "GET", "pp:path": "/api/v1/accounts/{account_id}/lti_apps/launch_definitions", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

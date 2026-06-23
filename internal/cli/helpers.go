@@ -5,8 +5,8 @@ package cli
 
 import (
 	"bytes"
-	"canvas-pp-cli/internal/client"
-	"canvas-pp-cli/internal/cliutil"
+	"canvas-cli/internal/client"
+	"canvas-cli/internal/cliutil"
 	"context"
 	"encoding/json"
 	"errors"
@@ -569,17 +569,17 @@ func classifyAPIError(err error, flags *rootFlags) error {
 	case strings.Contains(msg, "HTTP 400") && cliutil.LooksLikeAuthError(msg):
 		return authErr(fmt.Errorf("%w\nhint: the API rejected the request — this usually means auth is missing or invalid."+
 			"\n      Set credentials with: export CANVAS_API_TOKEN=\"your-token-here\" CANVAS_ACCESS_TOKEN=\"your-token-here\""+
-			"\n      Run 'canvas-pp-cli doctor' to check auth status."+
+			"\n      Run 'canvas-cli doctor' to check auth status."+
 			"\n      Response: "+cliutil.SanitizeErrorBody(msg), err))
 	case strings.Contains(msg, "HTTP 401"):
 		return authErr(fmt.Errorf("%w\nhint: check your token."+
 			"\n      Set credentials with: export CANVAS_API_TOKEN=\"your-token-here\" CANVAS_ACCESS_TOKEN=\"your-token-here\""+
-			"\n      Run 'canvas-pp-cli doctor' to check auth status.", err))
+			"\n      Run 'canvas-cli doctor' to check auth status.", err))
 	case strings.Contains(msg, "HTTP 403"):
 		return authErr(fmt.Errorf("%w\nhint: permission denied. Your credentials are valid but lack access to this resource."+
 			"\n      Check that your credentials have the required permissions and match the API's expected auth scheme."+
 			"\n      Set credentials with: export CANVAS_API_TOKEN=\"your-token-here\" CANVAS_ACCESS_TOKEN=\"your-token-here\""+
-			"\n      Run 'canvas-pp-cli doctor' to check auth status.", err))
+			"\n      Run 'canvas-cli doctor' to check auth status.", err))
 	case strings.Contains(msg, "HTTP 404"):
 		return notFoundErr(fmt.Errorf("%w\nhint: resource not found. Run the 'list' command to see available items", err))
 	case strings.Contains(msg, "HTTP 429"):

@@ -16,7 +16,7 @@ func newOutcomeGroupsSubgroups3Cmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "subgroups-3 <course_id> <id>",
 		Short:       "List subgroups",
-		Example:     "  canvas-pp-cli outcome_groups subgroups-3 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli outcome_groups subgroups-3 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "outcome_groups.subgroups_3", "pp:method": "GET", "pp:path": "/api/v1/courses/{course_id}/outcome_groups/{id}/subgroups", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

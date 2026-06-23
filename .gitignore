@@ -1,6 +1,6 @@
 # Built binaries (regenerate with `go build ./cmd/...` or `make`)
-/canvas-pp-cli
-/canvas-pp-mcp
+/canvas-cli
+/canvas-mcp
 /build/
 
 # Go

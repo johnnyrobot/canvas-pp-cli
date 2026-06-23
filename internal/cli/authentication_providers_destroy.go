@@ -16,7 +16,7 @@ func newAuthenticationProvidersDestroyCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:         "destroy <account_id> <id>",
 		Short:       "Delete authentication provider",
-		Example:     "  canvas-pp-cli authentication_providers destroy 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
+		Example:     "  canvas-cli authentication_providers destroy 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000",
 		Annotations: map[string]string{"pp:endpoint": "authentication_providers.destroy", "pp:method": "DELETE", "pp:path": "/api/v1/accounts/{account_id}/authentication_providers/{id}"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

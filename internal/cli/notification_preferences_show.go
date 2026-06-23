@@ -17,7 +17,7 @@ func newNotificationPreferencesShowCmd(flags *rootFlags) *cobra.Command {
 		Use:   "show <user_id> <communication_channel_id> <notification>",
 		Short: "Get a preference",
 		// TODO: replace placeholder example values before relying on this for live dogfood.
-		Example:     "  canvas-pp-cli notification_preferences show 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 example-value",
+		Example:     "  canvas-cli notification_preferences show 550e8400-e29b-41d4-a716-446655440000 550e8400-e29b-41d4-a716-446655440000 example-value",
 		Annotations: map[string]string{"pp:endpoint": "notification_preferences.show", "pp:method": "GET", "pp:path": "/api/v1/users/{user_id}/communication_channels/{communication_channel_id}/notification_preferences/{notification}", "mcp:read-only": "true"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {
