@@ -9,7 +9,6 @@ package cli
 import (
 	"context"
 	"fmt"
-	"sort"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -119,11 +118,14 @@ func newNovelAtRiskCmd(flags *rootFlags) *cobra.Command {
 				courses = courses[:maxCourses]
 			}
 
-			byStudent := map[string]*atRiskStudent{}
+			// Fetch each course's submissions and student names up front so the
+			// aggregation and ranking run over data rather than over the network.
 			var failures []fetchFailure
 			totalPages := 0
+			submissionsByCourse := map[string][]canvasObj{}
+			namesByCourse := map[string]map[string]string{}
 			for _, course := range courses {
-				names := studentNameMap(ctx, c, course.ID, maxScanPages)
+				namesByCourse[course.ID] = studentNameMap(ctx, c, course.ID, maxScanPages)
 				subs, pages, serr := canvasFetchList(ctx, c,
 					"/api/v1/courses/"+course.ID+"/students/submissions",
 					map[string]string{"student_ids[]": "all", "include[]": "assignment"}, maxScanPages)
@@ -132,83 +134,24 @@ func newNovelAtRiskCmd(flags *rootFlags) *cobra.Command {
 					failures = append(failures, fetchFailure{Scope: "course:" + course.ID, Error: serr.Error()})
 					continue
 				}
-				for _, s := range subs {
-					status := classifyAtRisk(s, cutoff, !cutoff.IsZero())
-					if status == "" {
-						continue
-					}
-					uid := s.str("user_id")
-					st := byStudent[uid]
-					if st == nil {
-						nm := names[uid]
-						if nm == "" {
-							nm = "user " + uid
-						}
-						st = &atRiskStudent{UserID: uid, Name: nm}
-						byStudent[uid] = st
-					}
-					if !containsStr(st.CourseIDs, course.ID) {
-						st.CourseIDs = append(st.CourseIDs, course.ID)
-					}
-					assignment := s.obj("assignment")
-					item := atRiskItem{
-						CourseID:       course.ID,
-						AssignmentID:   s.str("assignment_id"),
-						AssignmentName: assignment.str("name"),
-						Status:         status,
-						DueAt:          assignment.str("due_at"),
-					}
-					if pp, ok := assignment.num("points_possible"); ok {
-						item.PointsPossible = &pp
-					}
-					st.Items = append(st.Items, item)
-					switch status {
-					case "missing":
-						st.Missing++
-					case "late":
-						st.Late++
-					case "unsubmitted":
-						st.Unsubmitted++
-					}
-					st.Total++
-				}
+				submissionsByCourse[course.ID] = subs
 			}
-
-			students := make([]atRiskStudent, 0, len(byStudent))
-			for _, st := range byStudent {
-				if anonymize {
-					st.Name = anonLabel("student", st.UserID)
-				}
-				students = append(students, *st)
-			}
-			sort.Slice(students, func(i, j int) bool {
-				return lessAtRisk(students[i], students[j])
-			})
 
 			scope := "course " + flagCourse
 			if flagAll {
 				scope = "all my courses"
 			}
-			view := atRiskView{
-				Scope:          scope,
-				Since:          flagSince,
-				CoursesScanned: len(courses),
-				ScannedPages:   totalPages,
-				Anonymized:     anonymize,
-				FetchFailures:  failures,
-				Students:       students,
-			}
-			rows := make([]map[string]any, 0, len(students))
-			for _, st := range students {
-				rows = append(rows, map[string]any{
-					"user_id": st.UserID, "name": st.Name,
-					"missing": st.Missing, "late": st.Late, "total": st.Total,
-				})
-			}
-			if len(students) == 0 {
-				view.Note = fmt.Sprintf("no at-risk submissions found across %d course(s), %d page(s); ensure CANVAS_API_TOKEN is a teacher/admin token and raise --max-scan-pages for large courses", len(courses), totalPages)
-				rows = nil
-			}
+			view, rows := analyzeAtRisk(atRiskInput{
+				Scope:               scope,
+				Since:               flagSince,
+				Courses:             courses,
+				SubmissionsByCourse: submissionsByCourse,
+				NamesByCourse:       namesByCourse,
+				Cutoff:              cutoff,
+				Anonymize:           anonymize,
+				ScannedPages:        totalPages,
+				Failures:            failures,
+			})
 			if len(failures) > 0 {
 				fmt.Fprintf(cmd.ErrOrStderr(), "warning: %d course fetch(es) failed; results cover the remaining %d course(s)\n", len(failures), len(courses)-len(failures))
 			}
