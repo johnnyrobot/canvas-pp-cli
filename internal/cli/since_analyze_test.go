@@ -105,6 +105,61 @@ func TestAnalyzeSince_ChangesAreChronological(t *testing.T) {
 	}
 }
 
+// TestLessSinceChange_TotalOrdering pins the comparator directly, including
+// the cases sort.Slice cannot resolve on its own. It is not stable, so equal
+// elements would otherwise reshuffle between runs.
+func TestLessSinceChange_TotalOrdering(t *testing.T) {
+	at := func(ts string) sinceChange { return sinceChange{At: ts, CourseID: "1", Kind: "submission"} }
+
+	cases := []struct {
+		name string
+		a, b sinceChange
+		want bool
+	}{
+		{"older first", at("2026-08-01T00:00:00Z"), at("2026-08-02T00:00:00Z"), true},
+		{"newer not first", at("2026-08-02T00:00:00Z"), at("2026-08-01T00:00:00Z"), false},
+		{"missing timestamp sorts last", at("2026-08-01T00:00:00Z"), at(""), true},
+		{"missing timestamp not first", at(""), at("2026-08-01T00:00:00Z"), false},
+		{"both missing, tie broken by course",
+			sinceChange{At: "", CourseID: "1"}, sinceChange{At: "", CourseID: "2"}, true},
+		{"same instant, tie broken by course",
+			sinceChange{At: "t", CourseID: "1"}, sinceChange{At: "t", CourseID: "2"}, true},
+		{"same instant and course, tie broken by kind",
+			sinceChange{At: "t", CourseID: "1", Kind: "announcement"},
+			sinceChange{At: "t", CourseID: "1", Kind: "submission"}, true},
+		{"fully identical, neither precedes",
+			sinceChange{At: "t", CourseID: "1", Kind: "submission", What: "x"},
+			sinceChange{At: "t", CourseID: "1", Kind: "submission", What: "x"}, false},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			if got := lessSinceChange(tc.a, tc.b); got != tc.want {
+				t.Errorf("lessSinceChange = %v, want %v", got, tc.want)
+			}
+		})
+	}
+}
+
+// TestAnalyzeSince_UndatedChangesSortLast keeps an entry with a missing
+// timestamp from leading the digest.
+func TestAnalyzeSince_UndatedChangesSortLast(t *testing.T) {
+	undated := `{"title": "No date", "posted_at": ""}`
+	view, _ := analyzeSince(sinceInput{
+		Cutoff:  sinceCutoff,
+		Courses: []courseRef{{ID: "1"}},
+		AnnouncementsByCourse: map[string][]canvasObj{
+			"1": objs(t, undated, announcementAt("Dated", "2026-08-03T12:00:00Z")),
+		},
+	})
+
+	if view.Changes[0].What != "Dated" {
+		t.Errorf("digest leads with %q; an undated entry must not sort first", view.Changes[0].What)
+	}
+	if view.Changes[1].What != "No date" {
+		t.Errorf("undated entry should sort last, got %+v", changeTimes(view.Changes))
+	}
+}
+
 // TestAnalyzeSince_CutoffFiltersSubmissionsAndEnrollments covers the
 // client-side window check. Announcements are deliberately exempt: the API
 // filters them by start_date.

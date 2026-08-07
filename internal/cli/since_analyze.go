@@ -8,8 +8,33 @@ package cli
 
 import (
 	"fmt"
+	"sort"
 	"time"
 )
+
+// lessSinceChange orders two digest entries oldest-first.
+//
+// Timestamps arrive as RFC3339 strings, which sort lexicographically in the
+// same order they sort chronologically, so the raw strings compare correctly
+// without parsing. Entries whose timestamp is missing or malformed sort last
+// rather than jumping to the top, and ties fall back to course then kind then
+// subject so the order is total — sort.Slice is not stable, and a digest that
+// reshuffles between runs cannot be diffed.
+func lessSinceChange(a, b sinceChange) bool {
+	if (a.At == "") != (b.At == "") {
+		return b.At == "" // a real timestamp precedes a missing one
+	}
+	if a.At != b.At {
+		return a.At < b.At
+	}
+	if a.CourseID != b.CourseID {
+		return a.CourseID < b.CourseID
+	}
+	if a.Kind != b.Kind {
+		return a.Kind < b.Kind
+	}
+	return a.What < b.What
+}
 
 // sinceInput is everything analyzeSince needs. The caller fetches three
 // streams per course — submissions, announcements and enrollments — plus a
@@ -97,6 +122,7 @@ func analyzeSince(in sinceInput) (sinceView, []map[string]any) {
 	if changes == nil {
 		changes = []sinceChange{}
 	}
+	sort.Slice(changes, func(i, j int) bool { return lessSinceChange(changes[i], changes[j]) })
 
 	view := sinceView{
 		Window:           in.Window,
