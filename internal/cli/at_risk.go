@@ -182,10 +182,7 @@ func newNovelAtRiskCmd(flags *rootFlags) *cobra.Command {
 				students = append(students, *st)
 			}
 			sort.Slice(students, func(i, j int) bool {
-				if students[i].Total != students[j].Total {
-					return students[i].Total > students[j].Total
-				}
-				return students[i].UserID < students[j].UserID
+				return lessAtRisk(students[i], students[j])
 			})
 
 			scope := "course " + flagCourse
