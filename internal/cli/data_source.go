@@ -15,6 +15,7 @@ import (
 	"net/url"
 	"os"
 	"strings"
+	"sync"
 	"time"
 
 	"canvas-pp-cli/internal/client"
@@ -403,11 +404,37 @@ func writeMutationResponseToStore(ctx context.Context, resourceType string, data
 
 	db, err := store.OpenWithContext(ctx, defaultDBPath("canvas-pp-cli"))
 	if err != nil {
+		warnMirrorFailureOnce(err)
 		return
 	}
 	defer db.Close()
 
-	_, _, _ = db.UpsertBatch(resourceType, items)
+	if _, _, err := db.UpsertBatch(resourceType, items); err != nil {
+		warnMirrorFailureOnce(err)
+	}
+}
+
+// mirrorWarnOnce keeps the local-mirror warning to one line per process.
+// Mutating commands call writeMutationResponseToStore once per request, so a
+// persistently broken store would otherwise warn on every call in a loop.
+var mirrorWarnOnce sync.Once
+
+// warnMirrorFailureOnce reports that the local mirror could not be updated.
+//
+// Mirroring is best-effort: a mutation that reached Canvas succeeded whether
+// or not the local copy updated, so this must never fail the command. Silence
+// was the wrong other extreme — the error was discarded at both the open and
+// the upsert, so a corrupt, locked or unwritable store stayed broken
+// indefinitely with no signal anywhere, and later `--data-source local` reads
+// would quietly serve stale data.
+//
+// Goes to stderr so it cannot corrupt the JSON on stdout that agents parse.
+func warnMirrorFailureOnce(err error) {
+	mirrorWarnOnce.Do(func() {
+		fmt.Fprintf(os.Stderr,
+			"warning: local mirror not updated (%v); the request itself succeeded. Run 'canvas-pp-cli doctor' to check the store.\n",
+			err)
+	})
 }
 
 func mutationResponseEntityItems(resourceType string, data json.RawMessage, responsePath string) []json.RawMessage {
