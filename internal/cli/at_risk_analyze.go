@@ -9,6 +9,7 @@ package cli
 import (
 	"fmt"
 	"sort"
+	"strconv"
 	"time"
 )
 
@@ -36,14 +37,25 @@ type atRiskInput struct {
 
 // lessAtRisk orders two at-risk students for the ranked output: more concerns
 // first, ties broken by user ID.
-//
-// Extracted verbatim from the sort.Slice closure in at_risk.go so the ordering
-// rule can be exercised directly. Behaviour is unchanged by this extraction.
 func lessAtRisk(a, b atRiskStudent) bool {
 	if a.Total != b.Total {
 		return a.Total > b.Total
 	}
-	return a.UserID < b.UserID
+	return lessUserID(a.UserID, b.UserID)
+}
+
+// lessUserID orders two Canvas user IDs. Canvas IDs are numeric but arrive as
+// strings, so a plain string comparison ranks user 10 above user 9. Compare
+// numerically when both parse, and fall back to string order for SIS-style
+// identifiers and for numerically equal but textually different IDs, so the
+// ordering stays total and runs stay diffable.
+func lessUserID(a, b string) bool {
+	ai, aerr := strconv.ParseInt(a, 10, 64)
+	bi, berr := strconv.ParseInt(b, 10, 64)
+	if aerr == nil && berr == nil && ai != bi {
+		return ai < bi
+	}
+	return a < b
 }
 
 // atRiskTableRow projects a student down to the columns the human table

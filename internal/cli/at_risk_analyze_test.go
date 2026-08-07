@@ -78,3 +78,30 @@ func TestLessAtRisk_TieBreakFallsBackToString(t *testing.T) {
 		t.Errorf("fallback order = %v, want %v", got, want)
 	}
 }
+
+// TestLessUserID_TotalOrdering pins the comparator directly, including the
+// mixed numeric/non-numeric case and IDs that are numerically equal but
+// textually different. Ordering must be total, or sort.Slice leaves equal
+// elements in arbitrary order and successive runs stop being diffable.
+func TestLessUserID_TotalOrdering(t *testing.T) {
+	cases := []struct {
+		a, b string
+		want bool
+	}{
+		{"9", "10", true},         // the original bug: numeric, not lexicographic
+		{"10", "9", false},        //
+		{"2", "100", true},        //
+		{"sis:a", "sis:b", true},  // both non-numeric: string order
+		{"sis:b", "sis:a", false}, //
+		{"9", "sis:a", true},      // mixed: string order, deterministic
+		{"sis:a", "9", false},     //
+		{"007", "7", true},        // numerically equal, textually distinct
+		{"7", "007", false},       //
+		{"42", "42", false},       // identical: neither precedes the other
+	}
+	for _, tc := range cases {
+		if got := lessUserID(tc.a, tc.b); got != tc.want {
+			t.Errorf("lessUserID(%q, %q) = %v, want %v", tc.a, tc.b, got, tc.want)
+		}
+	}
+}
