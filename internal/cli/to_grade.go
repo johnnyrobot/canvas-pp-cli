@@ -8,7 +8,6 @@ package cli
 
 import (
 	"fmt"
-	"sort"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -103,12 +102,14 @@ func newNovelToGradeCmd(flags *rootFlags) *cobra.Command {
 				courses = courses[:maxCourses]
 			}
 
-			var items []toGradeItem
+			// Fetch each course's submissions and student names up front so the
+			// filtering and ordering run over data rather than over the network.
 			var failures []fetchFailure
 			totalPages := 0
-			now := time.Now()
+			submissionsByCourse := map[string][]canvasObj{}
+			namesByCourse := map[string]map[string]string{}
 			for _, course := range courses {
-				names := studentNameMap(ctx, c, course.ID, maxScanPages)
+				namesByCourse[course.ID] = studentNameMap(ctx, c, course.ID, maxScanPages)
 				subs, pages, serr := canvasFetchList(ctx, c,
 					"/api/v1/courses/"+course.ID+"/students/submissions",
 					map[string]string{"student_ids[]": "all", "include[]": "assignment"}, maxScanPages)
@@ -117,73 +118,25 @@ func newNovelToGradeCmd(flags *rootFlags) *cobra.Command {
 					failures = append(failures, fetchFailure{Scope: "course:" + course.ID, Error: serr.Error()})
 					continue
 				}
-				for _, s := range subs {
-					if !needsGrading(s) {
-						continue
-					}
-					it := toGradeItem{
-						CourseID:       course.ID,
-						AssignmentID:   s.str("assignment_id"),
-						AssignmentName: s.obj("assignment").str("name"),
-						UserID:         s.str("user_id"),
-						Student:        names[s.str("user_id")],
-						SubmittedAt:    s.str("submitted_at"),
-						SubmissionType: s.str("submission_type"),
-					}
-					if it.Student == "" {
-						it.Student = "user " + it.UserID
-					}
-					if pp, ok := s.obj("assignment").num("points_possible"); ok {
-						it.PointsPossible = &pp
-					}
-					if t, perr := time.Parse(time.RFC3339, it.SubmittedAt); perr == nil {
-						it.DaysWaiting = int(now.Sub(t).Hours() / 24)
-					}
-					if anonymize {
-						it.Student = anonLabel("student", it.UserID)
-					}
-					items = append(items, it)
-				}
-			}
-
-			sort.Slice(items, func(i, j int) bool {
-				if flagSort == "newest" {
-					return items[i].SubmittedAt > items[j].SubmittedAt
-				}
-				return items[i].SubmittedAt < items[j].SubmittedAt
-			})
-			if limit > 0 && len(items) > limit {
-				items = items[:limit]
-			}
-			if items == nil {
-				items = []toGradeItem{}
+				submissionsByCourse[course.ID] = subs
 			}
 
 			scope := "course " + flagCourse
 			if flagAll {
 				scope = "all my courses"
 			}
-			view := toGradeView{
-				Scope:          scope,
-				Sort:           flagSort,
-				CoursesScanned: len(courses),
-				ScannedPages:   totalPages,
-				Count:          len(items),
-				Anonymized:     anonymize,
-				FetchFailures:  failures,
-				Items:          items,
-			}
-			rows := make([]map[string]any, 0, len(items))
-			for _, it := range items {
-				rows = append(rows, map[string]any{
-					"course_id": it.CourseID, "assignment": it.AssignmentName,
-					"student": it.Student, "submitted_at": it.SubmittedAt, "days_waiting": it.DaysWaiting,
-				})
-			}
-			if len(items) == 0 {
-				view.Note = fmt.Sprintf("no ungraded submissions found across %d course(s), %d page(s); ensure CANVAS_API_TOKEN is a teacher/admin token and raise --max-scan-pages", len(courses), totalPages)
-				rows = nil
-			}
+			view, rows := analyzeToGrade(toGradeInput{
+				Scope:               scope,
+				Sort:                flagSort,
+				Courses:             courses,
+				SubmissionsByCourse: submissionsByCourse,
+				NamesByCourse:       namesByCourse,
+				Now:                 time.Now(),
+				Limit:               limit,
+				Anonymize:           anonymize,
+				ScannedPages:        totalPages,
+				Failures:            failures,
+			})
 			if len(failures) > 0 {
 				fmt.Fprintf(cmd.ErrOrStderr(), "warning: %d course fetch(es) failed; queue covers the remaining %d course(s)\n", len(failures), len(courses)-len(failures))
 			}
