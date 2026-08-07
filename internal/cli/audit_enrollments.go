@@ -103,34 +103,17 @@ func newNovelAuditEnrollmentsCmd(flags *rootFlags) *cobra.Command {
 				courses = courses[:maxCourses]
 			}
 
-			ghosts := []ghostCourse{}
-			orphans := []orphanStudent{}
+			// Fetch each course's active student enrollments up front so the
+			// anomaly checks run over data rather than over the network.
 			var failures []fetchFailure
 			totalPages := pages
-			checks := []string{}
-			if flagGhostTeachers {
-				checks = append(checks, "ghost-teachers")
-			}
+			enrollmentsByCourse := map[string][]canvasObj{}
 			if flagOrphans {
-				checks = append(checks, "orphans")
-			}
-
-			for _, course := range courses {
-				courseID := course.str("id")
-				if courseID == "" {
-					continue
-				}
-				if flagGhostTeachers {
-					teachers := course.list("teachers")
-					if len(teachers) == 0 {
-						ghosts = append(ghosts, ghostCourse{
-							CourseID: courseID,
-							Name:     course.str("name"),
-							State:    course.str("workflow_state"),
-						})
+				for _, course := range courses {
+					courseID := course.str("id")
+					if courseID == "" {
+						continue
 					}
-				}
-				if flagOrphans {
 					enr, p, e := canvasFetchList(ctx, c,
 						"/api/v1/courses/"+courseID+"/enrollments",
 						map[string]string{"type[]": "StudentEnrollment", "state[]": "active", "include[]": "user"}, maxScanPages)
@@ -139,44 +122,24 @@ func newNovelAuditEnrollmentsCmd(flags *rootFlags) *cobra.Command {
 						failures = append(failures, fetchFailure{Scope: "course:" + courseID, Error: e.Error()})
 						continue
 					}
-					for _, en := range enr {
-						if en.present("last_activity_at") {
-							continue
-						}
-						name := en.obj("user").str("name")
-						if anonymize {
-							name = anonLabel("student", en.str("user_id"))
-						}
-						orphans = append(orphans, orphanStudent{
-							CourseID:        courseID,
-							UserID:          en.str("user_id"),
-							Name:            name,
-							EnrollmentState: en.str("enrollment_state"),
-							Reason:          "active enrollment, never accessed the course (no last_activity_at)",
-						})
-					}
+					enrollmentsByCourse[courseID] = enr
 				}
 			}
 
-			view := auditView{
+			view, rows := analyzeAuditEnrollments(auditInput{
 				Account:             flagAccount,
-				Checks:              checks,
-				CoursesScanned:      len(courses),
+				Courses:             courses,
+				EnrollmentsByCourse: enrollmentsByCourse,
+				CheckGhostTeachers:  flagGhostTeachers,
+				CheckOrphans:        flagOrphans,
+				Anonymize:           anonymize,
 				ScannedPages:        totalPages,
-				Anonymized:          anonymize,
-				GhostTeacherCourses: ghosts,
-				OrphanStudents:      orphans,
-				FetchFailures:       failures,
-			}
-			if len(courses) == 0 {
-				view.Note = fmt.Sprintf("no courses returned for account %s; confirm the account id and that CANVAS_API_TOKEN has admin scope", flagAccount)
-			} else if len(ghosts) == 0 && len(orphans) == 0 {
-				view.Note = fmt.Sprintf("no anomalies found across %d course(s)", len(courses))
-			}
+				Failures:            failures,
+			})
 			if len(failures) > 0 {
 				fmt.Fprintf(cmd.ErrOrStderr(), "warning: %d course enrollment fetch(es) failed; audit covers the remaining courses\n", len(failures))
 			}
-			return emitNovel(cmd, flags, view, nil)
+			return emitNovel(cmd, flags, view, rows)
 		},
 	}
 	cmd.Flags().StringVar(&flagAccount, "account", "", "Account ID to audit (required)")
