@@ -103,14 +103,18 @@ func newNovelSinceCmd(flags *rootFlags) *cobra.Command {
 				courses = courses[:maxCourses]
 			}
 
-			var changes []sinceChange
+			// Fetch all three activity streams per course up front so the merge
+			// runs over data rather than over the network. A failed stream still
+			// contributes whatever it returned, matching the previous behaviour.
 			var failures []fetchFailure
 			totalPages := 0
-			nSub, nAnn, nEnr := 0, 0, 0
+			submissionsByCourse := map[string][]canvasObj{}
+			announcementsByCourse := map[string][]canvasObj{}
+			enrollmentsByCourse := map[string][]canvasObj{}
+			namesByCourse := map[string]map[string]string{}
 			for _, course := range courses {
-				names := studentNameMap(ctx, c, course.ID, maxScanPages)
+				namesByCourse[course.ID] = studentNameMap(ctx, c, course.ID, maxScanPages)
 
-				// New submissions since cutoff.
 				subs, p1, e1 := canvasFetchList(ctx, c,
 					"/api/v1/courses/"+course.ID+"/students/submissions",
 					map[string]string{"student_ids[]": "all", "submitted_since": cutoffStr, "include[]": "assignment"}, maxScanPages)
@@ -118,83 +122,38 @@ func newNovelSinceCmd(flags *rootFlags) *cobra.Command {
 				if e1 != nil {
 					failures = append(failures, fetchFailure{Scope: "submissions:" + course.ID, Error: e1.Error()})
 				}
-				for _, s := range subs {
-					at := s.str("submitted_at")
-					if !afterCutoff(at, cutoff) {
-						continue
-					}
-					who := names[s.str("user_id")]
-					if anonymize {
-						who = anonLabel("student", s.str("user_id"))
-					}
-					changes = append(changes, sinceChange{
-						CourseID: course.ID, Kind: "submission",
-						Who: who, What: s.obj("assignment").str("name"), At: at,
-					})
-					nSub++
-				}
+				submissionsByCourse[course.ID] = subs
 
-				// New announcements.
 				anns, p2, e2 := canvasFetchList(ctx, c, "/api/v1/announcements",
 					map[string]string{"context_codes[]": "course_" + course.ID, "start_date": cutoffStr, "active_only": "true"}, 2)
 				totalPages += p2
 				if e2 != nil {
 					failures = append(failures, fetchFailure{Scope: "announcements:" + course.ID, Error: e2.Error()})
 				}
-				for _, a := range anns {
-					at := a.str("posted_at")
-					changes = append(changes, sinceChange{
-						CourseID: course.ID, Kind: "announcement",
-						What: a.str("title"), At: at,
-					})
-					nAnn++
-				}
+				announcementsByCourse[course.ID] = anns
 
-				// New enrollments.
 				enr, p3, e3 := canvasFetchList(ctx, c, "/api/v1/courses/"+course.ID+"/enrollments", nil, maxScanPages)
 				totalPages += p3
 				if e3 != nil {
 					failures = append(failures, fetchFailure{Scope: "enrollments:" + course.ID, Error: e3.Error()})
 				}
-				for _, e := range enr {
-					at := e.str("created_at")
-					if !afterCutoff(at, cutoff) {
-						continue
-					}
-					who := e.obj("user").str("name")
-					if who == "" {
-						who = names[e.str("user_id")]
-					}
-					if anonymize {
-						who = anonLabel("user", e.str("user_id"))
-					}
-					changes = append(changes, sinceChange{
-						CourseID: course.ID, Kind: "enrollment",
-						Who: who, What: e.str("type"), At: at,
-					})
-					nEnr++
-				}
-			}
-			if changes == nil {
-				changes = []sinceChange{}
+				enrollmentsByCourse[course.ID] = enr
 			}
 
-			view := sinceView{
-				Window:           args[0],
-				Cutoff:           cutoffStr,
-				CoursesScanned:   len(courses),
-				ScannedPages:     totalPages,
-				NewSubmissions:   nSub,
-				NewAnnouncements: nAnn,
-				NewEnrollments:   nEnr,
-				Anonymized:       anonymize,
-				FetchFailures:    failures,
-				Changes:          changes,
-			}
-			if len(changes) == 0 {
-				view.Note = fmt.Sprintf("no activity in the last %s across %d course(s); set CANVAS_API_TOKEN/CANVAS_BASE_URL or widen the window", args[0], len(courses))
-			}
-			return emitNovel(cmd, flags, view, nil)
+			view, rows := analyzeSince(sinceInput{
+				Window:                args[0],
+				Cutoff:                cutoff,
+				CutoffStr:             cutoffStr,
+				Courses:               courses,
+				SubmissionsByCourse:   submissionsByCourse,
+				AnnouncementsByCourse: announcementsByCourse,
+				EnrollmentsByCourse:   enrollmentsByCourse,
+				NamesByCourse:         namesByCourse,
+				Anonymize:             anonymize,
+				ScannedPages:          totalPages,
+				Failures:              failures,
+			})
+			return emitNovel(cmd, flags, view, rows)
 		},
 	}
 	cmd.Flags().StringVar(&flagCourse, "course", "", "Course ID (omit to scan every course you teach)")
