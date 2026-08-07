@@ -1,3 +1,8 @@
+# Schema version for golangci-lint v2. Without it, v2 refuses to load this
+# file at all ("unsupported version of the configuration") and `make lint`
+# fails before linting anything.
+version: "2"
+
 linters:
   enable:
     - errorlint
