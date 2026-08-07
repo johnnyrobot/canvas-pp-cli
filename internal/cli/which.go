@@ -46,16 +46,17 @@ type whichMatch struct {
 }
 
 // rankWhich returns up to `limit` best matches for `query` against the
-// index, sorted by descending score. Score breakdown:
+// index, strongest first. Each meaningful query token scores once, by the
+// strongest field it appears in:
 //
-//	+3  exact token match on the command's leaf or full path
-//	+2  substring match on the command (any part)
-//	+2  substring match on the description
-//	+1  group tag contains the query as a word
+//	+3  token appears in the command path
+//	+2  token appears in the description
+//	+1  token appears in why-it-matters, or in the group tag
 //
-// Ties break on declaration order in the index. An empty query returns
-// every entry at score 0 in declaration order - this is the "list all"
-// behavior the skill documents for broad agent discovery.
+// plus +2 each when the command or description contains the whole query
+// verbatim. Ties break on the shorter command path, then declaration order.
+// An empty query returns every entry at score 0 in declaration order - this
+// is the "list all" behavior the skill documents for broad agent discovery.
 func rankWhich(index []whichEntry, query string, limit int) []whichMatch {
 	if limit <= 0 {
 		limit = 3
@@ -78,7 +79,7 @@ func rankWhich(index []whichEntry, query string, limit int) []whichMatch {
 	}
 
 	sort.SliceStable(scored, func(i, j int) bool {
-		return scored[i].Score > scored[j].Score
+		return whichBetterMatch(scored[i], scored[j])
 	})
 	// Drop zero-score matches when the query was non-empty; agents
 	// branching on exit code rely on "no match" meaning no confidence.
@@ -94,40 +95,219 @@ func rankWhich(index []whichEntry, query string, limit int) []whichMatch {
 	return filtered
 }
 
-func whichScoreEntry(e whichEntry, query string, qTokens []string) int {
-	score := 0
-	cmd := strings.ToLower(e.Command)
-	cmdTokens := strings.Fields(cmd)
-	desc := strings.ToLower(e.Description)
-	group := strings.ToLower(e.Group)
+// whichTokens splits text into lowercase word tokens on any non-alphanumeric
+// boundary.
+//
+// strings.Fields is not enough: it splits on whitespace only, so "at-risk" is
+// a single token and no query token can ever match it. Every hyphenated
+// command in this CLI was unreachable by token match as a result.
+func whichTokens(s string) []string {
+	return strings.FieldsFunc(strings.ToLower(s), func(r rune) bool {
+		alphanumeric := (r >= 'a' && r <= 'z') || (r >= '0' && r <= '9')
+		return !alphanumeric
+	})
+}
 
-	// Exact token match on the command path (any token).
-	for _, qt := range qTokens {
-		for _, ct := range cmdTokens {
-			if qt == ct {
-				score += 3
-				break
-			}
+// whichStopwords are ignored when matching prose fields. They carry no
+// discriminating signal in a description and would otherwise let any query
+// containing "the" score against every entry.
+//
+// Deliberately not applied to command matching: "at" is meaningful in
+// "at-risk", and command tokens are specific enough not to need filtering.
+var whichStopwords = map[string]bool{
+	"a": true, "an": true, "and": true, "any": true, "are": true, "as": true,
+	"at": true, "be": true, "by": true, "can": true, "do": true, "for": true,
+	"from": true, "how": true, "i": true, "in": true, "is": true, "it": true,
+	"me": true, "my": true, "of": true, "on": true, "or": true, "our": true,
+	"that": true, "the": true, "this": true, "to": true, "what": true,
+	"when": true, "which": true, "who": true, "with": true,
+}
+
+// whichStem reduces a token to a crude singular form so a natural-language
+// query matches the command tree's naming.
+//
+// Canvas resources are pluralised ("assignments", "quizzes", "courses") while
+// people ask in the singular ("create an assignment", "delete a quiz"). Without
+// this, none of those queries reach their command. This is deliberately not a
+// real stemmer — it handles the plural forms that appear in this API's nouns
+// and nothing else.
+// The rules only have to be self-consistent, not linguistically right: both
+// sides of a comparison are stemmed, so all that matters is that a plural and
+// its singular land on the same string. "courses" must reach "course", not
+// "cours", because "course" itself stems to "course".
+func whichStem(t string) string {
+	switch {
+	case len(t) > 4 && strings.HasSuffix(t, "zzes"):
+		return t[:len(t)-3] // quizzes -> quiz
+	case len(t) > 4 && strings.HasSuffix(t, "sses"):
+		return t[:len(t)-2] // classes -> class
+	case len(t) > 4 && (strings.HasSuffix(t, "ches") || strings.HasSuffix(t, "shes") ||
+		strings.HasSuffix(t, "xes")):
+		return t[:len(t)-2] // batches -> batch, boxes -> box
+	case len(t) > 4 && strings.HasSuffix(t, "ies"):
+		return t[:len(t)-3] + "y" // policies -> policy
+	case len(t) > 3 && strings.HasSuffix(t, "s") && !strings.HasSuffix(t, "ss"):
+		return t[:len(t)-1] // assignments -> assignment, courses -> course
+	}
+	return t
+}
+
+// whichBetterMatch orders two scored matches: higher score first, then the
+// shorter command path, then declaration order.
+//
+// The path-length tiebreak is load-bearing. "create an assignment" scores
+// identically against `assignments create` and `assignment-groups create`,
+// and "delete a quiz" against `quizzes delete-quizzes` and
+// `quiz-question-groups delete-groups`. When two commands match a query
+// equally well, the less specialised one is the better answer; without this
+// the winner is whichever sorted first alphabetically.
+func whichBetterMatch(a, b whichMatch) bool {
+	if a.Score != b.Score {
+		return a.Score > b.Score
+	}
+	return len(whichTokens(a.Entry.Command)) < len(whichTokens(b.Entry.Command))
+}
+
+// containsToken reports whether tokens holds a match for want, comparing
+// singular stems so "assignment" finds "assignments".
+func containsToken(tokens []string, want string) bool {
+	stem := whichStem(want)
+	for _, t := range tokens {
+		if t == want || whichStem(t) == stem {
+			return true
 		}
 	}
-	// Substring match on the full command (covers hyphenated leaves).
-	if strings.Contains(cmd, query) {
-		score += 2
+	return false
+}
+
+// whichScoreEntry scores one entry against a query by query-token coverage:
+// each meaningful query token contributes once, according to the strongest
+// field it appears in.
+//
+// Scoring per-token rather than per-field is what keeps a single incidental
+// word from dominating. Summing across fields let "term grade distribution"
+// pick to-grade — one +3 for the word "grade" in the command name — over
+// standings, whose description matches all three terms.
+func whichScoreEntry(e whichEntry, query string, qTokens []string) int {
+	cmdTokens := whichTokens(e.Command)
+	descTokens := whichTokens(e.Description)
+	whyTokens := whichTokens(e.WhyItMatters)
+	groupTokens := whichTokens(e.Group)
+
+	score := 0
+	for _, qt := range qTokens {
+		if whichStopwords[qt] {
+			continue
+		}
+		switch {
+		case containsToken(cmdTokens, qt):
+			score += 3
+		case containsToken(descTokens, qt):
+			score += 2
+		case containsToken(whyTokens, qt):
+			// WhyItMatters is written to explain when to reach for a
+			// capability, so it carries the phrasing people actually use.
+			// Scoring it is what lets "who is falling behind" find at-risk.
+			score++
+		case containsToken(groupTokens, qt):
+			score++
+		}
 	}
-	// Substring match on the description.
-	if strings.Contains(desc, query) {
-		score += 2
-	}
-	// Group tag match.
-	if group != "" {
-		for _, qt := range qTokens {
-			if strings.Contains(group, qt) {
-				score += 1
-				break
-			}
+
+	// Whole-query phrase bonus: an entry containing the query verbatim is the
+	// strongest signal available. Multi-token queries only — for a single
+	// token this is a substring test, which would score "distribu" against
+	// "distribution" and undo the whole-token rule above.
+	if len(qTokens) > 1 {
+		q := strings.ToLower(query)
+		if strings.Contains(strings.ToLower(e.Command), q) {
+			score += 2
+		}
+		if strings.Contains(strings.ToLower(e.Description), q) {
+			score += 2
 		}
 	}
 	return score
+}
+
+// whichTreeCandidates bounds how many command-tree matches are carried into
+// the merge. The tree holds ~1,000 commands; only the strongest few can
+// realistically outrank a curated capability.
+const whichTreeCandidates = 25
+
+// resolveWhich ranks a query against the curated index and the live command
+// tree together, and is the whole of `which`'s behaviour. The command wraps
+// it with flag parsing and rendering only.
+func resolveWhich(root *cobra.Command, query string, limit int) []whichMatch {
+	if strings.TrimSpace(query) == "" {
+		return rankWhichAll(whichIndex)
+	}
+	curated := rankWhich(whichIndex, query, len(whichIndex))
+	tree := rankWhich(whichTreeEntries(root), query, whichTreeCandidates)
+	return mergeWhichMatches(curated, tree, limit)
+}
+
+// whichCuratedBoost favours a curated index entry over a command-tree entry
+// that scored the same. The index is hand-written to describe what this CLI is
+// for, so on a tie it is the better answer.
+const whichCuratedBoost = 1
+
+// mergeWhichMatches combines curated and command-tree matches into one ranked
+// list. Curated entries carry whichCuratedBoost, and a command appearing in
+// both is reported once, from the index.
+func mergeWhichMatches(curated, tree []whichMatch, limit int) []whichMatch {
+	if limit <= 0 {
+		limit = 3
+	}
+	seen := make(map[string]bool, len(curated))
+	out := make([]whichMatch, 0, len(curated)+len(tree))
+	for _, m := range curated {
+		m.Score += whichCuratedBoost
+		seen[m.Entry.Command] = true
+		out = append(out, m)
+	}
+	for _, m := range tree {
+		if !seen[m.Entry.Command] {
+			out = append(out, m)
+		}
+	}
+	sort.SliceStable(out, func(i, j int) bool { return whichBetterMatch(out[i], out[j]) })
+	if len(out) > limit {
+		out = out[:limit]
+	}
+	return out
+}
+
+// whichTreeEntries projects the live Cobra command tree into index entries so
+// a query that misses the curated index can still resolve to a real command.
+// Without this, `which "create an assignment"` returns nothing even though
+// `assignments create` exists.
+func whichTreeEntries(root *cobra.Command) []whichEntry {
+	var out []whichEntry
+	var walk func(c *cobra.Command, path []string)
+	walk = func(c *cobra.Command, path []string) {
+		for _, sub := range c.Commands() {
+			if sub.Name() == "help" || sub.Name() == "completion" {
+				continue
+			}
+			p := append(append([]string{}, path...), sub.Name())
+			// Recurse into hidden commands but do not offer them as matches.
+			// Every per-resource area group ("assignments", "courses", …) is
+			// Hidden to keep root --help readable, so skipping their subtrees
+			// would hide the entire endpoint surface — which is exactly the
+			// set this fallback exists to reach.
+			if sub.Runnable() && !sub.Hidden {
+				out = append(out, whichEntry{
+					Command:     strings.Join(p, " "),
+					Description: sub.Short,
+					Group:       "Endpoint commands",
+				})
+			}
+			walk(sub, p)
+		}
+	}
+	walk(root, nil)
+	return out
 }
 
 func newWhichCmd(flags *rootFlags) *cobra.Command {
@@ -153,12 +333,13 @@ Exit codes:
 				return usageErr(fmt.Errorf("this CLI has no curated capability index; run '--help' to see every command"))
 			}
 			query := strings.Join(args, " ")
-			matches := rankWhich(whichIndex, query, limit)
 
 			// Empty query returns the whole index at score 0 (listing mode).
 			if strings.TrimSpace(query) == "" {
 				return renderWhich(cmd, flags, rankWhichAll(whichIndex))
 			}
+
+			matches := resolveWhich(cmd.Root(), query, limit)
 
 			if len(matches) == 0 {
 				// Under --json, return an empty matches envelope at exit 0
