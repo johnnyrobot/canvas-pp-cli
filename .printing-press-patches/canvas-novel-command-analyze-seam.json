@@ -1,0 +1,32 @@
+{
+  "schema_version": 2,
+  "id": "canvas-novel-command-analyze-seam",
+  "applied_at": "2026-08-07",
+  "base_run_id": "20260622-151431-06e611a5",
+  "base_printing_press_version": "4.25.0",
+  "summary": "refactor(novel): split roster/audit-enrollments/at-risk into fetch -> analyze -> render; fix at-risk tie-break ranking",
+  "reason": "The novel cross-resource commands fused fetching, joining, ranking and rendering into single 103-148 line cobra RunE closures. The join and ranking rules — the reason these commands exist, since no single Canvas endpoint returns their output — had no interface to test through, so the generated per-command tests could only assert that --help renders and --dry-run returns nil. That test shape hid a live defect: at-risk broke ties between students on a string user ID, ranking user 10 above user 9. Each command now exposes a pure analyze function over already-fetched data, making the rules testable without a Canvas token, and the ranking bug is fixed.",
+  "files": [
+    "internal/cli/roster.go",
+    "internal/cli/roster_analyze.go",
+    "internal/cli/roster_analyze_test.go",
+    "internal/cli/audit_enrollments.go",
+    "internal/cli/audit_enrollments_analyze.go",
+    "internal/cli/audit_enrollments_analyze_test.go",
+    "internal/cli/at_risk.go",
+    "internal/cli/at_risk_analyze.go",
+    "internal/cli/at_risk_analyze_test.go",
+    "internal/cli/at_risk_aggregate_test.go"
+  ],
+  "validated_outcome": "go test ./... green across all 6 packages; go vet and gofmt clean; roster, audit-enrollments and at-risk verified under --help and --dry-run --agent. 36 tests added, none requiring a Canvas token; each rule mutation-checked (12 mutations, 12 caught). golangci-lint was not available in the environment, so the lint gate is unverified.",
+  "deferred_to_upstream": [
+    {
+      "feature": "Emit hand-authored transcendence commands as fetch -> analyze -> render rather than one RunE closure: a pure analyze(<command>Input) (<command>View, []map[string]any) alongside the existing shared fetch (canvasFetchList) and render (emitNovel) helpers.",
+      "reason": "Machine-level, not Canvas-specific. Every printed CLI's novel commands share this shape, so every one of them inherits the same untestable middle. The generated per-command smoke tests are stamped DO NOT EDIT and short-circuit at the dryRunOK guard, which is the first statement in RunE, so they cannot reach the join or ranking logic in any printed CLI. The durable fix is a template change plus a generated analyze-test stub that exercises the rule rather than the wiring; this local patch should be superseded by it."
+    },
+    {
+      "feature": "Generated novel-command test files should not be stamped DO NOT EDIT while inviting authors to fill in real cases.",
+      "reason": "at_risk_test.go and its five siblings carry a DO NOT EDIT header alongside the comment 'Always runs — do not delete this test when filling in real cases', which asks for edits to a file a reprint overwrites. Real rule tests had to go in separate hand-authored files instead."
+    }
+  ]
+}
