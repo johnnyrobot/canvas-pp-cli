@@ -5,7 +5,6 @@ package mcp
 
 import (
 	"context"
-	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"math"
@@ -76,12 +75,6 @@ func RegisterTools(s *server.MCPServer) {
 	cobratree.RegisterAll(s, cli.RootCmd(), cobratree.SiblingCLIPath)
 }
 
-type mcpParamBinding struct {
-	PublicName string
-	WireName   string
-	Location   string
-}
-
 func formatMCPParamValue(v any) string {
 	switch tv := v.(type) {
 	case string:
@@ -115,168 +108,6 @@ func formatMCPParamValue(v any) string {
 			return string(b)
 		}
 		return fmt.Sprintf("%v", v)
-	}
-}
-
-// makeAPIHandler creates a generic MCP tool handler for an API endpoint.
-func makeAPIHandler(method, pathTemplate string, readOnly bool, binaryResponse bool, headerOverrides map[string]string, bindings []mcpParamBinding, positionalParams []string) server.ToolHandlerFunc {
-	return func(ctx context.Context, req mcplib.CallToolRequest) (*mcplib.CallToolResult, error) {
-		c, err := newMCPClient()
-		if err != nil {
-			return mcplib.NewToolResultError(err.Error()), nil
-		}
-
-		// mcp-go v0.47+ made CallToolParams.Arguments an `any` to support
-		// non-map payloads; GetArguments() returns the map[string]any shape
-		// we rely on here (or an empty map when the payload is something else).
-		args := req.GetArguments()
-
-		// positionalParams mixes real URL path params with CLI positional
-		// args that map to query params (e.g. `search <query>` -> ?query=);
-		// the placeholder check below disambiguates them at runtime.
-		path := pathTemplate
-		knownArgs := make(map[string]bool, len(bindings))
-		pathParams := make(map[string]bool, len(positionalParams))
-		params := make(map[string]string)
-		bodyArgs := make(map[string]any)
-		var headers map[string]string
-		if len(headerOverrides) > 0 {
-			headers = make(map[string]string, len(headerOverrides)+1)
-			for k, v := range headerOverrides {
-				headers[k] = v
-			}
-		}
-		if binaryResponse {
-			if headers == nil {
-				headers = map[string]string{}
-			}
-			headers[client.BinaryResponseHeader] = "true"
-		}
-		for _, binding := range bindings {
-			knownArgs[binding.PublicName] = true
-			v, ok := args[binding.PublicName]
-			if !ok {
-				continue
-			}
-			switch binding.Location {
-			case "path":
-				placeholder := "{" + binding.WireName + "}"
-				pathParams[binding.PublicName] = true
-				path = strings.Replace(path, placeholder, formatMCPParamValue(v), 1)
-			case "body":
-				bodyArgs[binding.WireName] = v
-			default:
-				params[binding.WireName] = formatMCPParamValue(v)
-			}
-		}
-		for _, p := range positionalParams {
-			placeholder := "{" + p + "}"
-			if !strings.Contains(pathTemplate, placeholder) {
-				continue
-			}
-			pathParams[p] = true
-			if v, ok := args[p]; ok {
-				path = strings.Replace(path, placeholder, formatMCPParamValue(v), 1)
-			}
-		}
-
-		for k, v := range args {
-			if pathParams[k] || knownArgs[k] {
-				continue
-			}
-			switch method {
-			case "POST", "PUT", "PATCH":
-				bodyArgs[k] = v
-			default:
-				params[k] = formatMCPParamValue(v)
-			}
-		}
-
-		var data json.RawMessage
-		switch method {
-		case "GET":
-			if len(headers) > 0 {
-				data, err = c.GetWithHeaders(ctx, path, params, headers)
-				break
-			}
-			data, err = c.Get(ctx, path, params)
-		case "POST":
-			if len(headers) > 0 {
-				if readOnly {
-					data, _, err = c.PostQueryWithParamsAndHeaders(ctx, path, params, bodyArgs, headers)
-				} else {
-					data, _, err = c.PostWithParamsAndHeaders(ctx, path, params, bodyArgs, headers)
-				}
-				break
-			}
-			if readOnly {
-				data, _, err = c.PostQueryWithParams(ctx, path, params, bodyArgs)
-			} else {
-				data, _, err = c.PostWithParams(ctx, path, params, bodyArgs)
-			}
-		case "PUT":
-			if len(headers) > 0 {
-				data, _, err = c.PutWithParamsAndHeaders(ctx, path, params, bodyArgs, headers)
-				break
-			}
-			data, _, err = c.PutWithParams(ctx, path, params, bodyArgs)
-		case "PATCH":
-			if len(headers) > 0 {
-				data, _, err = c.PatchWithParamsAndHeaders(ctx, path, params, bodyArgs, headers)
-				break
-			}
-			data, _, err = c.PatchWithParams(ctx, path, params, bodyArgs)
-		case "DELETE":
-			if len(headers) > 0 {
-				data, _, err = c.DeleteWithParamsAndHeaders(ctx, path, params, headers)
-				break
-			}
-			data, _, err = c.DeleteWithParams(ctx, path, params)
-		default:
-			return mcplib.NewToolResultError("unsupported method: " + method), nil
-		}
-
-		if err != nil {
-			msg := err.Error()
-			switch {
-			case strings.Contains(msg, "HTTP 409"):
-				return mcplib.NewToolResultText("already exists (no-op)"), nil
-			case strings.Contains(msg, "HTTP 400") && cliutil.LooksLikeAuthError(msg):
-				return mcplib.NewToolResultError("authentication error: " + cliutil.SanitizeErrorBody(msg) +
-					"\nhint: the API rejected the request — this usually means auth is missing or invalid." +
-					"\n      Set credentials with: export CANVAS_API_TOKEN=\"your-token-here\" CANVAS_ACCESS_TOKEN=\"your-token-here\"" +
-					"\n      Run 'canvas-pp-cli doctor' to check auth status."), nil
-			case strings.Contains(msg, "HTTP 401"):
-				return mcplib.NewToolResultError("authentication failed: " + cliutil.SanitizeErrorBody(msg) +
-					"\nhint: check your token." +
-					"\n      Set credentials with: export CANVAS_API_TOKEN=\"your-token-here\" CANVAS_ACCESS_TOKEN=\"your-token-here\"" +
-					"\n      Run 'canvas-pp-cli doctor' to check auth status."), nil
-			case strings.Contains(msg, "HTTP 403"):
-				return mcplib.NewToolResultError("permission denied: " + cliutil.SanitizeErrorBody(msg) +
-					"\nhint: your credentials are valid but lack access to this resource. Check that they have the required permissions and match the API's expected auth scheme." +
-					"\n      Set credentials with: export CANVAS_API_TOKEN=\"your-token-here\" CANVAS_ACCESS_TOKEN=\"your-token-here\"" +
-					"\n      Run 'canvas-pp-cli doctor' to check auth status."), nil
-			case strings.Contains(msg, "HTTP 404"):
-				if method == "DELETE" {
-					return mcplib.NewToolResultText("already deleted (no-op)"), nil
-				}
-				return mcplib.NewToolResultError("not found: " + msg), nil
-			case strings.Contains(msg, "HTTP 429"):
-				return mcplib.NewToolResultError("rate limited: " + msg), nil
-			default:
-				return mcplib.NewToolResultError(msg), nil
-			}
-		}
-
-		if binaryResponse {
-			out, _ := json.Marshal(map[string]any{
-				"content_encoding": "base64",
-				"data_base64":      base64.StdEncoding.EncodeToString(data),
-				"byte_count":       len(data),
-			})
-			return mcplib.NewToolResultText(string(out)), nil
-		}
-		return mcpToolResultText(method, data), nil
 	}
 }
 

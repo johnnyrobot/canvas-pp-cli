@@ -235,12 +235,6 @@ func (c *Config) AuthHeader() string {
 			"token":               c.AccessToken,
 		})
 	}
-	if c.AccessToken != "" {
-		if c.AuthSource == "" || strings.HasPrefix(c.AuthSource, "env:") {
-			c.AuthSource = "oauth2"
-		}
-		return applyAuthFormat("Bearer {token}", map[string]string{"access_token": c.AccessToken, "token": c.AccessToken})
-	}
 	return ""
 }
 
