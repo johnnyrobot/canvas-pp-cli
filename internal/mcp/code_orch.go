@@ -10711,7 +10711,12 @@ func handleCodeOrchExecute(ctx context.Context, req mcplib.CallToolRequest) (*mc
 	if err != nil {
 		return mcplib.NewToolResultError(err.Error()), nil
 	}
-	return mcplib.NewToolResultText(string(data)), nil
+	// Bound the response before it reaches the MCP client. Canvas list
+	// endpoints return unbounded pages, and an MCP tool result goes straight
+	// into an agent's context — one `courses index` against a large instance
+	// can flood it. mcpToolResultText truncates with a preview envelope that
+	// tells the caller what was elided and how to narrow the request.
+	return mcpToolResultText(ep.Method, data), nil
 }
 
 // codeOrchWriteBody returns the value handed to the client layer as the

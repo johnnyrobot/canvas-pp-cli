@@ -15,7 +15,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"math"
 	"net/http"
 	"net/url"
 	"os"
@@ -633,7 +632,11 @@ func (c *Client) doInternal(ctx context.Context, method, path string, params map
 
 		// Server error - retry with backoff
 		if resp.StatusCode >= 500 && attempt < maxRetries {
-			wait := time.Duration(math.Pow(2, float64(attempt))) * time.Second
+			// cliutil.Backoff is the same 2^attempt curve this computed
+			// inline, plus a MaxBackoff ceiling. At the current retry count
+			// the ceiling never binds; sharing the helper keeps the curve in
+			// one place if the retry budget ever grows.
+			wait := cliutil.Backoff(attempt)
 			fmt.Fprintf(os.Stderr, "server error %d, retrying in %s (attempt %d/%d)\n", resp.StatusCode, wait, attempt+1, maxRetries)
 			if err := sleepContext(ctx, wait); err != nil {
 				return nil, 0, err

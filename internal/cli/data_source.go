@@ -15,6 +15,7 @@ import (
 	"net/url"
 	"os"
 	"strings"
+	"sync"
 	"time"
 
 	"canvas-pp-cli/internal/client"
@@ -173,58 +174,6 @@ func resolveReadWithStrategy(ctx context.Context, c *client.Client, flags *rootF
 		}
 		// Network error — try local fallback
 		fallbackData, fallbackProv, fallbackErr := resolveLocal(ctx, flags, hintWriter, resourceType, isList, path, params, networkFallbackReason)
-		if fallbackErr != nil {
-			return nil, DataProvenance{}, fmt.Errorf("API unreachable and no local data. Run 'canvas-pp-cli sync' to enable offline access.\n\nOriginal error: %w", err)
-		}
-		return fallbackData, attachFreshness(fallbackProv, flags), nil
-	}
-}
-
-// resolvePaginatedRead dispatches a paginated GET request to either the live API
-// or local store. When local, skips pagination and returns all synced data. The
-// headers argument carries per-endpoint required headers; pass nil when the
-// endpoint declares no overrides.
-func resolvePaginatedRead(ctx context.Context, c *client.Client, flags *rootFlags, resourceType string, path string, params map[string]string, headers map[string]string, fetchAll bool, cursorParam, paginationType, limitParam, nextCursorPath, hasMoreField string, hintWriter io.Writer) (json.RawMessage, DataProvenance, error) {
-	return resolvePaginatedReadWithStrategy(ctx, c, flags, "auto", resourceType, path, params, headers, fetchAll, cursorParam, paginationType, limitParam, nextCursorPath, hasMoreField, hintWriter)
-}
-
-func resolvePaginatedReadWithStrategy(ctx context.Context, c *client.Client, flags *rootFlags, strategy string, resourceType string, path string, params map[string]string, headers map[string]string, fetchAll bool, cursorParam, paginationType, limitParam, nextCursorPath, hasMoreField string, hintWriter io.Writer) (json.RawMessage, DataProvenance, error) {
-	if err := validateDataSourceStrategy(flags, strategy); err != nil {
-		return nil, DataProvenance{}, err
-	}
-	if strategy == "local" {
-		data, prov, err := resolveLocal(ctx, flags, hintWriter, resourceType, true, path, params, "strategy_local")
-		return data, attachFreshness(prov, flags), err
-	}
-	if strategy == "live" {
-		data, err := paginatedGet(ctx, c, path, params, headers, fetchAll, cursorParam, paginationType, limitParam, nextCursorPath, hasMoreField)
-		if err != nil {
-			return nil, DataProvenance{}, err
-		}
-		return data, attachFreshness(DataProvenance{Source: "live"}, flags), nil
-	}
-	switch flags.dataSource {
-	case "local":
-		data, prov, err := resolveLocal(ctx, flags, hintWriter, resourceType, true, path, params, "user_requested")
-		return data, attachFreshness(prov, flags), err
-
-	case "live":
-		data, err := paginatedGet(ctx, c, path, params, headers, fetchAll, cursorParam, paginationType, limitParam, nextCursorPath, hasMoreField)
-		if err != nil {
-			return nil, DataProvenance{}, err
-		}
-		return data, attachFreshness(DataProvenance{Source: "live"}, flags), nil
-
-	default: // "auto"
-		data, err := paginatedGet(ctx, c, path, params, headers, fetchAll, cursorParam, paginationType, limitParam, nextCursorPath, hasMoreField)
-		if err == nil {
-			writeThroughCache(ctx, resourceType, data)
-			return data, attachFreshness(DataProvenance{Source: "live"}, flags), nil
-		}
-		if !isNetworkError(err) {
-			return nil, DataProvenance{}, err
-		}
-		fallbackData, fallbackProv, fallbackErr := resolveLocal(ctx, flags, hintWriter, resourceType, true, path, params, networkFallbackReason)
 		if fallbackErr != nil {
 			return nil, DataProvenance{}, fmt.Errorf("API unreachable and no local data. Run 'canvas-pp-cli sync' to enable offline access.\n\nOriginal error: %w", err)
 		}
@@ -455,11 +404,37 @@ func writeMutationResponseToStore(ctx context.Context, resourceType string, data
 
 	db, err := store.OpenWithContext(ctx, defaultDBPath("canvas-pp-cli"))
 	if err != nil {
+		warnMirrorFailureOnce(err)
 		return
 	}
 	defer db.Close()
 
-	_, _, _ = db.UpsertBatch(resourceType, items)
+	if _, _, err := db.UpsertBatch(resourceType, items); err != nil {
+		warnMirrorFailureOnce(err)
+	}
+}
+
+// mirrorWarnOnce keeps the local-mirror warning to one line per process.
+// Mutating commands call writeMutationResponseToStore once per request, so a
+// persistently broken store would otherwise warn on every call in a loop.
+var mirrorWarnOnce sync.Once
+
+// warnMirrorFailureOnce reports that the local mirror could not be updated.
+//
+// Mirroring is best-effort: a mutation that reached Canvas succeeded whether
+// or not the local copy updated, so this must never fail the command. Silence
+// was the wrong other extreme — the error was discarded at both the open and
+// the upsert, so a corrupt, locked or unwritable store stayed broken
+// indefinitely with no signal anywhere, and later `--data-source local` reads
+// would quietly serve stale data.
+//
+// Goes to stderr so it cannot corrupt the JSON on stdout that agents parse.
+func warnMirrorFailureOnce(err error) {
+	mirrorWarnOnce.Do(func() {
+		fmt.Fprintf(os.Stderr,
+			"warning: local mirror not updated (%v); the request itself succeeded. Run 'canvas-pp-cli doctor' to check the store.\n",
+			err)
+	})
 }
 
 func mutationResponseEntityItems(resourceType string, data json.RawMessage, responsePath string) []json.RawMessage {
