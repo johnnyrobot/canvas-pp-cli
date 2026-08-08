@@ -94,64 +94,13 @@ func newNovelRosterCmd(flags *rootFlags) *cobra.Command {
 				return classifyAPIError(err, flags)
 			}
 
-			students := make([]rosterStudent, 0, len(enrollments))
-			rows := make([]map[string]any, 0, len(enrollments))
-			for _, e := range enrollments {
-				user := e.obj("user")
-				name := user.str("name")
-				if name == "" {
-					name = e.str("user_id")
-				}
-				rs := rosterStudent{
-					UserID:         e.str("user_id"),
-					Name:           name,
-					SortableName:   user.str("sortable_name"),
-					LoginID:        user.str("login_id"),
-					SISUserID:      e.str("sis_user_id"),
-					Section:        sectionName[e.str("course_section_id")],
-					Role:           e.str("role"),
-					State:          e.str("enrollment_state"),
-					CurrentGrade:   e.obj("grades").str("current_grade"),
-					LastActivityAt: e.str("last_activity_at"),
-				}
-				if grades := e.obj("grades"); grades != nil {
-					if v, ok := grades.num("current_score"); ok {
-						rs.CurrentScore = &v
-					}
-					if v, ok := grades.num("final_score"); ok {
-						rs.FinalScore = &v
-					}
-				}
-				if anonymize {
-					rs.Name = anonLabel("student", rs.SortableName+rs.Name+rs.UserID)
-					rs.SortableName = ""
-					rs.LoginID = ""
-					rs.SISUserID = ""
-				}
-				students = append(students, rs)
-				row := map[string]any{
-					"user_id": rs.UserID,
-					"name":    rs.Name,
-					"section": rs.Section,
-					"role":    rs.Role,
-				}
-				if rs.CurrentScore != nil {
-					row["current_score"] = *rs.CurrentScore
-				}
-				rows = append(rows, row)
-			}
-
-			view := rosterView{
+			view, rows := analyzeRoster(rosterInput{
 				CourseID:     courseID,
-				Count:        len(students),
+				Enrollments:  enrollments,
+				SectionNames: sectionName,
+				Anonymize:    anonymize,
 				ScannedPages: pages,
-				Anonymized:   anonymize,
-				Students:     students,
-			}
-			if len(students) == 0 {
-				view.Note = fmt.Sprintf("no enrollments returned for course %s (scanned %d page(s)); set CANVAS_API_TOKEN/CANVAS_BASE_URL, confirm the course id, or raise --max-scan-pages", courseID, pages)
-				rows = nil // force JSON so the note is visible
-			}
+			})
 			return emitNovel(cmd, flags, view, rows)
 		},
 	}
