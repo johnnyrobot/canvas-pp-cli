@@ -214,8 +214,11 @@ func TestAnalyzeAtRisk_FailedFetchContributesNothing(t *testing.T) {
 	}
 }
 
-// TestAnalyzeAtRisk_AnonymizeReplacesNames keeps real names out of shared
-// output while leaving the ranking intact.
+// TestAnalyzeAtRisk_AnonymizeReplacesNames keeps every real identifier out of
+// shared output while leaving the ranking intact. Under --anonymize the user id
+// is replaced by the same label as the name, not merely accompanied by it: a
+// Canvas user id resolves to a named student in one API call, so keeping it
+// would make hashing the name pointless.
 func TestAnalyzeAtRisk_AnonymizeReplacesNames(t *testing.T) {
 	view, rows := analyzeAtRisk(atRiskInput{
 		Courses:             []courseRef{{ID: "1"}},
@@ -224,12 +227,24 @@ func TestAnalyzeAtRisk_AnonymizeReplacesNames(t *testing.T) {
 		Anonymize:           true,
 	})
 
-	st := studentByID(view, "42")
-	if st == nil {
-		t.Fatal("student 42 missing")
+	if len(view.Students) != 1 {
+		t.Fatalf("students = %d, want 1", len(view.Students))
+	}
+	st := view.Students[0]
+
+	if st.UserID == "42" {
+		t.Errorf("anonymize must replace the real user id, got %q", st.UserID)
 	}
 	if strings.Contains(st.Name, "Ada Lovelace") {
 		t.Errorf("anonymized name leaks the real name: %q", st.Name)
+	}
+	// Label goes in both fields so anonymized rows remain joinable across
+	// commands — that is the join key an admin actually needs.
+	if st.UserID != st.Name {
+		t.Errorf("user_id and name must carry the same label, got %q vs %q", st.UserID, st.Name)
+	}
+	if st.UserID != anonLabel("student", "42") {
+		t.Errorf("label must derive from the real user id, got %q", st.UserID)
 	}
 	if !view.Anonymized {
 		t.Error("Anonymized should be reported on the view")

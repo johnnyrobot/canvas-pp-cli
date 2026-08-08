@@ -161,7 +161,7 @@ func newNovelAtRiskCmd(flags *rootFlags) *cobra.Command {
 	cmd.Flags().StringVar(&flagCourse, "course", "", "Course ID to scan (omit and use --all-my-courses for every course you teach)")
 	cmd.Flags().BoolVar(&flagAll, "all-my-courses", false, "Scan every active course where you are a teacher")
 	cmd.Flags().StringVar(&flagSince, "since", "", "Only count assignments due within this window (e.g. 14d, 1w, 72h)")
-	cmd.Flags().BoolVar(&anonymize, "anonymize", false, "Hash student names for safe sharing with agents")
+	cmd.Flags().BoolVar(&anonymize, "anonymize", false, "Replace student names and IDs with stable pseudonyms for safe sharing")
 	cmd.Flags().IntVar(&maxScanPages, "max-scan-pages", 5, "Maximum submission pages to scan per course (100 per page)")
 	cmd.Flags().IntVar(&maxCourses, "max-courses", 25, "Maximum courses to scan under --all-my-courses")
 	return cmd

@@ -51,7 +51,14 @@ func rosterRowFor(e canvasObj, sectionNames map[string]string, anonymize bool) r
 		}
 	}
 	if anonymize {
-		rs.Name = anonLabel("student", rs.SortableName+rs.Name+rs.UserID)
+		// Label from the user id alone, so the same student carries the same
+		// label in every command's output — that is what makes anonymized rows
+		// joinable across commands. The id is replaced rather than kept: a
+		// Canvas user id resolves to a named student in one API call, so
+		// leaving it beside a grade would make hashing the name pointless.
+		label := anonLabel("student", rs.UserID)
+		rs.UserID = label
+		rs.Name = label
 		rs.SortableName = ""
 		rs.LoginID = ""
 		rs.SISUserID = ""

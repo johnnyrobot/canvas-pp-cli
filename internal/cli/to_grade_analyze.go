@@ -67,7 +67,11 @@ func toGradeItemFor(s canvasObj, courseID string, names map[string]string, now t
 	}
 	it.DaysWaiting = daysWaiting(it.SubmittedAt, now)
 	if anonymize {
-		it.Student = anonLabel("student", it.UserID)
+		// Same label in UserID and Student, derived from the real id, so rows
+		// stay joinable across commands without carrying the real id.
+		label := anonLabel("student", it.UserID)
+		it.UserID = label
+		it.Student = label
 	}
 	return it
 }

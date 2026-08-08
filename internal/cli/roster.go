@@ -104,7 +104,7 @@ func newNovelRosterCmd(flags *rootFlags) *cobra.Command {
 			return emitNovel(cmd, flags, view, rows)
 		},
 	}
-	cmd.Flags().BoolVar(&anonymize, "anonymize", false, "Hash names and drop login/SIS IDs for safe sharing with agents")
+	cmd.Flags().BoolVar(&anonymize, "anonymize", false, "Replace student names and IDs with stable pseudonyms for safe sharing")
 	cmd.Flags().IntVar(&maxScanPages, "max-scan-pages", 5, "Maximum enrollment pages to scan (100 per page)")
 	return cmd
 }

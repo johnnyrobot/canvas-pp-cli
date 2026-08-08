@@ -157,7 +157,7 @@ func newNovelSinceCmd(flags *rootFlags) *cobra.Command {
 		},
 	}
 	cmd.Flags().StringVar(&flagCourse, "course", "", "Course ID (omit to scan every course you teach)")
-	cmd.Flags().BoolVar(&anonymize, "anonymize", false, "Hash names for safe sharing with agents")
+	cmd.Flags().BoolVar(&anonymize, "anonymize", false, "Replace names with stable pseudonyms for safe sharing")
 	cmd.Flags().IntVar(&maxScanPages, "max-scan-pages", 5, "Maximum pages to scan per resource (100 per page)")
 	cmd.Flags().IntVar(&maxCourses, "max-courses", 25, "Maximum courses to scan when --course is omitted")
 	return cmd

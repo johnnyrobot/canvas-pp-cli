@@ -192,9 +192,21 @@ func TestAnalyzeAuditEnrollments_AnonymizeReplacesNames(t *testing.T) {
 	if !view.Anonymized {
 		t.Error("Anonymized should be reported on the view")
 	}
-	// The user id is deliberately retained — it is the join key an admin needs.
-	if view.OrphanStudents[0].UserID != "77" {
-		t.Errorf("UserID = %q, want it retained under --anonymize", view.OrphanStudents[0].UserID)
+	// The user id is replaced, not retained. It used to be kept as "the join
+	// key an admin needs", but a stable salted label is equally a join key —
+	// the same student carries the same label in every command — while a raw
+	// Canvas user id resolves to a named student in one API call, which would
+	// defeat the whole flag. An admin who needs to act on a real student runs
+	// without --anonymize.
+	o := view.OrphanStudents[0]
+	if o.UserID == "77" {
+		t.Errorf("anonymize must replace the real user id, got %q", o.UserID)
+	}
+	if o.UserID != o.Name {
+		t.Errorf("user_id and name must carry the same label, got %q vs %q", o.UserID, o.Name)
+	}
+	if o.UserID != anonLabel("student", "77") {
+		t.Errorf("label must derive from the real user id, got %q", o.UserID)
 	}
 }
 

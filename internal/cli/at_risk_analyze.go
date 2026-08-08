@@ -128,7 +128,11 @@ func analyzeAtRisk(in atRiskInput) (atRiskView, []map[string]any) {
 	students := make([]atRiskStudent, 0, len(byStudent))
 	for _, st := range byStudent {
 		if in.Anonymize {
-			st.Name = anonLabel("student", st.UserID)
+			// Same label in UserID and Name, derived from the real id, so rows
+			// stay joinable across commands without carrying the real id.
+			label := anonLabel("student", st.UserID)
+			st.UserID = label
+			st.Name = label
 		}
 		students = append(students, *st)
 	}

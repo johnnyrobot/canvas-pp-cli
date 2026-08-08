@@ -193,8 +193,20 @@ func TestAnalyzeToGrade_AnonymizeReplacesNames(t *testing.T) {
 		Anonymize:           true,
 	})
 
-	if strings.Contains(view.Items[0].Student, "Ada Lovelace") {
-		t.Errorf("anonymized student leaks the real name: %q", view.Items[0].Student)
+	it := view.Items[0]
+	if strings.Contains(it.Student, "Ada Lovelace") {
+		t.Errorf("anonymized student leaks the real name: %q", it.Student)
+	}
+	// The user id is an identifier too, so it is replaced by the same label
+	// rather than shipped beside the queue entry.
+	if it.UserID == "42" {
+		t.Errorf("anonymize must replace the real user id, got %q", it.UserID)
+	}
+	if it.UserID != it.Student {
+		t.Errorf("user_id and student must carry the same label, got %q vs %q", it.UserID, it.Student)
+	}
+	if it.UserID != anonLabel("student", "42") {
+		t.Errorf("label must derive from the real user id, got %q", it.UserID)
 	}
 	if rows[0]["student"] != view.Items[0].Student {
 		t.Errorf("table row must carry the anonymized name, got %v", rows[0]["student"])

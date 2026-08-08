@@ -82,12 +82,18 @@ func analyzeAuditEnrollments(in auditInput) (auditView, []map[string]any) {
 					continue
 				}
 				name := en.obj("user").str("name")
+				userID := en.str("user_id")
 				if in.Anonymize {
-					name = anonLabel("student", en.str("user_id"))
+					// Same label in UserID and Name, derived from the real id,
+					// so rows stay joinable across commands without carrying
+					// the real id an admin could resolve to a named student.
+					label := anonLabel("student", userID)
+					userID = label
+					name = label
 				}
 				orphans = append(orphans, orphanStudent{
 					CourseID:        courseID,
-					UserID:          en.str("user_id"),
+					UserID:          userID,
 					Name:            name,
 					EnrollmentState: en.str("enrollment_state"),
 					Reason:          orphanReason,

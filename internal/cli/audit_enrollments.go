@@ -145,7 +145,7 @@ func newNovelAuditEnrollmentsCmd(flags *rootFlags) *cobra.Command {
 	cmd.Flags().StringVar(&flagAccount, "account", "", "Account ID to audit (required)")
 	cmd.Flags().BoolVar(&flagOrphans, "orphans", false, "Flag active students who have never accessed their course")
 	cmd.Flags().BoolVar(&flagGhostTeachers, "ghost-teachers", false, "Flag courses with no teacher enrollment")
-	cmd.Flags().BoolVar(&anonymize, "anonymize", false, "Hash student names for safe sharing with agents")
+	cmd.Flags().BoolVar(&anonymize, "anonymize", false, "Replace student names and IDs with stable pseudonyms for safe sharing")
 	cmd.Flags().IntVar(&maxScanPages, "max-scan-pages", 5, "Maximum pages to scan per resource (100 per page)")
 	cmd.Flags().IntVar(&maxCourses, "max-courses", 50, "Maximum courses to scan in the account")
 	return cmd

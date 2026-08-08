@@ -147,7 +147,7 @@ func newNovelToGradeCmd(flags *rootFlags) *cobra.Command {
 	cmd.Flags().BoolVar(&flagAll, "all-my-courses", false, "Scan every active course where you are a teacher")
 	cmd.Flags().StringVar(&flagSort, "sort", "oldest", "Order: oldest or newest (by submission date)")
 	cmd.Flags().IntVar(&limit, "limit", 0, "Maximum items to return (0 = all)")
-	cmd.Flags().BoolVar(&anonymize, "anonymize", false, "Hash student names for safe sharing with agents")
+	cmd.Flags().BoolVar(&anonymize, "anonymize", false, "Replace student names and IDs with stable pseudonyms for safe sharing")
 	cmd.Flags().IntVar(&maxScanPages, "max-scan-pages", 5, "Maximum submission pages to scan per course (100 per page)")
 	cmd.Flags().IntVar(&maxCourses, "max-courses", 25, "Maximum courses to scan under --all-my-courses")
 	return cmd

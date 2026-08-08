@@ -94,6 +94,19 @@ func TestRosterRowFor_AnonymizeDropsIdentifiers(t *testing.T) {
 		t.Errorf("anonymize must clear sortable_name/login_id/sis_user_id, got %q/%q/%q",
 			rs.SortableName, rs.LoginID, rs.SISUserID)
 	}
+	// The user id is an identifier too — it resolves to a named student in one
+	// API call — so it is replaced by the label rather than left beside a grade.
+	if rs.UserID == "42" {
+		t.Errorf("anonymize must replace the real user id, got %q", rs.UserID)
+	}
+	if rs.UserID != rs.Name {
+		t.Errorf("user_id and name must carry the same label, got %q vs %q", rs.UserID, rs.Name)
+	}
+	// Derived from the id alone, so the same student gets the same label in
+	// every command's output and anonymized rows stay joinable.
+	if rs.UserID != anonLabel("student", "42") {
+		t.Errorf("label must derive from the real user id, got %q", rs.UserID)
+	}
 	// Non-identifying fields survive so the roster stays useful.
 	if rs.Section != "Section A" || rs.Role != "StudentEnrollment" {
 		t.Errorf("anonymize should not clear section/role, got %q/%q", rs.Section, rs.Role)
