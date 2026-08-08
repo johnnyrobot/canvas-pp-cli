@@ -16,10 +16,13 @@ Created by [@johnnyrobot](https://github.com/johnnyrobot).
 
 ```bash
 brew tap johnnyrobot/tap
+brew trust johnnyrobot/tap
 brew install canvas-pp-cli
 ```
 
-Installs both `canvas-pp-cli` and `canvas-pp-mcp`.
+Installs both `canvas-pp-cli` and `canvas-pp-mcp` into the same prefix, which is what the MCP server needs to find its companion CLI.
+
+Recent Homebrew refuses to load formulae from third-party taps until you trust them, so `brew trust` is required — without it `brew install` fails with "Refusing to load formula ... from untrusted tap".
 
 ### Go install
 
