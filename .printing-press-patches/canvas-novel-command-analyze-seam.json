@@ -5,7 +5,7 @@
   "base_run_id": "20260622-151431-06e611a5",
   "base_printing_press_version": "4.25.0",
   "summary": "refactor(novel): split all six cross-resource commands into fetch -> analyze -> render; fix at-risk tie-break ranking and since digest ordering",
-  "reason": "The six novel cross-resource commands fused fetching, joining, ranking and rendering into single 103-148 line cobra RunE closures. The join and ordering rules — the reason these commands exist, since no single Canvas endpoint returns their output — had no interface to test through, so the generated per-command tests could only assert that --help renders and --dry-run returns nil. That test shape hid two live defects: at-risk broke ties between students on a string user ID, ranking user 10 above user 9, and since emitted its 'what changed' digest in fetch order rather than chronologically. Each command now exposes a pure analyze function over already-fetched data, making the rules testable without a Canvas token, and both ordering bugs are fixed.",
+  "reason": "The six novel cross-resource commands fused fetching, joining, ranking and rendering into single 103-148 line cobra RunE closures. The join and ordering rules \u2014 the reason these commands exist, since no single Canvas endpoint returns their output \u2014 had no interface to test through, so the generated per-command tests could only assert that --help renders and --dry-run returns nil. That test shape hid two live defects: at-risk broke ties between students on a string user ID, ranking user 10 above user 9, and since emitted its 'what changed' digest in fetch order rather than chronologically. Each command now exposes a pure analyze function over already-fetched data, making the rules testable without a Canvas token, and both ordering bugs are fixed. NOTE ON VERSION: printed at 4.25.0; current generator is 4.30.1. Each upstream item was re-checked against the 4.30.1 templates. The novel-command test scaffold no longer carries a DO NOT EDIT header there \u2014 it reads 'Keep the wiring smoke test and add behavior cases as needed' \u2014 so that item is dropped as already fixed. The remaining items were confirmed still present: novel_feature_command.go.tmpl emits a single RunE closure with no analyze seam, and nothing injects a clock.",
   "files": [
     "internal/cli/roster.go",
     "internal/cli/roster_analyze.go",
@@ -31,15 +31,12 @@
   "deferred_to_upstream": [
     {
       "feature": "Emit hand-authored transcendence commands as fetch -> analyze -> render rather than one RunE closure: a pure analyze(<command>Input) (<command>View, []map[string]any) alongside the existing shared fetch (canvasFetchList) and render (emitNovel) helpers.",
-      "reason": "Machine-level, not Canvas-specific. Every printed CLI's novel commands share this shape, so every one of them inherits the same untestable middle. The generated per-command smoke tests are stamped DO NOT EDIT and short-circuit at the dryRunOK guard, which is the first statement in RunE, so they cannot reach the join or ordering logic in any printed CLI. Applying the split across all six Canvas commands surfaced two ordering bugs that had shipped undetected, which suggests the shape — not this API — is the problem. The durable fix is a template change plus a generated analyze-test stub that exercises the rule rather than the wiring; this local patch should be superseded by it."
-    },
-    {
-      "feature": "Generated novel-command test files should not be stamped DO NOT EDIT while inviting authors to fill in real cases.",
-      "reason": "at_risk_test.go and its five siblings carry a DO NOT EDIT header alongside the comment 'Always runs — do not delete this test when filling in real cases', which asks for edits to a file a reprint overwrites. Real rule tests had to go in separate hand-authored files instead."
+      "reason": "Machine-level, not Canvas-specific. Every printed CLI's novel commands share this shape, so every one of them inherits the same untestable middle. The generated per-command smoke tests are stamped DO NOT EDIT and short-circuit at the dryRunOK guard, which is the first statement in RunE, so they cannot reach the join or ordering logic in any printed CLI. Applying the split across all six Canvas commands surfaced two ordering bugs that had shipped undetected, which suggests the shape \u2014 not this API \u2014 is the problem. The durable fix is a template change plus a generated analyze-test stub that exercises the rule rather than the wiring; this local patch should be superseded by it."
     },
     {
       "feature": "Templates that compute an age or window should take the clock as a parameter rather than calling time.Now() inline.",
-      "reason": "to-grade computed days-waiting from time.Now() inside its fetch loop, so the aged output could not be asserted on at all — every value depended on when the test ran. Any generated command that ages or windows data has the same problem."
+      "reason": "to-grade computed days-waiting from time.Now() inside its fetch loop, so the aged output could not be asserted on at all \u2014 every value depended on when the test ran. Any generated command that ages or windows data has the same problem."
     }
-  ]
+  ],
+  "upstream_issue": "https://github.com/mvanhorn/cli-printing-press/issues/3370"
 }
