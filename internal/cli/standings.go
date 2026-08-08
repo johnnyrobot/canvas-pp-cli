@@ -8,7 +8,6 @@ package cli
 
 import (
 	"fmt"
-	"sort"
 
 	"github.com/spf13/cobra"
 )
@@ -152,23 +151,25 @@ func newNovelStandingsCmd(flags *rootFlags) *cobra.Command {
 				courses = courses[:maxCourses]
 			}
 
-			groups := map[string]*standingsAcc{}
-			overall := &standingsAcc{}
+			// Fetch each course's enrollments (and section names when grouping by
+			// section) up front so the rollup runs over data, not the network.
 			var failures []fetchFailure
 			totalPages := cpages
+			enrollmentsByCourse := map[string][]canvasObj{}
+			sectionNamesByCourse := map[string]map[string]string{}
 			for _, course := range courses {
 				courseID := course.str("id")
 				if courseID == "" {
 					continue
 				}
-				var sectionName map[string]string
 				if flagBy == "section" {
-					sectionName = map[string]string{}
+					sectionName := map[string]string{}
 					if secs, _, e := canvasFetchList(ctx, c, "/api/v1/courses/"+courseID+"/sections", nil, 2); e == nil {
 						for _, s := range secs {
 							sectionName[s.str("id")] = s.str("name")
 						}
 					}
+					sectionNamesByCourse[courseID] = sectionName
 				}
 				enr, p, e := canvasFetchList(ctx, c,
 					"/api/v1/courses/"+courseID+"/enrollments",
@@ -178,48 +179,20 @@ func newNovelStandingsCmd(flags *rootFlags) *cobra.Command {
 					failures = append(failures, fetchFailure{Scope: "course:" + courseID, Error: e.Error()})
 					continue
 				}
-				for _, en := range enr {
-					grades := en.obj("grades")
-					score, scored := grades.num("current_score")
-					var key, name string
-					if flagBy == "section" {
-						key = en.str("course_section_id")
-						name = sectionName[key]
-					} else {
-						key = courseID
-						name = course.str("name")
-					}
-					acc := groups[key]
-					if acc == nil {
-						acc = &standingsAcc{name: name}
-						groups[key] = acc
-					}
-					acc.add(score, scored)
-					overall.add(score, scored)
-				}
+				enrollmentsByCourse[courseID] = enr
 			}
 
-			out := make([]standingsGroup, 0, len(groups))
-			for k, acc := range groups {
-				out = append(out, acc.group(k))
-			}
-			sort.Slice(out, func(i, j int) bool { return out[i].Key < out[j].Key })
-
-			view := standingsView{
-				Term:           flagTerm,
-				Account:        flagAccount,
-				By:             flagBy,
-				CoursesScanned: len(courses),
-				ScannedPages:   totalPages,
-				Definitions:    "pass = score >= 70 (C+); dfw = score < 70 (D/F); rates over graded students only",
-				Overall:        overall.group("overall"),
-				Groups:         out,
-				FetchFailures:  failures,
-			}
-			if overall.group("overall").Students == 0 {
-				view.Note = fmt.Sprintf("no student enrollments found for term %s under account %s; confirm the term id, account, and that CANVAS_API_TOKEN has admin scope", flagTerm, flagAccount)
-			}
-			return emitNovel(cmd, flags, view, nil)
+			view, rows := analyzeStandings(standingsInput{
+				Term:                 flagTerm,
+				Account:              flagAccount,
+				By:                   flagBy,
+				Courses:              courses,
+				EnrollmentsByCourse:  enrollmentsByCourse,
+				SectionNamesByCourse: sectionNamesByCourse,
+				ScannedPages:         totalPages,
+				Failures:             failures,
+			})
+			return emitNovel(cmd, flags, view, rows)
 		},
 	}
 	cmd.Flags().StringVar(&flagTerm, "term", "", "Enrollment term ID (required)")
