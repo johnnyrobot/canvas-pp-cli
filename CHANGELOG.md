@@ -1,4 +1,4 @@
 # Changelog
 
-This file is maintained by printing-press-library release automation. Do not hand-edit release sections in normal PRs.
+Release notes for canvas-pp-cli. Versions follow the git tags on this repository; release artifacts are published by goreleaser.
 

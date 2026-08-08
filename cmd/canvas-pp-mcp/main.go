@@ -9,7 +9,7 @@ import (
 	"os"
 	"strings"
 
-	mcptools "canvas-pp-cli/internal/mcp"
+	mcptools "github.com/johnnyrobot/canvas-pp-cli/internal/mcp"
 	"github.com/mark3labs/mcp-go/server"
 )
 

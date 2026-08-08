@@ -10,3 +10,13 @@ coverage.*
 
 # OS
 .DS_Store
+
+# Internal session handoff — kept locally, mirrored to ~/.claude/handoffs/
+# Carries operational detail (hosts, account structure, local paths) that
+# does not belong in a public repo.
+HANDOFF.md
+
+# One-off generator/verification reports — internal tooling output
+dogfood-results.json
+apify-actor-audit-report.json
+workflow-verify-report.json

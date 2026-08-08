@@ -12,9 +12,9 @@ import (
 	"text/tabwriter"
 	"time"
 
-	"canvas-pp-cli/internal/client"
-	"canvas-pp-cli/internal/cliutil"
-	"canvas-pp-cli/internal/config"
+	"github.com/johnnyrobot/canvas-pp-cli/internal/client"
+	"github.com/johnnyrobot/canvas-pp-cli/internal/cliutil"
+	"github.com/johnnyrobot/canvas-pp-cli/internal/config"
 	"github.com/spf13/cobra"
 )
 

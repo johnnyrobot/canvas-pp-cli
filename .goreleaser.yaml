@@ -9,7 +9,7 @@ builds:
     env:
       - CGO_ENABLED=0
     ldflags:
-      - -s -w -X canvas-pp-cli/internal/cli.version={{ .Version }}
+      - -s -w -X github.com/johnnyrobot/canvas-pp-cli/internal/cli.version={{ .Version }}
     targets:
       - darwin_amd64
       - darwin_arm64
@@ -41,6 +41,10 @@ checksum:
   name_template: checksums.txt
 brews:
   - name: canvas-pp-cli
+    # Disabled until github.com/johnnyrobot/homebrew-tap exists — goreleaser
+    # fails the entire release if it cannot push the formula. Create that repo,
+    # then remove this line to start publishing the formula.
+    skip_upload: true
     repository:
       owner: johnnyrobot
       name: homebrew-tap

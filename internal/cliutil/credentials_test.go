@@ -13,8 +13,8 @@ import (
 	"testing"
 	"time"
 
-	"canvas-pp-cli/internal/cliutil"
-	"canvas-pp-cli/internal/config"
+	"github.com/johnnyrobot/canvas-pp-cli/internal/cliutil"
+	"github.com/johnnyrobot/canvas-pp-cli/internal/config"
 )
 
 func resetCredentialEnv(t *testing.T) (home, configPath string) {

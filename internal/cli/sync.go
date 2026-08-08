@@ -4,9 +4,9 @@
 package cli
 
 import (
-	"canvas-pp-cli/internal/client"
-	"canvas-pp-cli/internal/cliutil"
-	"canvas-pp-cli/internal/store"
+	"github.com/johnnyrobot/canvas-pp-cli/internal/client"
+	"github.com/johnnyrobot/canvas-pp-cli/internal/cliutil"
+	"github.com/johnnyrobot/canvas-pp-cli/internal/store"
 	"context"
 	"encoding/json"
 	"errors"
