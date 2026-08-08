@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"canvas-pp-cli/internal/store"
+	"github.com/johnnyrobot/canvas-pp-cli/internal/store"
 )
 
 func TestSyncSingleObject_PreservesLargeIntegerResourceIDs(t *testing.T) {

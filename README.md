@@ -8,99 +8,58 @@ Created by [@johnnyrobot](https://github.com/johnnyrobot).
 
 ## Install
 
-The recommended path installs both the `canvas-pp-cli` binary and the `pp-canvas` agent skill (Claude Code, Codex, Cursor, Gemini CLI, GitHub Copilot, and other agents supported by the upstream [`skills`](https://github.com/vercel-labs/skills) CLI) in one shot:
+### Go install
+
+Requires Go 1.26.5 or newer:
 
 ```bash
-npx -y @mvanhorn/printing-press-library install canvas
+go install github.com/johnnyrobot/canvas-pp-cli/cmd/canvas-pp-cli@latest
 ```
 
-For CLI only (no skill):
+To also install the MCP server binary:
 
 ```bash
-npx -y @mvanhorn/printing-press-library install canvas --cli-only
+go install github.com/johnnyrobot/canvas-pp-cli/cmd/canvas-pp-mcp@latest
 ```
-
-For skill only — installs the skill into the same agents as the default command above, but skips the CLI binary (use this to update or reinstall just the skill):
-
-```bash
-npx -y @mvanhorn/printing-press-library install canvas --skill-only
-```
-
-To constrain the skill install to one or more specific agents (repeatable — agent names match the [`skills`](https://github.com/vercel-labs/skills) CLI):
-
-```bash
-npx -y @mvanhorn/printing-press-library install canvas --agent claude-code
-npx -y @mvanhorn/printing-press-library install canvas --agent claude-code --agent codex
-```
-
-### Without Node (Go fallback)
-
-If `npx` isn't available (no Node, offline), install the CLI directly via Go (requires Go 1.26.5 or newer):
-
-```bash
-go install github.com/mvanhorn/printing-press-library/library/productivity/canvas/cmd/canvas-pp-cli@latest
-```
-
-This installs the CLI only — no skill.
 
 ### Pre-built binary
 
-Download a pre-built binary for your platform from the [latest release](https://github.com/mvanhorn/printing-press-library/releases/tag/canvas-current). On macOS, clear the Gatekeeper quarantine: `xattr -d com.apple.quarantine <binary>`. On Unix, mark it executable: `chmod +x <binary>`.
+Download a binary for your platform from the [latest release](https://github.com/johnnyrobot/canvas-pp-cli/releases/latest). Builds are published for macOS, Linux and Windows on both amd64 and arm64.
 
-<!-- pp-hermes-install-anchor -->
-## Install for Hermes
-
-Install the CLI binary first. The installer writes binaries to a per-user managed bin directory by default: `$HOME/.local/bin` on macOS/Linux and `%LOCALAPPDATA%\Programs\PrintingPress\bin` on Windows.
+On macOS, clear the Gatekeeper quarantine after downloading:
 
 ```bash
-npx -y @mvanhorn/printing-press-library install canvas --cli-only
+xattr -d com.apple.quarantine canvas-pp-cli
 ```
 
-Then install the focused Hermes skill.
-
-From the Hermes CLI:
+On Unix, mark it executable:
 
 ```bash
-hermes skills install mvanhorn/printing-press-library/cli-skills/pp-canvas --force
+chmod +x canvas-pp-cli
 ```
 
-Inside a Hermes chat session:
+### From source
 
 ```bash
-/skills install mvanhorn/printing-press-library/cli-skills/pp-canvas --force
+git clone https://github.com/johnnyrobot/canvas-pp-cli.git
+cd canvas-pp-cli
+make build          # or: go build ./cmd/canvas-pp-cli
+make build-all      # CLI + MCP server
 ```
 
-Restart the Hermes session or gateway if the newly installed skill is not visible immediately.
+### Agent skill
 
-## Install for OpenClaw
-Install both the CLI binary and the focused OpenClaw skill. The installer defaults binaries to a per-user bin directory (`$HOME/.local/bin` on macOS/Linux, `%LOCALAPPDATA%\Programs\PrintingPress\bin` on Windows):
-
-```bash
-npx -y @mvanhorn/printing-press-library install canvas --agent openclaw
-```
-
-Restart the OpenClaw session or gateway if the newly installed skill is not visible immediately.
+`SKILL.md` in this repo is a ready-to-use agent skill describing the CLI's commands and recipes. Point your agent at it directly, or copy it into your agent's skills directory.
 
 ## Use with Claude Desktop
 
-This CLI ships an [MCPB](https://github.com/modelcontextprotocol/mcpb) bundle — Claude Desktop's standard format for one-click MCP extension installs (no JSON config required).
+The MCP server (`canvas-pp-mcp`) exposes the whole Canvas surface to Claude Desktop through a `canvas_search` + `canvas_execute` pair, so an agent reaches every endpoint without loading a tool per endpoint.
 
-To install:
-
-1. Download the `.mcpb` for your platform from the [latest release](https://github.com/mvanhorn/printing-press-library/releases/tag/canvas-current).
-2. Double-click the `.mcpb` file. Claude Desktop opens and walks you through the install.
-3. Fill in `CANVAS_API_TOKEN` when Claude Desktop prompts you.
-
-Requires Claude Desktop 1.0.0 or later. Pre-built bundles ship for macOS Apple Silicon (`darwin-arm64`) and Windows (`amd64`, `arm64`); for other platforms, use the manual config below.
-
-<details>
-<summary>Manual JSON config (advanced)</summary>
-
-If you can't use the MCPB bundle (older Claude Desktop, unsupported platform), install the MCP binary and configure it manually.
+Install the MCP binary, then add it to your Claude Desktop config.
 
 
 ```bash
-go install github.com/mvanhorn/printing-press-library/library/productivity/canvas/cmd/canvas-pp-mcp@latest
+go install github.com/johnnyrobot/canvas-pp-cli/cmd/canvas-pp-mcp@latest
 ```
 
 Add to your Claude Desktop config (`~/Library/Application Support/Claude/claude_desktop_config.json`):
@@ -118,7 +77,6 @@ Add to your Claude Desktop config (`~/Library/Application Support/Claude/claude_
 }
 ```
 
-</details>
 
 ## Authentication
 
