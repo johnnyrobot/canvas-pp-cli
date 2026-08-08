@@ -5,10 +5,21 @@
 package cli
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
+	"strconv"
+	"sync"
 	"testing"
 	"time"
 )
+
+// resetAnonSaltForTest clears the once-cached salt so a test can change
+// CANVAS_ANON_SALT and observe the effect.
+func resetAnonSaltForTest() {
+	anonSaltOnce = sync.Once{}
+	anonSaltValue = nil
+}
 
 func obj(t *testing.T, jsonStr string) canvasObj {
 	t.Helper()
@@ -158,6 +169,53 @@ func TestAnonLabel(t *testing.T) {
 	if len(a) <= len("student-") {
 		t.Errorf("anonLabel too short: %q", a)
 	}
+}
+
+// TestAnonLabel_NotRecoverableByEnumeratingIDs is the rule that makes
+// --anonymize mean anything. Canvas user ids are small sequential integers, so
+// an unsalted digest of one is recoverable by hashing every plausible id — the
+// original 4-byte SHA-256 fell to ~48k guesses, well under a second. The label
+// must not be derivable from the id alone.
+func TestAnonLabel_NotRecoverableByEnumeratingIDs(t *testing.T) {
+	label := anonLabel("student", "48211")
+
+	for i := 1; i <= 60000; i++ {
+		id := strconv.Itoa(i)
+		h := sha256.Sum256([]byte(id))
+		// The exact scheme the label used to use.
+		if label == "student-"+hex.EncodeToString(h[:4]) {
+			t.Fatalf("label %q recovered by enumerating ids (matched id %s)", label, id)
+		}
+		// And the salt must be doing the work, not the digest width.
+		if label == "student-"+hex.EncodeToString(h[:8]) {
+			t.Fatalf("label %q is an unsalted digest of id %s", label, id)
+		}
+	}
+}
+
+// TestAnonLabel_SaltIsActuallyApplied pins that the salt reaches the digest.
+// Without this, anonSalt could return a constant and the test above would still
+// pass while labels stayed globally guessable.
+func TestAnonLabel_SaltIsActuallyApplied(t *testing.T) {
+	t.Setenv(anonSaltEnv, "salt-one")
+	resetAnonSaltForTest()
+	one := anonLabel("student", "42")
+
+	t.Setenv(anonSaltEnv, "salt-two")
+	resetAnonSaltForTest()
+	two := anonLabel("student", "42")
+
+	if one == two {
+		t.Errorf("same label under different salts: %q — salt is not applied", one)
+	}
+
+	// Same salt must reproduce the same label, or reports cannot be compared.
+	t.Setenv(anonSaltEnv, "salt-one")
+	resetAnonSaltForTest()
+	if again := anonLabel("student", "42"); again != one {
+		t.Errorf("label not stable under a fixed salt: %q vs %q", again, one)
+	}
+	resetAnonSaltForTest()
 }
 
 func TestStandingsAccGroup(t *testing.T) {

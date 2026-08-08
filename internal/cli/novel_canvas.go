@@ -12,11 +12,16 @@ package cli
 
 import (
 	"context"
+	"crypto/hmac"
+	"crypto/rand"
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
+	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
+	"sync"
 
 	"github.com/spf13/cobra"
 
@@ -151,14 +156,75 @@ func canvasFetchList(ctx context.Context, c *client.Client, path string, params 
 	return out, pages, nil
 }
 
+// anonSaltEnv lets an operator pin the label salt, so two machines (or a CI
+// job and a laptop) can produce comparable anonymized reports on purpose.
+const anonSaltEnv = "CANVAS_ANON_SALT"
+
+var (
+	anonSaltOnce  sync.Once
+	anonSaltValue []byte
+)
+
+// anonSalt returns the machine-local salt for anonymized labels.
+//
+// The salt is what makes a label non-reversible. Canvas user ids are small
+// sequential integers, so an unsalted digest of one is recoverable by trying
+// every plausible id — a few tens of thousands of hashes, i.e. milliseconds.
+// Salting removes that shortcut without changing what the label is for.
+//
+// It is generated once and persisted 0600 under the state dir rather than
+// randomised per run, because successive reports must stay correlatable.
+// If the salt cannot be persisted the label still works for the current
+// process — a fresh random salt is used, trading cross-run stability for
+// never emitting a guessable label.
+func anonSalt() []byte {
+	anonSaltOnce.Do(func() {
+		if env := strings.TrimSpace(os.Getenv(anonSaltEnv)); env != "" {
+			anonSaltValue = []byte(env)
+			return
+		}
+		fresh := make([]byte, 32)
+		if _, err := rand.Read(fresh); err != nil {
+			// Never fall back to "no salt" — that is the reversible case.
+			anonSaltValue = []byte("canvas-pp-cli/anon/fallback")
+			return
+		}
+		dir, err := cliutil.StateDir()
+		if err != nil {
+			anonSaltValue = fresh
+			return
+		}
+		path := filepath.Join(dir, "anon-salt")
+		if existing, rerr := os.ReadFile(path); rerr == nil && len(existing) > 0 {
+			anonSaltValue = existing
+			return
+		}
+		if mkerr := os.MkdirAll(dir, 0o700); mkerr != nil {
+			anonSaltValue = fresh
+			return
+		}
+		if werr := os.WriteFile(path, fresh, 0o600); werr != nil {
+			anonSaltValue = fresh
+			return
+		}
+		anonSaltValue = fresh
+	})
+	return anonSaltValue
+}
+
 // anonLabel returns a stable, non-reversible label for a PII string, e.g.
-// "student-1a2b3c4d". Empty input yields empty output.
+// "student-1a2b3c4d5e6f7a8b". Empty input yields empty output.
+//
+// Stable for a given salt, so the same student carries the same label across
+// runs and across commands; not reversible by someone holding only the output,
+// because they do not have the salt. See anonSalt.
 func anonLabel(prefix, s string) string {
 	if s == "" {
 		return ""
 	}
-	h := sha256.Sum256([]byte(s))
-	return prefix + "-" + hex.EncodeToString(h[:4])
+	m := hmac.New(sha256.New, anonSalt())
+	m.Write([]byte(s))
+	return prefix + "-" + hex.EncodeToString(m.Sum(nil)[:8])
 }
 
 // courseRef is a minimal course reference for fan-out commands.
