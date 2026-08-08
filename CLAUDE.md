@@ -61,3 +61,17 @@ Use `--yes --no-input` only once the target, args, and side effects are clear.
 - Do not enumerate every command file when reasoning about the codebase; use `doctor` / `which` / `--help` discovery.
 - SQLite driver is `modernc.org/sqlite` (pure Go); release builds set `CGO_ENABLED=0`. Requires Go 1.26+.
 - Never commit tokens. Bearer tokens come from `CANVAS_ACCESS_TOKEN` / `CANVAS_API_TOKEN` or the user config file. Apache-2.0.
+
+## Agent skills
+
+### Issue tracker
+
+GitHub Issues on `johnnyrobot/canvas-pp-cli`, via the `gh` CLI. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+The five canonical roles, used verbatim as label strings. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context — `CONTEXT.md` and `docs/adr/` at the repo root. See `docs/agents/domain.md`.
