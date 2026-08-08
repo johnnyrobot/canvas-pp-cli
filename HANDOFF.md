@@ -163,6 +163,7 @@ Design decisions behind #1 are **not** in a doc — they came from a 20-question
 - **[#3370](https://github.com/mvanhorn/cli-printing-press/issues/3370)** — commented with the hidden-area-group traversal detail; a naive tree walk finds 52 commands instead of ~1,000.
 - **[#4025](https://github.com/mvanhorn/cli-printing-press/issues/4025)** — `AuthHeader()` duplicate unreachable `AccessToken` guard. `config.go.tmpl:728-750` (per_call env-var range) collides with `:775-786` (trailing minted-token block) because `resolveEnvVarField("CANVAS_ACCESS_TOKEN")` aliases onto the reserved `AccessToken` field.
 - **[#3778](https://github.com/mvanhorn/cli-printing-press/issues/3778)** — commented with our reprint reproduction. **It is the inverse of the filed mechanism:** theirs is preserved old *callers* + overwritten *definer*; ours is preserved old *definer* + fresh new *callers*.
+- **[#4033](https://github.com/mvanhorn/cli-printing-press/issues/4033)** — `doctor` collects a failure reason and discards it at render time. Two sections: cache (`error` set at `doctor.go.tmpl:1265`/`:1273`, never rendered by `renderCacheReport:1348`) and paths (`detail` set at `:991`, never rendered by `renderPathsReport:1049` — which also skips `status`, so a paths failure prints the bare header `  Paths:` and nothing else).
 
 ## The reprint decision — RESOLVED: deferred
 
@@ -211,9 +212,11 @@ Blockers:
 4. **`make lint` exits 1** — 739 real findings (126 shown; caps hide ~83%). Reviewed: **no correctness bugs**. 257 are `SA9003: empty branch` from a vestigial `if !stdinBody {}` in generated write commands (real body-building `if/else` is further down); rest is style, `noctx` in test/generated code, and dead pagination helpers. Both `internal/store` findings are benign (`sql.ErrNoRows` returns unwrapped; `hint` is overwritten in both branches).
 5. **Student-grade math still UNPROVEN** — carried over from 2026-06-23 and unchanged. This is the core value proposition and remains unvalidated against real student data.
 
-## `doctor` swallows its own cache diagnosis
+## `doctor` swallows its own diagnosis — filed as #4033
 
-`doctor` prints `FAIL Cache: error` with no reason. `collectCacheReport` sets `report["error"]`; `renderCacheReport` renders `db_path`, `schema_version`, `db_bytes`, `stale_after`, `oldest_age`, `resources`, `hint` — and **never `error`**. `--agent` JSON *does* carry it, so only humans get the undiagnosable failure, in the command whose whole job is human diagnosis. `doctor.go` is `DO NOT EDIT`; confirmed still broken in the 4.30.1 template, so it affects every printed CLI with a local store.
+`doctor` prints `FAIL Cache: error` with no reason. `collectCacheReport` sets `report["error"]`; `renderCacheReport` renders `db_path`, `schema_version`, `db_bytes`, `stale_after`, `oldest_age`, `resources`, `hint` — and **never `error`**. `--agent` JSON *does* carry it, so only humans get the undiagnosable failure, in the command whose whole job is human diagnosis.
+
+The paths section has the same shape and is worse: `collectPathsReport` sets `status`+`detail` on failure, and `renderPathsReport` reads neither, so a path-resolution failure prints the bare header `  Paths:` with no failure indicator at all. Both confirmed still present in the 4.30.1 template; `doctor.go` is `DO NOT EDIT`, so this affects every printed CLI with a local store.
 
 Locally the swallowed message is `database schema version 9 is newer than supported version 4; upgrade the CLI binary` — the on-disk DB was written by a newer build on this machine. That part is an environment artifact, not a product defect.
 
