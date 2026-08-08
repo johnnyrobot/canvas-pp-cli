@@ -1,7 +1,9 @@
 # canvas-pp-cli — Session Handoff
 
-> Comprehensive context for the next session. Last updated: 2026-06-23.
+> Comprehensive context for the next session. Last updated: **2026-08-07**.
 > This is a hand-authored doc (not generated) — it survives `generate --force`.
+> **This file is the canonical handoff.** Mirror at `~/.claude/handoffs/canvas-pp-cli-handoff.md`.
+> Any copy under `$TMPDIR` / `/var/folders/…/T/` is stale — macOS wipes it on reboot. Edit this file.
 
 ## TL;DR — current status
 
@@ -13,11 +15,13 @@
 - ⚠️ **One open validation gap:** the test instance (`canvas.johnnyrobot.ai`, account "Project-CLU") has **zero students** in any course, so the student-grade paths (scores in `roster`, `at-risk`, `to-grade`, `standings`) couldn't be exercised with real data. They're logically sound but unproven on populated data.
 - ⏸️ **Not published** to the public Printing Press library (held by user's choice until tested). The local library copy is publish-ready.
 
+**As of 2026-08-07** (see [Session log](#session-log--2026-08-07) at the end): four PRs merged to `main` @ `f5e126f`; build/vet/test all green; three upstream issues filed. Publication status unchanged — **still not published, and verified so**: `mvanhorn/printing-press-library` has no `library/productivity/canvas` entry, no `canvas-current` release tag, and no match for `canvas-pp-cli` anywhere. Every install path in `README.md` 404s today.
+
 ## Where everything lives
 
 | What | Path |
 |---|---|
-| **Working repo (use this)** | `/Users/laccd/code/canvas-pp-cli/` |
+| **Working repo (use this)** | `/Users/laccd/code/cli-tools/canvas-pp-cli/` ← **moved 2026-08-06**, no longer at `~/code/canvas-pp-cli` |
 | **Private GitHub repo** | `https://github.com/johnnyrobot/canvas-pp-cli` (PRIVATE) |
 | **PATH symlink** | `~/.local/bin/canvas-pp-cli` → working repo's built binary |
 | **Printing Press library copy** | `~/printing-press/library/canvas/` (publish/polish/reprint operate here) |
@@ -47,7 +51,10 @@ Three copies exist, all on the `-pp-cli` naming convention: working repo, privat
 
 ## Code map
 
-Standard generated Go CLI. Packages under `internal/`: `cli`, `client`, `store`, `cache`, `config`, `cliutil`, `mcp`, `types`.
+Standard generated Go CLI. Packages under `internal/`: `cli`, `client`, `store`, `config`, `cliutil`, `mcp`, `mcp/cobratree`.
+
+> **Changed 2026-08-07:** `internal/cache` and `internal/types` were **deleted** in PR #4 (dead code). Don't be surprised by their absence.
+> `internal/cli` is **one Go package**, 1,181 files, ~171k lines. Never enumerate it — use `doctor` / `which` / `--help`.
 
 **The only hand-written code (everything else is generator-emitted)** lives in `internal/cli/`:
 
@@ -128,7 +135,118 @@ The user's **working repo** (`/Users/laccd/code/canvas-pp-cli`) has diverged fro
 
 ## Immediate next steps (suggested)
 
-1. Validate the student-grade paths on a populated course (the one real open item).
+1. Validate the student-grade paths on a populated course (the one real open item — see [Release readiness](#release-readiness--assessed-2026-08-07)).
 2. Decide whether to publish to the public library (or keep private).
 3. Rotate the Canvas token if the setup transcript is retained/shared.
-4. Optionally `/printing-press-retro` to file the 2 generator gaps.
+4. Optionally `/printing-press-retro` to file the remaining generator gaps.
+
+---
+
+# Session log — 2026-08-07
+
+State at end of session: `main` @ `f5e126f`, clean tree, four PRs merged, full suite green.
+
+## Merged PRs — read the PRs, don't re-derive
+
+| PR | What |
+|---|---|
+| [#1](https://github.com/johnnyrobot/canvas-pp-cli/pull/1) | fetch → analyze → render seam across all six novel commands; two ordering bugs fixed |
+| [#2](https://github.com/johnnyrobot/canvas-pp-cli/pull/2) | `version: "2"` in `.golangci.yml` — `make lint` was erroring before it linted anything |
+| [#3](https://github.com/johnnyrobot/canvas-pp-cli/pull/3) | `docs/agents/*` — issue tracker, triage labels, domain-doc layout |
+| [#4](https://github.com/johnnyrobot/canvas-pp-cli/pull/4) | six architecture-review candidates: `which`, MCP bounding, ID dedup, credential tests, mirror warnings, dead-code removal |
+
+Design decisions behind #1 are **not** in a doc — they came from a 20-question grilling session. The commit messages carry the reasoning; `.printing-press-patches/canvas-novel-command-analyze-seam.json` carries the intent.
+
+## Filed upstream (mvanhorn/cli-printing-press)
+
+- **[#4016](https://github.com/mvanhorn/cli-printing-press/issues/4016)** — three `which.go.tmpl` scoring defects, verified against v4.30.1.
+- **[#3370](https://github.com/mvanhorn/cli-printing-press/issues/3370)** — commented with the hidden-area-group traversal detail; a naive tree walk finds 52 commands instead of ~1,000.
+- **[#4025](https://github.com/mvanhorn/cli-printing-press/issues/4025)** — `AuthHeader()` duplicate unreachable `AccessToken` guard. `config.go.tmpl:728-750` (per_call env-var range) collides with `:775-786` (trailing minted-token block) because `resolveEnvVarField("CANVAS_ACCESS_TOKEN")` aliases onto the reserved `AccessToken` field.
+- **[#3778](https://github.com/mvanhorn/cli-printing-press/issues/3778)** — commented with our reprint reproduction. **It is the inverse of the filed mechanism:** theirs is preserved old *callers* + overwritten *definer*; ours is preserved old *definer* + fresh new *callers*.
+
+## The reprint decision — RESOLVED: deferred
+
+A reprint at 4.30.1 was attempted in a sandbox and **does not build**:
+
+```
+Force regen merged 39 preserved files / 1 AddCommand calls
+Error: go build ./... failed
+  undefined: resolveReadWithStrategyAndResponsePath   (523 call sites, 523 files)
+```
+
+4.30.1 **introduces** that helper in `data_source.go:145`; it does not exist in our 4.25.0 tree. regen-merge preserved our `data_source.go` (PR #4's mirror fix made it drift) while regenerating the 523 callers fresh. Live reproduction of upstream #3778.
+
+Scale: **1,197 files differ**, 49 new in 4.30.1, 32 only in ours. Whole-tree replacement, not a merge. A clean 4.30.1 baseline **does** build — regenerate a sandbox with:
+
+```bash
+cli-printing-press generate --spec spec.yaml --output /tmp/fresh-430
+```
+
+### What 4.30.1 already fixes vs. what we still carry
+
+| Fix | 4.30.1 | On reconcile |
+|---|---|---|
+| MCP response bounding | ✅ `bound.EndpointResponse` | drop ours, take upstream |
+| `which` WhyItMatters unscored | ❌ | re-apply |
+| `which` group substring match | ❌ | re-apply |
+| `which` command-tree fallback | ❌ | re-apply |
+| ID extraction duplicated store↔cli | ❌ | re-apply |
+| Mirror errors swallowed | ❌ | re-apply |
+| `AuthHeader` unreachable branch | ❌ (filed #4025) | re-apply unless fixed upstream |
+| `internal/config` tests | additive | keep |
+
+If a reprint is revisited, re-verify this table against the then-current version rather than trusting it.
+
+## Release readiness — assessed 2026-08-07
+
+Verdict: **not ready**, but the gap is distribution, not code quality.
+
+Green: `go build` exit 0 · `go vet` clean · `go test ./...` all 7 packages pass · all six novel commands have tests · `CGO_ENABLED=0` cross-build to `linux/amd64` succeeds (pure-Go `modernc.org/sqlite`, so the goreleaser config is sound) · Apache-2.0 LICENSE + NOTICE present · no secrets or student PII in tracked files · binary smoke-tests clean.
+
+Blockers:
+
+1. **Never published.** Every `README.md` install path 404s. The library is public and active; this CLI just hasn't gone through `printing-press-publish`.
+2. **`govulncheck`: GO-2026-5856** — Encrypted Client Hello privacy leak in `crypto/tls`, 4 live call traces including the MCP server's TLS `Start`. Fixed in **go1.26.5**; local toolchain is 1.26.4 and 1.26.5 is released. Build release binaries on ≥1.26.5.
+3. **No CI.** No `.github/` at all — nothing runs the suite on push.
+4. **`make lint` exits 1** — 739 real findings (126 shown; caps hide ~83%). Reviewed: **no correctness bugs**. 257 are `SA9003: empty branch` from a vestigial `if !stdinBody {}` in generated write commands (real body-building `if/else` is further down); rest is style, `noctx` in test/generated code, and dead pagination helpers. Both `internal/store` findings are benign (`sql.ErrNoRows` returns unwrapped; `hint` is overwritten in both branches).
+5. **Student-grade math still UNPROVEN** — carried over from 2026-06-23 and unchanged. This is the core value proposition and remains unvalidated against real student data.
+
+## `doctor` swallows its own cache diagnosis
+
+`doctor` prints `FAIL Cache: error` with no reason. `collectCacheReport` sets `report["error"]`; `renderCacheReport` renders `db_path`, `schema_version`, `db_bytes`, `stale_after`, `oldest_age`, `resources`, `hint` — and **never `error`**. `--agent` JSON *does* carry it, so only humans get the undiagnosable failure, in the command whose whole job is human diagnosis. `doctor.go` is `DO NOT EDIT`; confirmed still broken in the 4.30.1 template, so it affects every printed CLI with a local store.
+
+Locally the swallowed message is `database schema version 9 is newer than supported version 4; upgrade the CLI binary` — the on-disk DB was written by a newer build on this machine. That part is an environment artifact, not a product defect.
+
+## Gotchas that cost real time
+
+**`.printing-press-patches/` is write-only.** The generated `AGENTS.md` claims recording a patch means "a regen carries the intent forward". It does not — `regenmerge/*.go` has zero references to patches (upstream #3955). What actually preserves work is regen-merge's per-file verdicts: `NOVEL` files survive cleanly; hand-edits to generated files become `TEMPLATED-BODY-DRIFT`, which preserves the **whole old file** — that is what broke the reprint. A three-line local fix silently pinned an entire generated file at 4.25.0.
+
+**golangci-lint default caps hide ~83% of findings.** `max-issues-per-linter: 50` / `max-same-issues: 3`. Repo reports 126; the real number is 739. Truncation also makes findings *appear to move between files* as unrelated code shifts, which reads as a regression. When comparing branches, run with both caps set to 0.
+
+**zsh does not word-split unquoted parameter expansions.** `for c in "roster 12345"; do cmd $c; done` passes one argument, not two. Bit us twice; both times it looked like a product failure.
+
+**Piping masks exit codes.** `golangci-lint run | tail` reported exit 0 while the linter had errored on config version and never ran. Capture to a file and check `$?`.
+
+**Six other Claude sessions run on this machine.** One moved the repo mid-session. If paths break, check `~/code/cli-tools/` and siblings before assuming deletion.
+
+## Working conventions — please keep
+
+**Mutation-test every rule.** After writing a test, break the rule it covers and confirm it goes red, then revert. This caught four tests that passed and proved nothing — two where the fixture let a different code path answer first, one where a "whole-query" bonus was a substring test in disguise. Green tests are why both shipped bugs went unnoticed; don't trust a green test you haven't broken.
+
+**Verify inherited numbers.** Three figures inherited from the prior handoff were wrong: "1,042 call sites" was 523 (the 1,042 is the *endpoint* count from this doc's TL;DR — same digits, unrelated quantity); "48 new files" was 49; and the `AuthHeader` defect was described from the template but only reproduces in generated output. Re-run the decisive command before quoting a number in a PR or public issue.
+
+**Verify subagent claims.** Explorer agents overstated twice — a "byte-identical" block that differed on 21 of 134 lines, and call-site counts from a buggy grep.
+
+**Check upstream before filing.** Two of three "live bugs" found in an earlier session were already fixed in the current generator. Templates are in the module cache at `~/go/pkg/mod/github.com/mvanhorn/cli-printing-press/v4@v4.30.1/internal/generator/templates/`.
+
+**Prove equivalence before deleting a duplicate.** The ID-dedup in #4 ran both implementations over 250 combinations first; the corpus survives as `internal/store/extract_resource_id_test.go`.
+
+**ADHD output mode is ON** for this user (`/i-have-adhd`) — lead with the next action, number multi-step work, restate state each turn, concrete time estimates, no preamble or closers. Persists until they say "stop adhd mode".
+
+## Suggested skills
+
+- **`superpowers:verification-before-completion`** — evidence before assertions; never claim green without showing output.
+- **`mattpocock-skills:diagnosing-bugs`** — for any remaining review candidate or reprint failure.
+- **`mattpocock-skills:grilling`** — before committing to a reprint; a 1,197-file change deserves the treatment PR #1 got.
+- **`printing-press-publish`** — the actual path to public release.
+- Avoid `printing-press-amend` — disabled for model invocation in this user's `skillOverrides`; the user must run it.
