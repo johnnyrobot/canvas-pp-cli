@@ -20,3 +20,7 @@ HANDOFF.md
 dogfood-results.json
 apify-actor-audit-report.json
 workflow-verify-report.json
+
+# Internal agent/process docs — kept locally, mirrored to
+# ~/.claude/handoffs/canvas-pp-cli-docs/. Not for the public repo.
+docs/
