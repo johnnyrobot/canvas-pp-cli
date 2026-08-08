@@ -18,8 +18,8 @@ import (
 	"sync"
 	"time"
 
-	"canvas-pp-cli/internal/client"
-	"canvas-pp-cli/internal/store"
+	"github.com/johnnyrobot/canvas-pp-cli/internal/client"
+	"github.com/johnnyrobot/canvas-pp-cli/internal/store"
 )
 
 const networkFallbackReason = "api_unreachable"

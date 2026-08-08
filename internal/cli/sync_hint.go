@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"canvas-pp-cli/internal/store"
+	"github.com/johnnyrobot/canvas-pp-cli/internal/store"
 	"github.com/spf13/cobra"
 )
 

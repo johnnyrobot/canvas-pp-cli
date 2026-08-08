@@ -12,7 +12,7 @@ import (
 	"syscall"
 	"time"
 
-	"canvas-pp-cli/internal/cliutil"
+	"github.com/johnnyrobot/canvas-pp-cli/internal/cliutil"
 	"github.com/spf13/cobra"
 )
 

@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"canvas-pp-cli/internal/cliutil"
+	"github.com/johnnyrobot/canvas-pp-cli/internal/cliutil"
 	mcplib "github.com/mark3labs/mcp-go/mcp"
 )
 

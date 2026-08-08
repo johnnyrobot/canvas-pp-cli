@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"canvas-pp-cli/internal/cliutil"
+	"github.com/johnnyrobot/canvas-pp-cli/internal/cliutil"
 	"github.com/pelletier/go-toml/v2"
 )
 

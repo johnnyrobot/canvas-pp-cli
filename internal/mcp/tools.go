@@ -13,12 +13,12 @@ import (
 	"strings"
 	"time"
 
-	"canvas-pp-cli/internal/cli"
-	"canvas-pp-cli/internal/client"
-	"canvas-pp-cli/internal/cliutil"
-	"canvas-pp-cli/internal/config"
-	"canvas-pp-cli/internal/mcp/cobratree"
-	"canvas-pp-cli/internal/store"
+	"github.com/johnnyrobot/canvas-pp-cli/internal/cli"
+	"github.com/johnnyrobot/canvas-pp-cli/internal/client"
+	"github.com/johnnyrobot/canvas-pp-cli/internal/cliutil"
+	"github.com/johnnyrobot/canvas-pp-cli/internal/config"
+	"github.com/johnnyrobot/canvas-pp-cli/internal/mcp/cobratree"
+	"github.com/johnnyrobot/canvas-pp-cli/internal/store"
 	mcplib "github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
 )

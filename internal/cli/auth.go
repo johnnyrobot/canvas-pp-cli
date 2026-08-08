@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"os"
 
-	"canvas-pp-cli/internal/cliutil"
-	"canvas-pp-cli/internal/config"
+	"github.com/johnnyrobot/canvas-pp-cli/internal/cliutil"
+	"github.com/johnnyrobot/canvas-pp-cli/internal/config"
 	"github.com/spf13/cobra"
 )
 

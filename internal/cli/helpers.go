@@ -5,8 +5,8 @@ package cli
 
 import (
 	"bytes"
-	"canvas-pp-cli/internal/client"
-	"canvas-pp-cli/internal/cliutil"
+	"github.com/johnnyrobot/canvas-pp-cli/internal/client"
+	"github.com/johnnyrobot/canvas-pp-cli/internal/cliutil"
 	"context"
 	"encoding/json"
 	"errors"

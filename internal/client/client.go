@@ -5,8 +5,8 @@ package client
 
 import (
 	"bytes"
-	"canvas-pp-cli/internal/cliutil"
-	"canvas-pp-cli/internal/config"
+	"github.com/johnnyrobot/canvas-pp-cli/internal/cliutil"
+	"github.com/johnnyrobot/canvas-pp-cli/internal/config"
 	"context"
 	"crypto/sha256"
 	"encoding/base64"

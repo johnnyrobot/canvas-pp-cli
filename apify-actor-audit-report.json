@@ -1,9 +1,0 @@
-{
-  "dir": "\u003ccli-dir\u003e/canvas-pp-cli",
-  "research_dir": "\u003ccli-dir\u003e/20260622-151431-06e611a5",
-  "verdict": "pass",
-  "actors": null,
-  "issues": [
-    "no Apify actor references found, skipping"
-  ]
-}

@@ -1,4 +1,4 @@
-module canvas-pp-cli
+module github.com/johnnyrobot/canvas-pp-cli
 
 go 1.26
 
