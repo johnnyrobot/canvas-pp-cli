@@ -8,9 +8,9 @@ Created by [@johnnyrobot](https://github.com/johnnyrobot).
 
 ## Install
 
-**Prefer to have this done for you?** Skip to [Let your coding agent set this up](#let-your-coding-agent-set-this-up) — paste one prompt and your agent handles install, credentials and MCP wiring.
+**Prefer to have this done for you?** Skip to [Let your coding agent set this up](#let-your-coding-agent-set-this-up) — paste one prompt and your agent handles install, credentials and verification.
 
-Install **both** binaries. `canvas-pp-mcp` shells out to `canvas-pp-cli`, so they need to live in the same directory.
+`canvas-pp-cli` is all you need. The separate `canvas-pp-mcp` server is only for chat apps that can't run shell commands — see [Use with chat apps](#use-with-chat-apps-that-cant-run-commands).
 
 ### Go install
 
@@ -51,51 +51,77 @@ make build          # or: go build ./cmd/canvas-pp-cli
 make build-all      # CLI + MCP server
 ```
 
-### Agent skill
-
-`SKILL.md` in this repo is a ready-to-use agent skill describing the CLI's commands and recipes. Point your agent at it directly, or copy it into your agent's skills directory.
-
 ## Let your coding agent set this up
 
-The fastest path is to hand this to an agent and let it do the work. Paste this into Claude Code, Codex, Claude Desktop, ChatGPT, Antigravity, or any agent that can run shell commands:
+The fastest path is to hand this to an agent. Paste this into Claude Code, Codex, Antigravity, or any agent that can run shell commands:
 
-> Install the Canvas LMS CLI from https://github.com/johnnyrobot/canvas-pp-cli and wire it into this environment as an MCP server.
+> Install the Canvas LMS CLI from https://github.com/johnnyrobot/canvas-pp-cli and set it up for me.
 >
-> 1. Install both binaries: `go install github.com/johnnyrobot/canvas-pp-cli/cmd/canvas-pp-cli@latest` and `go install github.com/johnnyrobot/canvas-pp-cli/cmd/canvas-pp-mcp@latest`. If Go isn't available, download the release archive for my platform instead and put both binaries on my PATH — they must end up in the same directory.
+> 1. `go install github.com/johnnyrobot/canvas-pp-cli/cmd/canvas-pp-cli@latest` — or, if Go isn't available, download the release archive for my platform and put the binary on my PATH.
 > 2. Ask me for my Canvas host and an API token (Account → Settings → New Access Token), then set `CANVAS_BASE_URL` and `CANVAS_API_TOKEN`.
-> 3. Register `canvas-pp-mcp` as an MCP server in whatever config this environment uses, passing those two env vars.
-> 4. Verify with `canvas-pp-cli doctor`, then show me what `canvas-pp-cli which "students at risk"` returns.
+> 3. Verify with `canvas-pp-cli doctor`.
+> 4. Read `SKILL.md` from the repo so you know the commands, then show me what `canvas-pp-cli which "students at risk"` returns.
 >
-> The repo's `SKILL.md` documents every command and recipe — read it first if you need detail.
+> Use the CLI directly from the shell from now on — every command takes `--agent` for JSON output. Don't set up an MCP server; you have a terminal, so you don't need one.
 
-Two things the agent needs to get right, and the reasons they bite:
-
-- **Install both binaries into the same directory.** `canvas-pp-mcp` shells out to `canvas-pp-cli`. It looks in its own directory first, then `CANVAS_CLI_PATH`, then `PATH`. `go install` puts both in your `GOBIN`, so this happens naturally — but unpacking only one of them from a release archive produces `companion CLI binary not found`.
-- **`CANVAS_BASE_URL` is required.** Canvas has no single host; every institution runs its own. Without it, nothing resolves.
+That's the whole setup. There is no daemon and no config file to register — the CLI is the integration.
 
 ## Use with coding agents
 
-`canvas-pp-mcp` exposes the entire Canvas surface through two tools — `canvas_search` to find the right endpoint and `canvas_execute` to call it. That pair is deliberate: loading ~1,000 endpoints as individual tools would swamp any agent's context, so the agent searches first and executes second.
+**If your agent can run shell commands, just let it run the CLI.** That covers Claude Code, Codex, Google Antigravity, Cursor, Aider, and anything else with terminal access. No MCP server, no wiring, nothing to keep running.
 
-All hosts below need the same two environment variables:
+The CLI is built for this. Every command takes `--agent` for JSON plus non-interactive behavior, `--select` to project just the fields you want, and `--dry-run` to show what would happen. Point your agent at `SKILL.md` — it documents all ~1,000 endpoints' worth of commands with worked recipes.
+
+The flow an agent should use is discover, then execute:
+
+```bash
+# 1. Find the right command from a plain-English description
+canvas-pp-cli which "students at risk of failing"
+
+# 2. Run it
+canvas-pp-cli at-risk --course 12345 --since 14d --agent
+
+# 3. Project only what you need, to keep context small
+canvas-pp-cli roster 12345 --agent --select students.name,students.current_score
+```
+
+`which` exists precisely so an agent never has to hold a thousand endpoints in its head — it searches the command index and returns the handful that match, with a note on when to reach for each.
+
+For repeated analysis, sync once and query locally instead of re-hitting the API:
+
+```bash
+canvas-pp-cli sync                    # hydrate the local SQLite mirror
+canvas-pp-cli search "late work"      # FTS5 full-text search over synced data
+canvas-pp-cli tail                    # stream live changes by polling
+```
+
+`search` runs against the local mirror when the API has no search endpoint, and falls back to local automatically on a network failure — so an agent keeps working offline.
+
+### Giving an agent the skill file
+
+`SKILL.md` in this repo is a ready-to-use agent skill. Copy it wherever your agent looks for skills — for Claude Code that's `~/.claude/skills/`, for others check their docs — or just tell the agent to read it from the repo.
+
+## Use with chat apps that can't run commands
+
+Claude Desktop and ChatGPT Desktop have no shell, so they can't invoke the CLI. For those, `canvas-pp-mcp` bridges the gap: it's a thin MCP server that shells out to the same CLI binary on your behalf, exposing `canvas_search` to find an endpoint and `canvas_execute` to call it.
+
+**You only need this for shell-less hosts.** If your agent has a terminal, use the section above instead — the MCP server would just be a wrapper around a command it can already run.
+
+Install both binaries, into the same directory. `canvas-pp-mcp` locates the CLI by looking in its own directory first, then `CANVAS_CLI_PATH`, then `PATH`; installing only the server produces `companion CLI binary not found`.
+
+```bash
+go install github.com/johnnyrobot/canvas-pp-cli/cmd/canvas-pp-cli@latest
+go install github.com/johnnyrobot/canvas-pp-cli/cmd/canvas-pp-mcp@latest
+```
+
+Both hosts need the same two environment variables:
 
 | Variable | Value |
 |---|---|
-| `CANVAS_BASE_URL` | Your institution's Canvas host, e.g. `https://canvas.instructure.com` |
+| `CANVAS_BASE_URL` | Your institution's Canvas host, e.g. `https://your-school.instructure.com` |
 | `CANVAS_API_TOKEN` | Account → Settings → New Access Token |
 
-Tokens are user-scoped: the CLI can do exactly what your Canvas account can, no more.
-
-### Claude Code
-
-```bash
-claude mcp add canvas \
-  -e CANVAS_BASE_URL=https://your-school.instructure.com \
-  -e CANVAS_API_TOKEN=your-token \
-  -- canvas-pp-mcp
-```
-
-Then `claude mcp list` to confirm it registered. You can also drop `SKILL.md` into `~/.claude/skills/` so Claude Code picks up the command recipes alongside the MCP tools.
+Tokens are user-scoped: the server can do exactly what your Canvas account can, no more.
 
 ### Claude Desktop
 
@@ -115,39 +141,7 @@ Edit `claude_desktop_config.json` — on macOS `~/Library/Application Support/Cl
 }
 ```
 
-Restart Claude Desktop. If it can't find the binary, use an absolute path for `command` — desktop apps don't always inherit your shell `PATH`. `which canvas-pp-mcp` will tell you what to put there.
-
-### Codex
-
-Add to `~/.codex/config.toml`:
-
-```toml
-[mcp_servers.canvas]
-command = "canvas-pp-mcp"
-env = { CANVAS_BASE_URL = "https://your-school.instructure.com", CANVAS_API_TOKEN = "your-token" }
-```
-
-Recent Codex CLI versions also accept `codex mcp add`. If your version rejects the flags, edit the TOML directly — that path is stable.
-
-### Google Antigravity
-
-Antigravity manages MCP servers from its agent panel — open the MCP/tools settings and add a server. It takes the same JSON shape as Claude Desktop:
-
-```json
-{
-  "mcpServers": {
-    "canvas": {
-      "command": "canvas-pp-mcp",
-      "env": {
-        "CANVAS_BASE_URL": "https://your-school.instructure.com",
-        "CANVAS_API_TOKEN": "your-token"
-      }
-    }
-  }
-}
-```
-
-Use an absolute path for `command` if the server doesn't come up — same `PATH` caveat as Claude Desktop.
+Restart Claude Desktop. If the server doesn't come up, use an absolute path for `command` — desktop apps don't always inherit your shell `PATH`. `which canvas-pp-mcp` gives you the value.
 
 ### ChatGPT Desktop
 
@@ -159,13 +153,13 @@ CANVAS_API_TOKEN=your-token \
 canvas-pp-mcp -transport http -addr :7777
 ```
 
-Then add `http://localhost:7777` as a connector — this lives under developer/connector settings and has moved between releases, so check ChatGPT's current MCP documentation for where it is today.
+Then add `http://localhost:7777` as a connector. That setting lives under developer/connector settings and has moved between releases, so check ChatGPT's current MCP documentation for where it is today.
 
-Leave that process running while you use it. This transport binds a local port with no authentication of its own, so keep `-addr` on `localhost` and don't expose it to a network you don't control.
+Leave the process running while you use it. This transport binds a local port with no authentication of its own, so keep `-addr` on localhost and don't expose it to a network you don't control.
 
-### Anything else
+### Other MCP hosts
 
-Any MCP-speaking host works. Point it at the `canvas-pp-mcp` binary over stdio, or run `-transport http` and point it at the port. If your host reads `SKILL.md`-style agent skills, that file documents every command with worked examples.
+Any MCP-speaking host works the same way: point it at the `canvas-pp-mcp` binary over stdio, or run `-transport http` and point it at the port.
 
 ## Authentication
 
