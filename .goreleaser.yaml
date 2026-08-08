@@ -41,13 +41,14 @@ checksum:
   name_template: checksums.txt
 brews:
   - name: canvas-pp-cli
-    # Disabled until github.com/johnnyrobot/homebrew-tap exists — goreleaser
-    # fails the entire release if it cannot push the formula. Create that repo,
-    # then remove this line to start publishing the formula.
-    skip_upload: true
     repository:
       owner: johnnyrobot
       name: homebrew-tap
+      # The built-in Actions GITHUB_TOKEN is scoped to this repo only and cannot
+      # push to the tap. Needs a PAT with `repo` scope, stored as the
+      # HOMEBREW_TAP_GITHUB_TOKEN secret. Without it the release fails at the
+      # formula push, after the binaries have already uploaded.
+      token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
     homepage: "https://github.com/johnnyrobot/canvas-pp-cli"
     description: "The whole Canvas REST API in one Go binary — plus a local store, offline search, and cross-resource commands (roster, at-risk, standings) that no single Canvas endpoint returns."
     install: |

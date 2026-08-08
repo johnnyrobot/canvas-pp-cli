@@ -12,6 +12,15 @@ Created by [@johnnyrobot](https://github.com/johnnyrobot).
 
 `canvas-pp-cli` is all you need. The separate `canvas-pp-mcp` server is only for chat apps that can't run shell commands — see [Use with chat apps](#use-with-chat-apps-that-cant-run-commands).
 
+### Homebrew
+
+```bash
+brew tap johnnyrobot/tap
+brew install canvas-pp-cli
+```
+
+Installs both `canvas-pp-cli` and `canvas-pp-mcp`.
+
 ### Go install
 
 Requires Go 1.26.5 or newer:
