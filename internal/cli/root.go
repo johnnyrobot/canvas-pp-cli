@@ -410,10 +410,6 @@ func (f *rootFlags) newClient() (*client.Client, error) {
 	return c, nil
 }
 
-func (f *rootFlags) printJSON(w *cobra.Command, v any) error {
-	return printJSONFiltered(w.OutOrStdout(), v, f)
-}
-
 func (f *rootFlags) printTable(w *cobra.Command, headers []string, rows [][]string) error {
 	if f.asJSON {
 		return fmt.Errorf("use printJSON for JSON output")

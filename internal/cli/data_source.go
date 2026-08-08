@@ -116,25 +116,6 @@ func attachFreshness(prov DataProvenance, flags *rootFlags) DataProvenance {
 	return prov
 }
 
-// resolveRead dispatches a GET request to either the live API or local store
-// based on the --data-source flag. Returns the response data and provenance metadata.
-//
-// Parameters:
-//   - c: the HTTP client for live API calls
-//   - flags: root flags containing dataSource setting
-//   - resourceType: the store resource type name (e.g., "links", "domains")
-//   - isList: true for list endpoints, false for get-by-ID endpoints
-//   - path: the API path (e.g., "/links" or "/links/abc123")
-//   - params: query parameters for the API call
-//   - headers: per-endpoint required headers (e.g. cal-api-version, Stripe-Version)
-//     baked in by the command template at codegen time. Pass nil when the endpoint
-//     declares no per-endpoint header overrides. Without this parameter, store-backed
-//     reads on per-endpoint-versioned APIs silently get the wrong response shape
-//     (cal-com retro #334 F1).
-func resolveRead(ctx context.Context, c *client.Client, flags *rootFlags, resourceType string, isList bool, path string, params map[string]string, headers map[string]string, hintWriter io.Writer) (json.RawMessage, DataProvenance, error) {
-	return resolveReadWithStrategy(ctx, c, flags, "auto", resourceType, isList, path, params, headers, hintWriter)
-}
-
 func resolveReadWithStrategy(ctx context.Context, c *client.Client, flags *rootFlags, strategy string, resourceType string, isList bool, path string, params map[string]string, headers map[string]string, hintWriter io.Writer) (json.RawMessage, DataProvenance, error) {
 	if err := validateDataSourceStrategy(flags, strategy); err != nil {
 		return nil, DataProvenance{}, err

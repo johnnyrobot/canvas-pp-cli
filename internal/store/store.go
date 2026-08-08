@@ -925,15 +925,6 @@ func ftsMatchQuery(query string) string {
 	return strings.Join(quoted, " ")
 }
 
-func extractObjectID(obj map[string]any) string {
-	for _, key := range []string{"id", "Id", "ID", "uuid", "slug", "name"} {
-		if v, ok := obj[key]; ok {
-			return ResourceIDString(v)
-		}
-	}
-	return ""
-}
-
 // ftsRowID derives a deterministic rowid from a string ID for use with FTS5.
 // Any change to this derivation requires a StoreSchemaVersion bump and a
 // resources_fts rebuild migration for already-stamped databases.

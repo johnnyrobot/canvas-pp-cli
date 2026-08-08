@@ -24,3 +24,15 @@ workflow-verify-report.json
 # Internal agent/process docs — kept locally, mirrored to
 # ~/.claude/handoffs/canvas-pp-cli-docs/. Not for the public repo.
 docs/
+
+# Generator-era bookkeeping. Nothing reads these at runtime and the repo now
+# ships standalone rather than tracking CLI Printing Press.
+.printing-press*.json
+.printing-press-patches/
+manifest.json
+tools-manifest.json
+agentcookie.toml
+
+# Contributor/agent notes — kept locally, mirrored to ~/.claude/handoffs/
+AGENTS.md
+CLAUDE.md
