@@ -27,8 +27,11 @@ docs/
 
 # Generator-era bookkeeping. Nothing reads these at runtime and the repo now
 # ships standalone rather than tracking CLI Printing Press.
+#
+# .printing-press-patches/ is deliberately NOT ignored: AGENTS.md and CLAUDE.md
+# both require recording hand-edits there so a reprint carries the intent
+# forward, and an untracked record cannot survive a clone or reach a reviewer.
 .printing-press*.json
-.printing-press-patches/
 manifest.json
 tools-manifest.json
 agentcookie.toml
@@ -36,3 +39,6 @@ agentcookie.toml
 # Contributor/agent notes — kept locally, mirrored to ~/.claude/handoffs/
 AGENTS.md
 CLAUDE.md
+
+# Local build output (Makefile targets write here).
+bin/
