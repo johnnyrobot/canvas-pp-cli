@@ -34,8 +34,11 @@ type Client struct {
 	HTTPClient *http.Client
 	DryRun     bool
 	NoCache    bool
-	cacheDir   string
-	limiter    *cliutil.AdaptiveLimiter
+	// WriteVerify controls the post-write check that catches a mutating
+	// request Canvas accepted without applying. See writeverify.go.
+	WriteVerify WriteVerifyMode
+	cacheDir    string
+	limiter     *cliutil.AdaptiveLimiter
 }
 
 // RequestBaseURL returns the base URL used for requests.
@@ -104,11 +107,12 @@ func New(cfg *config.Config, timeout time.Duration, rateLimit float64) *Client {
 	}
 	httpClient := newHTTPClient(timeout, nil)
 	c := &Client{
-		BaseURL:    strings.TrimRight(cfg.BaseURL, "/"),
-		Config:     cfg,
-		HTTPClient: httpClient,
-		cacheDir:   cacheDir,
-		limiter:    cliutil.NewAdaptiveLimiter(rateLimit),
+		BaseURL:     strings.TrimRight(cfg.BaseURL, "/"),
+		Config:      cfg,
+		HTTPClient:  httpClient,
+		WriteVerify: WriteVerifyOn,
+		cacheDir:    cacheDir,
+		limiter:     cliutil.NewAdaptiveLimiter(rateLimit),
 	}
 	// CheckRedirect re-derives auth on each hop. Go's default replays the
 	// original Authorization header verbatim, which breaks nonce-bound
@@ -613,7 +617,16 @@ func (c *Client) doInternal(ctx context.Context, method, path string, params map
 				}
 				return env, resp.StatusCode, nil
 			}
-			return json.RawMessage(sanitizeJSONResponse(respBody)), resp.StatusCode, nil
+			sanitized := sanitizeJSONResponse(respBody)
+			// A 2xx on a mutating verb is not proof the write applied —
+			// Canvas drops parameter names it does not recognize and answers
+			// with the unchanged resource. Check before reporting success.
+			if isMutatingVerb(method) && !readOnlyIntent {
+				if vErr := c.checkWriteApplied(method, path, body, sanitized, authHeader); vErr != nil {
+					return nil, resp.StatusCode, vErr
+				}
+			}
+			return json.RawMessage(sanitized), resp.StatusCode, nil
 		}
 
 		if !binaryResponse {
