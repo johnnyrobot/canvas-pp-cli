@@ -16,9 +16,15 @@ jobs:
 
       - uses: actions/setup-go@v5
         with:
-          # Must stay >= 1.26.5: GO-2026-5856 (Encrypted Client Hello privacy
-          # leak in crypto/tls) is fixed in the toolchain, not in our code.
-          go-version: '1.26.5'
+          # Must stay >= 1.26.6. These are all fixed in the toolchain rather
+          # than in our code, so the pin is the only lever:
+          #   GO-2026-5856  Encrypted Client Hello privacy leak (crypto/tls)
+          #   GO-2026-6218  net/url
+          #   GO-2026-6090  crypto/tls
+          #   GO-2026-6089  ReadHeaderTimeout on the h2c check (net/http)
+          #   GO-2026-5972  recursion depth in encoding/asn1
+          #   GO-2026-5026  ASCII-only Punycode labels (x/net/idna via net/http)
+          go-version: '1.26.6'
           check-latest: true
 
       - name: Build
