@@ -482,13 +482,22 @@ func (c *Client) doInternal(ctx context.Context, method, path string, params map
 	}
 	targetURL := c.BaseURL + path
 
+	// Parameter names written in Rails bracket convention only reach the
+	// controller when they are form-encoded; inside a JSON body they stay
+	// literal keys and the request no-ops. See formencode.go.
 	var bodyBytes []byte
+	bodyContentType := "application/json"
 	if body != nil {
-		b, err := json.Marshal(body)
-		if err != nil {
-			return nil, 0, fmt.Errorf("marshaling body: %w", err)
+		if m, ok := railsBracketBody(body); ok {
+			bodyBytes = []byte(encodeRailsForm(m))
+			bodyContentType = formContentType
+		} else {
+			b, err := json.Marshal(body)
+			if err != nil {
+				return nil, 0, fmt.Errorf("marshaling body: %w", err)
+			}
+			bodyBytes = b
 		}
-		bodyBytes = b
 	}
 
 	// Resolve auth material before the dry-run branch so --dry-run can preview
@@ -502,7 +511,7 @@ func (c *Client) doInternal(ctx context.Context, method, path string, params map
 
 	// Build the request for dry-run display or actual execution
 	if c.DryRun {
-		return c.dryRun(method, targetURL, path, params, bodyBytes, headerOverrides, authHeader)
+		return c.dryRun(method, targetURL, path, params, bodyBytes, bodyContentType, headerOverrides, authHeader)
 	}
 
 	const maxRetries = 3
@@ -521,7 +530,7 @@ func (c *Client) doInternal(ctx context.Context, method, path string, params map
 			return nil, 0, fmt.Errorf("creating request: %w", err)
 		}
 		if bodyBytes != nil {
-			req.Header.Set("Content-Type", "application/json")
+			req.Header.Set("Content-Type", bodyContentType)
 		}
 
 		if params != nil {
@@ -655,7 +664,7 @@ func (c *Client) doInternal(ctx context.Context, method, path string, params map
 // dryRun prints the outgoing request exactly as the live path would send it,
 // using the auth material already resolved in `do()`. Never triggers a network
 // call — the caller is responsible for passing cached auth material only.
-func (c *Client) dryRun(method, targetURL, path string, params map[string]string, body []byte, headerOverrides map[string]string, authHeader string) (json.RawMessage, int, error) {
+func (c *Client) dryRun(method, targetURL, path string, params map[string]string, body []byte, bodyContentType string, headerOverrides map[string]string, authHeader string) (json.RawMessage, int, error) {
 	fmt.Fprintf(os.Stderr, "%s %s\n", method, c.displayURL(targetURL, authHeader))
 	queryPrinted := false
 	if params != nil {
@@ -677,12 +686,32 @@ func (c *Client) dryRun(method, targetURL, path string, params map[string]string
 	}
 	_ = queryPrinted
 	if body != nil {
-		var pretty json.RawMessage
-		if json.Unmarshal(body, &pretty) == nil {
-			enc := json.NewEncoder(os.Stderr)
-			enc.SetIndent("  ", "  ")
+		// A form-encoded body is not JSON; printing it verbatim keeps
+		// --dry-run an honest preview of the bytes on the wire, and shows the
+		// parameter names in the shape the API actually reads them.
+		if bodyContentType == formContentType {
+			fmt.Fprintf(os.Stderr, "  Content-Type: %s\n", bodyContentType)
 			fmt.Fprintf(os.Stderr, "  Body:\n")
-			enc.Encode(pretty)
+			for _, pair := range strings.Split(string(body), "&") {
+				name, value, _ := strings.Cut(pair, "=")
+				decodedName, err := url.QueryUnescape(name)
+				if err != nil {
+					decodedName = name
+				}
+				decodedValue, err := url.QueryUnescape(value)
+				if err != nil {
+					decodedValue = value
+				}
+				fmt.Fprintf(os.Stderr, "    %s=%s\n", decodedName, c.maskCredentialText(decodedValue, authHeader))
+			}
+		} else {
+			var pretty json.RawMessage
+			if json.Unmarshal(body, &pretty) == nil {
+				enc := json.NewEncoder(os.Stderr)
+				enc.SetIndent("  ", "  ")
+				fmt.Fprintf(os.Stderr, "  Body:\n")
+				enc.Encode(pretty)
+			}
 		}
 	}
 	if authHeader != "" {

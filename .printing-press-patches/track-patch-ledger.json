@@ -1,0 +1,13 @@
+{
+  "schema_version": 2,
+  "id": "track-patch-ledger",
+  "applied_at": "2026-08-13",
+  "base_run_id": "20260622-151431-06e611a5",
+  "base_printing_press_version": "4.25.0",
+  "summary": "Stop gitignoring .printing-press-patches/ so the patch ledger this repo's own guidance mandates is actually tracked.",
+  "reason": "AGENTS.md:71 and CLAUDE.md:59 both instruct that hand-edits to generated code be recorded under .printing-press-patches/ so a reprint carries the intent forward. .gitignore:31 excluded that whole directory, so `git ls-files .printing-press-patches/` returned 0 while the other four sibling CLIs track theirs (assist-pp-cli tracks 6). Two pre-existing records - canvas-novel-command-analyze-seam.json and canvas-review-candidates.json - existed only on one machine and would not survive a clone, which defeats the purpose of a reprint guard. The surrounding ignore rule for .printing-press*.json, manifest.json and tools-manifest.json is left in place: those are runtime-irrelevant generator artifacts, whereas a patch record is durable intent.",
+  "files": [
+    ".gitignore"
+  ],
+  "validated_outcome": "git status now reports .printing-press-patches/ as untracked content rather than ignored; the two pre-existing records plus this one are stageable. No Go code touched; full Go suite passes."
+}
