@@ -3,7 +3,7 @@ name: pp-canvas
 description: "The whole Canvas REST API in one Go binary — plus a local store, offline search, and cross-resource commands (roster, at-risk, standings) that no single Canvas endpoint returns. Trigger phrases: `canvas roster for course`, `who is missing work in canvas`, `what do I still need to grade in canvas`, `canvas course standings this term`, `audit canvas enrollments`, `use canvas-pp-cli`, `run canvas cli`."
 author: "johnnyrobot"
 license: "Apache-2.0"
-argument-hint: "<command> [args] | install cli|mcp"
+argument-hint: "<command> [args] | install"
 allowed-tools: "Read Bash"
 metadata:
   openclaw:
@@ -1609,21 +1609,6 @@ Agents should treat the CLI's path resolver as part of the runtime contract:
 - `config` contains settings like `config.toml` and profiles. `data` contains `credentials.toml`, `data.db`, cookies, and auth sidecars. `state` contains persisted queries, jobs, and `teach.log`. `cache` contains regenerable HTTP/cache files.
 - Stored secrets live in `credentials.toml` under the data dir. Existing legacy `config.toml` secrets are read for compatibility and leave `config.toml` on the first auth write.
 - Run `canvas-pp-cli doctor --fail-on warn` to surface path and credential-location warnings. `agent-context` exposes a schema v4 `paths` block for agents that need the resolved dirs.
-- For MCP, pass relocation through the MCP host config. The MCP binary does not inherit CLI flags:
-
-  ```json
-  {
-    "mcpServers": {
-      "canvas": {
-        "command": "canvas-pp-mcp",
-        "env": {
-          "CANVAS_HOME": "/srv/canvas"
-        }
-      }
-    }
-  }
-  ```
-
 Fleet precedence: an inherited per-kind env var overrides an explicit `--home` for that kind. Use `CANVAS_HOME` or per-kind vars as durable fleet levers, and use `--home` only for a single invocation. Relocation is not reversible by unsetting env vars; move files manually before clearing `CANVAS_HOME`, or `doctor` will not find credentials left under the former root.
 
 ## Agent Feedback
@@ -1683,34 +1668,8 @@ Explicit flags always win over profile values; profile values win over defaults.
 Parse `$ARGUMENTS`:
 
 1. **Empty, `help`, or `--help`** → show `canvas-pp-cli --help` output
-2. **Starts with `install`** → ends with `mcp` → MCP installation; otherwise → see Prerequisites above
+2. **Starts with `install`** → see Prerequisites above
 3. **Anything else** → Direct Use (execute as CLI command with `--agent`)
-
-## MCP Server Installation
-
-**Only for hosts that cannot run shell commands** — Claude Desktop, ChatGPT Desktop. If you can run `canvas-pp-cli` in a terminal, do that instead (see Direct Use below); `canvas-pp-mcp` just shells out to the same CLI binary, so it adds nothing for a shell-capable agent.
-
-1. Install both binaries, into the same directory. `canvas-pp-mcp` finds the CLI by looking in its own directory first, then `CANVAS_CLI_PATH`, then `$PATH`; installing only the server gives `companion CLI binary not found`:
-   ```bash
-   go install github.com/johnnyrobot/canvas-pp-cli/cmd/canvas-pp-cli@latest
-   go install github.com/johnnyrobot/canvas-pp-cli/cmd/canvas-pp-mcp@latest
-   ```
-2. Register with the host, passing both env vars. `CANVAS_BASE_URL` is required — Canvas has no single host. For Claude Desktop, add to `claude_desktop_config.json`:
-   ```json
-   {
-     "mcpServers": {
-       "canvas": {
-         "command": "canvas-pp-mcp",
-         "env": {
-           "CANVAS_BASE_URL": "https://your-school.instructure.com",
-           "CANVAS_API_TOKEN": "your-token"
-         }
-       }
-     }
-   }
-   ```
-   For ChatGPT Desktop, run `canvas-pp-mcp -transport http -addr :7777` and add `http://localhost:7777` as a connector.
-3. The server exposes `canvas_search` to find an endpoint and `canvas_execute` to call it.
 
 ## Direct Use
 
