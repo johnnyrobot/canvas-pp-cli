@@ -14,11 +14,3 @@ install:
 
 clean:
 	rm -rf bin/
-
-build-mcp:
-	go build -o bin/canvas-pp-mcp ./cmd/canvas-pp-mcp
-
-install-mcp:
-	go install ./cmd/canvas-pp-mcp
-
-build-all: build build-mcp

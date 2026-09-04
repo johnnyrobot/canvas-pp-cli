@@ -45,6 +45,7 @@ type rootFlags struct {
 	rateLimit           float64
 	maxAge              time.Duration
 	dataSource          string
+	verifyWrites        string
 	freshnessMeta       any
 
 	// deliverBuf captures command output when --deliver is set to a
@@ -188,6 +189,7 @@ See README.md or the bundled SKILL.md for recipes.`,
 	rootCmd.PersistentFlags().StringVar(&flags.profileName, "profile", "", "Apply values from a saved profile (see 'canvas-pp-cli profile list')")
 	rootCmd.PersistentFlags().StringVar(&flags.deliverSpec, "deliver", "", "Route output to a sink: stdout (default), file:<path>, webhook:<url>")
 	rootCmd.PersistentFlags().Float64Var(&flags.rateLimit, "rate-limit", 0, "Max requests per second (0 to disable)")
+	rootCmd.PersistentFlags().StringVar(&flags.verifyWrites, "verify-writes", "on", "After a write, check the response reflects what was sent: on (fail on a body Canvas ignored), warn (stderr only), off")
 
 	rootCmd.PersistentPreRunE = func(cmd *cobra.Command, args []string) error {
 		if _, err := cliutil.SetHomeOverride(flags.homePath); err != nil {
@@ -407,6 +409,11 @@ func (f *rootFlags) newClient() (*client.Client, error) {
 	c := client.New(cfg, f.timeout, f.rateLimit)
 	c.DryRun = f.dryRun
 	c.NoCache = f.noCache
+	mode, err := client.ParseWriteVerifyMode(f.verifyWrites)
+	if err != nil {
+		return nil, usageErr(err)
+	}
+	c.WriteVerify = mode
 	return c, nil
 }
 
