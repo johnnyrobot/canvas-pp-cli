@@ -48,7 +48,11 @@ type rootFlags struct {
 	verifyWrites        string
 	// jobLabel names the job a run's changes belong to, so Canvas Builder can
 	// show them together and undo them together.
-	jobLabel      string
+	jobLabel string
+	// sandboxActive is true when this run is inside Canvas Builder. It changes
+	// what the CLI says rather than what it does: Canvas Builder manages the
+	// token, so an auth error here never suggests setting one.
+	sandboxActive bool
 	freshnessMeta any
 
 	// deliverBuf captures command output when --deliver is set to a
@@ -409,6 +413,11 @@ func (f *rootFlags) newClient() (*client.Client, error) {
 	cfg, err := config.Load(f.configPath)
 	if err != nil {
 		return nil, configErr(err)
+	}
+	if cfg.Profile != nil {
+		// Set, never cleared: Task 5's ensureSandbox runs first on the help
+		// path, where there is no config to load.
+		f.sandboxActive = true
 	}
 	c := client.New(cfg, f.timeout, f.rateLimit)
 	c.DryRun = f.dryRun

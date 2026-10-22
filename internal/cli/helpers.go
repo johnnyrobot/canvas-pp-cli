@@ -7,6 +7,7 @@ import (
 	"bytes"
 	"github.com/johnnyrobot/canvas-pp-cli/internal/client"
 	"github.com/johnnyrobot/canvas-pp-cli/internal/cliutil"
+	"github.com/johnnyrobot/canvas-pp-cli/internal/sandbox"
 	"context"
 	"encoding/json"
 	"errors"
@@ -115,6 +116,25 @@ func rateLimitErr(err error) error { return &cliError{code: 7, err: err} }
 // it may or may not have happened. The agent has to look at the course before
 // it tries again. Hand-authored for Canvas Builder; see client/outcome.go.
 func outcomeUnknownErr(err error) error { return &cliError{code: 8, err: err} }
+
+// canvasBuilderRefusal is a refusedErr's inner error. It keeps the status
+// Canvas Builder answered with, so the envelope can report it, and its
+// Error() is the gateway's sentence and nothing else.
+type canvasBuilderRefusal struct {
+	msg    string
+	status int
+}
+
+func (e *canvasBuilderRefusal) Error() string { return e.msg }
+
+// refusedErr is exit 9: Canvas Builder stopped this. The message is passed
+// through word for word, with no hint added — Canvas Builder already said what
+// happened, and anything this CLI guessed on top would be a second, weaker
+// explanation of someone else's decision. status is 0 when the CLI stopped the
+// command before sending it. Hand-authored for Canvas Builder.
+func refusedErr(msg string, status int) error {
+	return &cliError{code: 9, err: &canvasBuilderRefusal{msg: msg, status: status}}
+}
 
 // partialFailureErr signals that the upstream API returned a 2xx with a
 // body shape indicating some operations in a batch failed (e.g. Google
@@ -565,6 +585,40 @@ func writeOutcomeUnknownEnvelope(flags *rootFlags, err error) {
 	})
 }
 
+// writeRefusalEnvelope is the exit-9 envelope. "refused_by" is there so an
+// agent can tell Canvas Builder's answer apart from Canvas's own without
+// matching the message text, and "status" is what Canvas Builder answered
+// with, or 0 when the CLI stopped the command before it sent anything.
+// Hand-authored for Canvas Builder.
+func writeRefusalEnvelope(flags *rootFlags, err error) {
+	if flags == nil || !flags.asJSON {
+		return
+	}
+	status := 0
+	var refusal *canvasBuilderRefusal
+	if errors.As(err, &refusal) {
+		status = refusal.status
+	}
+	_ = json.NewEncoder(os.Stdout).Encode(map[string]any{
+		"error":      err.Error(),
+		"code":       9,
+		"status":     status,
+		"refused_by": "Canvas Builder",
+	})
+}
+
+// authHint adds the hints that follow an auth error, except in Canvas Builder,
+// where they are both wrong and unsafe to print: Canvas Builder manages this
+// workspace's token, so an agent told to export one of its own would go
+// looking for a token with more reach than it is meant to have (ADR 0001).
+// Hand-authored for Canvas Builder.
+func authHint(flags *rootFlags, err error, hint string) error {
+	if flags != nil && flags.sandboxActive {
+		return authErr(err)
+	}
+	return authErr(fmt.Errorf("%w%s", err, hint))
+}
+
 // classifyAPIError maps API errors to structured exit codes with actionable hints.
 func classifyAPIError(err error, flags *rootFlags) error {
 	var typed *cliError
@@ -582,6 +636,21 @@ func classifyAPIError(err error, flags *rootFlags) error {
 		return classified
 	}
 
+	// Then Canvas Builder's own refusals, which are decisions rather than
+	// statuses to classify: the gateway's sentence is the whole message, and
+	// exit 9 says who stopped it. This happens in every mode, because a
+	// gateway answer can only come from a gateway. The unknown-outcome message
+	// is the one exception, and the branch above has already taken it.
+	// Hand-authored for Canvas Builder.
+	var failure *client.APIError
+	if errors.As(err, &failure) {
+		if refusalMsg, ok := sandbox.CanvasBuilderMessage([]byte(failure.Body)); ok && refusalMsg != sandbox.MsgUnknownOutcome {
+			classified := refusedErr(refusalMsg, failure.StatusCode)
+			writeRefusalEnvelope(flags, classified)
+			return classified
+		}
+	}
+
 	msg := err.Error()
 	switch {
 	case strings.Contains(msg, "HTTP 409"):
@@ -594,19 +663,19 @@ func classifyAPIError(err error, flags *rootFlags) error {
 	case errors.Is(err, client.ErrPlaceholderCredential):
 		return authErr(err)
 	case strings.Contains(msg, "HTTP 400") && cliutil.LooksLikeAuthError(msg):
-		return authErr(fmt.Errorf("%w\nhint: the API rejected the request — this usually means auth is missing or invalid."+
+		return authHint(flags, err, "\nhint: the API rejected the request — this usually means auth is missing or invalid."+
 			"\n      Set credentials with: export CANVAS_API_TOKEN=\"your-token-here\" CANVAS_ACCESS_TOKEN=\"your-token-here\""+
 			"\n      Run 'canvas-pp-cli doctor' to check auth status."+
-			"\n      Response: "+cliutil.SanitizeErrorBody(msg), err))
+			"\n      Response: "+cliutil.SanitizeErrorBody(msg))
 	case strings.Contains(msg, "HTTP 401"):
-		return authErr(fmt.Errorf("%w\nhint: check your token."+
+		return authHint(flags, err, "\nhint: check your token."+
 			"\n      Set credentials with: export CANVAS_API_TOKEN=\"your-token-here\" CANVAS_ACCESS_TOKEN=\"your-token-here\""+
-			"\n      Run 'canvas-pp-cli doctor' to check auth status.", err))
+			"\n      Run 'canvas-pp-cli doctor' to check auth status.")
 	case strings.Contains(msg, "HTTP 403"):
-		return authErr(fmt.Errorf("%w\nhint: permission denied. Your credentials are valid but lack access to this resource."+
+		return authHint(flags, err, "\nhint: permission denied. Your credentials are valid but lack access to this resource."+
 			"\n      Check that your credentials have the required permissions and match the API's expected auth scheme."+
 			"\n      Set credentials with: export CANVAS_API_TOKEN=\"your-token-here\" CANVAS_ACCESS_TOKEN=\"your-token-here\""+
-			"\n      Run 'canvas-pp-cli doctor' to check auth status.", err))
+			"\n      Run 'canvas-pp-cli doctor' to check auth status.")
 	case strings.Contains(msg, "HTTP 404"):
 		return notFoundErr(fmt.Errorf("%w\nhint: resource not found. Run the 'list' command to see available items", err))
 	case strings.Contains(msg, "HTTP 429"):

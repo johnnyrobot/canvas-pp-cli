@@ -139,6 +139,9 @@ type WorkspaceOpts struct {
 	// OmitClosureDays writes a workspace.json with no closure_days at all,
 	// for the course whose instructor hasn't entered them yet.
 	OmitClosureDays bool
+	// OmitSandbox leaves the sandbox key out of config.toml, so the same
+	// layout runs as the plain CLI. It is how a test compares the two modes.
+	OmitSandbox bool
 }
 
 // Home is where Workspace put things.
@@ -168,7 +171,9 @@ func Workspace(t testing.TB, f *Fake, o WorkspaceOpts) Home {
 	}
 
 	cfg := &strings.Builder{}
-	fmt.Fprintf(cfg, "sandbox = true\n")
+	if !o.OmitSandbox {
+		fmt.Fprintf(cfg, "sandbox = true\n")
+	}
 	fmt.Fprintf(cfg, "base_url = %s\n", tomlString(f.URL))
 	fmt.Fprintf(cfg, "gateway = %s\n", tomlString(f.URL))
 	fmt.Fprintf(cfg, "workspace = %s\n", tomlString(ws))
