@@ -1,0 +1,149 @@
+// Copyright 2026 johnnyrobot and contributors. Licensed under Apache-2.0. See LICENSE.
+
+// Hand-authored: the words Canvas Builder and this CLI use when they stop an
+// agent. Plain English, and they never say "sandbox" — the glossary's word for
+// all of this is Canvas Builder.
+
+package sandbox
+
+import (
+	"encoding/json"
+	"errors"
+	"net/url"
+	"strconv"
+	"strings"
+	"time"
+)
+
+// The gateway's own messages, copied verbatim from the Canvas Builder repo:
+// gateway/internal/policy/policy.go (all but the last) and
+// gateway/internal/proxy/errors.go (MsgNotRecorded). Each arrives as
+// {"errors":[{"message":"…"}]}. The CLI recognises them by exact text, so
+// TestGatewayMessagesMatchV2 checks these copies against that source.
+const (
+	// MsgBlocked is HTTP 403.
+	MsgBlocked = "Canvas Builder doesn't let agents use this part of Canvas."
+	// MsgUnknownToken is HTTP 403.
+	MsgUnknownToken = "This isn't a key Canvas Builder gave out."
+	// MsgWrongCourse is HTTP 403.
+	MsgWrongCourse = "This workspace's agent can only work on its own course."
+	// MsgQuarantine is HTTP 423.
+	MsgQuarantine = "This course is still being checked for student material. Try again after the instructor finishes the check."
+	// MsgDenied is HTTP 403.
+	MsgDenied = "The instructor didn't approve this change."
+	// MsgUnknownOutcome is HTTP 502, and the CLI turns it into exit code 8.
+	MsgUnknownOutcome = "Canvas didn't answer, so this change may or may not have happened. Check the course before trying again."
+	// MsgTooLarge is HTTP 413.
+	MsgTooLarge = "This request is too large for Canvas Builder to check. Try a smaller upload."
+	// MsgNotRecorded is HTTP 503 or 400.
+	MsgNotRecorded = "Canvas Builder couldn't record this change, so it didn't send it to Canvas. Try again in a moment."
+)
+
+// The CLI's own messages.
+const (
+	MsgSettings              = "Canvas Builder's settings for this workspace are missing or damaged, so the Canvas CLI won't run. Open the course from Canvas Builder again."
+	MsgExtraHeaders          = "Canvas Builder's settings can't add extra headers to Canvas requests."
+	MsgStudentData           = "This command works with student data, which Canvas Builder keeps out of its copy of Canvas."
+	MsgTokenManaged          = "Canvas Builder manages this workspace's agent token, so it can't be changed here."
+	MsgStaysLocal            = "In Canvas Builder the Canvas CLI sends nothing anywhere except Canvas Builder, so this is turned off."
+	MsgNoJobLabel            = `This change has no job label, so it can't be undone together with the rest of its job. Add --job "<name of the job>".`
+	MsgBadJobLabel           = `A job label is a short name on one line, such as --job "Move to spring 2027".`
+	MsgOutsideWorkspace      = "Canvas Builder only uploads and downloads files inside this course's workspace folder. Use a path inside it, such as materials/."
+	MsgWorkspace             = "This course workspace's workspace.json is missing or damaged. Open the course from Canvas Builder again."
+	MsgNoClosureDays         = "This course workspace doesn't list its closure days yet, so the date check didn't run. Ask the instructor to add them in Canvas Builder."
+	MsgClosuresFromWorkspace = "In Canvas Builder, closure days come from the course workspace, so --closures isn't used."
+	MsgChecksMissing         = "Canvas Builder's checks aren't set up for this workspace, so no checks ran."
+	MsgDownloadShort         = "The download stopped before the whole file arrived, so nothing was saved."
+)
+
+// gatewayMessages is every message the gateway writes. CanvasBuilderMessage
+// matches on this set, so a Canvas message that happens to arrive in the same
+// envelope is left alone.
+var gatewayMessages = []string{
+	MsgBlocked, MsgUnknownToken, MsgWrongCourse, MsgQuarantine,
+	MsgDenied, MsgUnknownOutcome, MsgTooLarge, MsgNotRecorded,
+}
+
+// ApprovalNotice tells the agent its change is waiting on the instructor, and
+// how long that can take, so it waits instead of retrying.
+func ApprovalNotice(d time.Duration) string {
+	return "Canvas Builder is asking the instructor to approve this change. This can take up to " + formatWait(d) + "."
+}
+
+// StillWaitingNotice is the same thing said again, part-way through the wait.
+func StillWaitingNotice(d time.Duration) string {
+	return "Still waiting for an answer. If Canvas Builder is asking the instructor about this change, this can take up to " + formatWait(d) + "."
+}
+
+// NewError wraps one of the messages above as an error. The messages are
+// user-facing sentences, with a capital and a full stop, because the gateway and
+// this CLI match them by exact text; passing one through here keeps staticcheck
+// from reading it as a constant error string it should rewrite (ST1005).
+func NewError(msg string) error { return errors.New(msg) }
+
+// NotGateway says the CLI won't use an address that isn't Canvas Builder's. It
+// names the scheme and host only: a file URL's path and query carry a verifier,
+// which is a credential and never belongs in a message.
+func NotGateway(gw *url.URL, raw string) error {
+	return errors.New("The Canvas CLI here only talks to Canvas Builder at " + gatewayText(gw) + ", so it won't use " + originText(raw) + ".")
+}
+
+// CanvasBuilderMessage returns the first gateway message in an error envelope.
+// It reports false for Canvas's own errors and for a body that isn't the
+// envelope at all, such as an HTML error page from something in between.
+func CanvasBuilderMessage(body []byte) (string, bool) {
+	var envelope struct {
+		Errors []struct {
+			Message string `json:"message"`
+		} `json:"errors"`
+	}
+	if err := json.Unmarshal(body, &envelope); err != nil {
+		return "", false
+	}
+	for _, e := range envelope.Errors {
+		for _, known := range gatewayMessages {
+			if e.Message == known {
+				return e.Message, true
+			}
+		}
+	}
+	return "", false
+}
+
+// formatWait says a duration the way a person would: whole minutes as minutes,
+// anything else as seconds.
+func formatWait(d time.Duration) string {
+	if d >= time.Minute && d%time.Minute == 0 {
+		return plural(int(d/time.Minute), "minute")
+	}
+	seconds := int(d.Round(time.Second) / time.Second)
+	if seconds < 1 {
+		seconds = 1
+	}
+	return plural(seconds, "second")
+}
+
+func plural(n int, unit string) string {
+	if n == 1 {
+		return "1 " + unit
+	}
+	return strconv.Itoa(n) + " " + unit + "s"
+}
+
+func gatewayText(gw *url.URL) string {
+	if gw == nil {
+		return "this course's workspace"
+	}
+	return (&url.URL{Scheme: gw.Scheme, Host: gw.Host}).String()
+}
+
+// originText reduces a URL to scheme://host. Anything that isn't a URL with
+// both is described rather than echoed, so a malformed value can't put
+// arbitrary text in a message.
+func originText(raw string) string {
+	u, err := url.Parse(strings.TrimSpace(raw))
+	if err != nil || u.Scheme == "" || u.Host == "" {
+		return "that address"
+	}
+	return u.Scheme + "://" + u.Host
+}
