@@ -56,7 +56,6 @@ const (
 	MsgBadJobLabel           = `A job label is a short name on one line, such as --job "Move to spring 2027".`
 	MsgOutsideWorkspace      = "Canvas Builder only uploads and downloads files inside this course's workspace folder. Use a path inside it, such as materials/."
 	MsgWorkspace             = "This course workspace's workspace.json is missing or damaged. Open the course from Canvas Builder again."
-	MsgNoClosureDays         = "This course workspace doesn't list its closure days yet, so the date check didn't run. Ask the instructor to add them in Canvas Builder."
 	MsgClosuresFromWorkspace = "In Canvas Builder, closure days come from the course workspace, so --closures isn't used."
 	MsgChecksMissing         = "Canvas Builder's checks aren't set up for this workspace, so no checks ran."
 	MsgDownloadShort         = "The download stopped before the whole file arrived, so nothing was saved."

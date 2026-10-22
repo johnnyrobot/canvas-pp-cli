@@ -95,7 +95,7 @@ var recipes = []recipe{
 				Line:    `canvas-pp-cli pages update [Check: course id] [Check: page url] --stdin --agent --job "Move to [Check: term name]" < page.json`,
 			},
 			{
-				Say:     "Check everything. The dates check is the one that matters here: it reports a date that now lands on a closure day, or outside the term you just set. If `check all` exits 10 saying the workspace lists no closure days, the instructor has not entered the term's holidays yet: run `check a11y`, `check placeholders` and `check links` by name, and tell the instructor the date check is waiting on those days.",
+				Say:     "Check everything. The dates check is the one that matters here: it reports a date that now lands on a closure day, or outside the term you just set. If the course's closure days have not been entered yet, the report says the closure-day part of the date check was not checked and checks everything else; pass that line on to the instructor rather than reporting the dates as clean.",
 				Command: "check",
 				Line:    "canvas-pp-cli check all --agent",
 			},
@@ -125,7 +125,7 @@ var recipes = []recipe{
 				Line:    `canvas-pp-cli pages update [Check: course id] [Check: page url] --stdin --agent --job "Accessibility fixes for [Check: page title]" < page.json`,
 			},
 			{
-				Say:     "Check everything, not just accessibility. Replacing a body can break a link or leave a placeholder behind, and those are different checks. If `check all` exits 10 saying the workspace lists no closure days, the instructor has not entered the term's holidays yet: run `check a11y`, `check placeholders` and `check links` by name, and tell the instructor the date check is waiting on those days.",
+				Say:     "Check everything, not just accessibility. Replacing a body can break a link or leave a placeholder behind, and those are different checks. If the course's closure days have not been entered yet, the report says the closure-day part of the date check was not checked and checks everything else; pass that line on to the instructor rather than reporting the dates as clean.",
 				Command: "check",
 				Line:    "canvas-pp-cli check all --agent",
 			},
@@ -160,7 +160,7 @@ var recipes = []recipe{
 				Say: "Write the review. Say what you saw and where you saw it, and keep what you think separate from what the course says — the instructor can judge an opinion they can see is yours. This recipe changes nothing: if they want a change made, that is a new job with its own job label.",
 			},
 			{
-				Say:     "Run the checks and include what they report. They catch the mechanical problems a reader skims past, which leaves your review free to be about the design. If `check all` exits 10 saying the workspace lists no closure days, the instructor has not entered the term's holidays yet: run `check a11y`, `check placeholders` and `check links` by name, and tell the instructor the date check is waiting on those days.",
+				Say:     "Run the checks and include what they report. They catch the mechanical problems a reader skims past, which leaves your review free to be about the design. If the course's closure days have not been entered yet, the report says the closure-day part of the date check was not checked and checks everything else; pass that line on to the instructor rather than reporting the dates as clean.",
 				Command: "check",
 				Line:    "canvas-pp-cli check all --agent",
 			},
@@ -195,7 +195,7 @@ var recipes = []recipe{
 				Line:    "canvas-pp-cli pages create [Check: course id] --stdin --agent --job \"Add the AI use guide\" < page.json",
 			},
 			{
-				Say:     "Check everything. A new page is new markup, and the accessibility check is what tells you whether the table you just wrote has a header row. If `check all` exits 10 saying the workspace lists no closure days, the instructor has not entered the term's holidays yet: run `check a11y`, `check placeholders` and `check links` by name, and tell the instructor the date check is waiting on those days.",
+				Say:     "Check everything. A new page is new markup, and the accessibility check is what tells you whether the table you just wrote has a header row. If the course's closure days have not been entered yet, the report says the closure-day part of the date check was not checked and checks everything else; pass that line on to the instructor rather than reporting the dates as clean.",
 				Command: "check",
 				Line:    "canvas-pp-cli check all --agent",
 			},
@@ -232,7 +232,7 @@ var recipes = []recipe{
 				Line:    `canvas-pp-cli modules create-2 [Check: course id] [Check: new module id] --module-item-type Page --module-item-page-url [Check: page url] --module-item-title "[Check: what this week is called]" --agent --job "Add [Check: what this week is called]"`,
 			},
 			{
-				Say:     "Check what you built. The links check is what tells you an embed address is wrong; the accessibility check is what tells you an image went up without alt text. If `check all` exits 10 saying the workspace lists no closure days, the instructor has not entered the term's holidays yet: run `check a11y`, `check placeholders` and `check links` by name, and tell the instructor the date check is waiting on those days.",
+				Say:     "Check what you built. The links check is what tells you an embed address is wrong; the accessibility check is what tells you an image went up without alt text. If the course's closure days have not been entered yet, the report says the closure-day part of the date check was not checked and checks everything else; pass that line on to the instructor rather than reporting the dates as clean.",
 				Command: "check",
 				Line:    "canvas-pp-cli check all --agent",
 			},
@@ -262,7 +262,7 @@ var recipes = []recipe{
 				Line:    `canvas-pp-cli pages update [Check: course id] [Check: page url] --stdin --agent --job "Add [Check: what the image shows]" < page.json`,
 			},
 			{
-				Say:     "Check everything. The accessibility check reads the alt text and the links check follows the src, so between them they tell you whether this worked. If `check all` exits 10 saying the workspace lists no closure days, the instructor has not entered the term's holidays yet: run `check a11y`, `check placeholders` and `check links` by name, and tell the instructor the date check is waiting on those days.",
+				Say:     "Check everything. The accessibility check reads the alt text and the links check follows the src, so between them they tell you whether this worked. If the course's closure days have not been entered yet, the report says the closure-day part of the date check was not checked and checks everything else; pass that line on to the instructor rather than reporting the dates as clean.",
 				Command: "check",
 				Line:    "canvas-pp-cli check all --agent",
 			},

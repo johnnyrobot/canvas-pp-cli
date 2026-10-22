@@ -1593,7 +1593,7 @@ Two things the recipes spell out and are easy to get wrong on your own:
 - `--agent` shortens lists, and a page body is one of the things it leaves out. A read that needs the text — `pages index --include body` — also needs `--select url,title,body`, because `--select` takes precedence over the shortening.
 - One `assignments bulk-update` list may name at most 500 assignments, and nothing splits a longer one for you: Canvas Builder refuses the whole list and says to send it as several changes of 500 or fewer. Count the assignments before you send, and for a course with more than 500 write the lists yourself — at most 500 each, the same `--job` label on every one. The instructor is asked to approve each list.
 
-If `check all` exits 10 saying the workspace lists no closure days, the instructor has not entered the term's holidays yet. That is not a reason to leave the job unfinished: run `check a11y`, `check placeholders` and `check links` by name, report what they say, and tell the instructor the date check is waiting on those days.
+If the course's closure days have not been entered yet, no check is held up, `check dates` by name included. The date check reports one not-checked entry about the course, saying it could not tell whether anything is due on a closure day, and checks the rest of the dates as usual. Report that entry as it stands: a rule nobody could apply is not a rule that passed, and the instructor is the one who can enter the days.
 
 
 ### Course roster as JSON for an agent

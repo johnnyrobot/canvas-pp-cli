@@ -62,7 +62,9 @@ func newCheckCmd(flags *rootFlags) *cobra.Command {
 
 The report is cb-checks' own, printed as it comes. In Canvas Builder the course
 and its closure days come from the course workspace, so neither has to be
-given.`,
+given. A workspace whose closure days the instructor hasn't entered yet costs
+one part of the date check: the report says that part wasn't checked, and the
+rest of it ran.`,
 		Example: `  # Check everything
   canvas-pp-cli check all
 
@@ -91,10 +93,18 @@ given.`,
 
 			var command []string
 			var localHost string
-			days := strings.TrimSpace(closures)
+			// days is nil when nobody has said what the course's closure days
+			// are, which is not the same as saying it has none. cb-checks then
+			// reports the closure-day rule as not checked and checks the rest
+			// of the dates anyway (JR-59).
+			var days *string
+			if cmd.Flags().Changed("closures") {
+				given := strings.TrimSpace(closures)
+				days = &given
+			}
 
 			if profile != nil {
-				if days != "" {
+				if days != nil && *days != "" {
 					return usageErr(sandbox.NewError(sandbox.MsgClosuresFromWorkspace))
 				}
 				command = profile.ChecksCommand
@@ -110,15 +120,17 @@ given.`,
 				if courseID == 0 {
 					courseID = ws.CourseID
 				}
-				// Closure days are the date check's business, and only it is
-				// held up by their absence: a course whose instructor hasn't
-				// entered them yet can still be checked for everything else.
-				// An empty list is an answer — this course closes on no days —
-				// and only a missing one isn't.
-				if ws.ClosureDays == nil && (name == "dates" || name == "all") {
-					return configErr(sandbox.NewError(sandbox.MsgNoClosureDays))
+				// An empty list is an answer — this course closes on no days
+				// — and a missing one isn't, so it is passed on as nothing
+				// said rather than as none. Closure days are one rule of the
+				// date check, and a course whose instructor hasn't entered
+				// them yet is still worth checking: holding up the whole run
+				// over them taught agents to skip the check instead.
+				days = nil
+				if ws.ClosureDays != nil {
+					joined := strings.Join(ws.ClosureDays, ",")
+					days = &joined
 				}
-				days = strings.Join(ws.ClosureDays, ",")
 			} else {
 				command = c.Config.ChecksCommand
 				if len(command) == 0 {
@@ -178,13 +190,22 @@ given.`,
 // runChecks runs cb-checks over one course snapshot and returns its report.
 // The snapshot goes in on stdin: it is the whole course's text, which is too
 // much for a command line and has no business in a process listing.
-func runChecks(ctx context.Context, command []string, name, days, localHost string, snapshot []byte) ([]byte, error) {
+//
+// A nil days leaves --closures off altogether, which is how cb-checks is told
+// that nobody has said; --closures with nothing after it says the course
+// closes on no days. The two answers are different and only one of them is a
+// reason for the date check to report anything.
+func runChecks(ctx context.Context, command []string, name string, days *string, localHost string, snapshot []byte) ([]byte, error) {
 	ctx, cancel := context.WithTimeout(ctx, checksTimeLimit)
 	defer cancel()
 
 	args := make([]string, 0, len(command)+6)
 	args = append(args, command[1:]...)
-	args = append(args, name, "--snapshot", "-", "--closures", days, "--local-host", localHost)
+	args = append(args, name, "--snapshot", "-")
+	if days != nil {
+		args = append(args, "--closures", *days)
+	}
+	args = append(args, "--local-host", localHost)
 
 	stdout, stderr := &bytes.Buffer{}, &bytes.Buffer{}
 	helper := exec.CommandContext(ctx, command[0], args...)

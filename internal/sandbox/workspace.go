@@ -27,7 +27,8 @@ type Workspace struct {
 // missing file, JSON that won't parse, and a missing or zero course_id are all
 // the same thing to the agent, and the one thing that helps is opening the
 // course from Canvas Builder again. A missing closure_days is not a fault; it
-// leaves ClosureDays nil, which the date check reports as MsgNoClosureDays.
+// leaves ClosureDays nil, which check passes on as nothing said, and the date
+// check reports its closure-day rule as not checked.
 func ReadWorkspace(dir string) (Workspace, error) {
 	body, err := os.ReadFile(filepath.Join(dir, "workspace.json"))
 	if err != nil {

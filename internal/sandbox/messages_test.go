@@ -146,7 +146,7 @@ func TestMessagesAvoidForbiddenWords(t *testing.T) {
 		MsgBlocked, MsgUnknownToken, MsgWrongCourse, MsgQuarantine, MsgDenied,
 		MsgUnknownOutcome, MsgTooLarge, MsgNotRecorded, MsgSettings, MsgExtraHeaders,
 		MsgStudentData, MsgTokenManaged, MsgStaysLocal, MsgNoJobLabel, MsgBadJobLabel,
-		MsgOutsideWorkspace, MsgWorkspace, MsgNoClosureDays, MsgClosuresFromWorkspace,
+		MsgOutsideWorkspace, MsgWorkspace, MsgClosuresFromWorkspace,
 		MsgChecksMissing, MsgDownloadShort, MsgTokenSetup,
 		fmt.Sprintf(MsgTooManyChangesFmt, 500),
 		ApprovalNotice(2 * time.Minute), StillWaitingNotice(2 * time.Minute),

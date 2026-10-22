@@ -221,7 +221,11 @@ func TestCheckAllPassesThrough(t *testing.T) {
 	}
 }
 
-func TestCheckNeedsClosureDays(t *testing.T) {
+// TestCheckClosureDays covers the three answers a course workspace can give
+// about its closure days. Only one of them is "none"; the other two are a list
+// and nothing said, and nothing said is passed on as nothing said rather than
+// being turned into none or into a refusal (JR-59).
+func TestCheckClosureDays(t *testing.T) {
 	t.Run("the instructor hasn't entered them", func(t *testing.T) {
 		f := gatewaytest.New(t)
 		checkCourse(f, "<p>Week 1</p>")
@@ -231,14 +235,19 @@ func TestCheckNeedsClosureDays(t *testing.T) {
 			OmitClosureDays: true,
 		})
 
+		// The date check still runs: --closures is left off altogether, and
+		// cb-checks reports the one rule it can't apply as not checked while
+		// checking the rest of the dates. Refusing the whole run over a list
+		// the agent can't supply only taught agents to skip the check.
 		stdout, stderr, code := runCLI(t, "check", "dates")
-		if code != 10 {
-			t.Fatalf("exit %d, want 10\nstdout: %s\nstderr: %s", code, stdout, stderr)
+		if code != 0 {
+			t.Fatalf("exit %d\nstdout: %s\nstderr: %s", code, stdout, stderr)
 		}
-		if !strings.Contains(stderr, sandbox.MsgNoClosureDays) {
-			t.Errorf("stderr doesn't say the closure days are missing:\n%s", stderr)
+		got := readRun(t, record)
+		want := []string{"dates", "--snapshot", "-", "--local-host", f.HostPort()}
+		if !slices.Equal(got.Argv, want) {
+			t.Errorf("the checks ran as %q,\nwant %q", got.Argv, want)
 		}
-		neverRan(t, record)
 	})
 
 	t.Run("a check that doesn't use them", func(t *testing.T) {
@@ -252,13 +261,35 @@ func TestCheckNeedsClosureDays(t *testing.T) {
 
 		// Closure days are the date check's business. A course whose
 		// instructor hasn't entered them yet can still be checked for
-		// accessibility.
+		// accessibility, and that check is handed no closure days either way.
 		stdout, stderr, code := runCLI(t, "check", "a11y")
 		if code != 0 {
 			t.Fatalf("exit %d\nstdout: %s\nstderr: %s", code, stdout, stderr)
 		}
 		got := readRun(t, record)
-		want := []string{"a11y", "--snapshot", "-", "--closures", "", "--local-host", f.HostPort()}
+		want := []string{"a11y", "--snapshot", "-", "--local-host", f.HostPort()}
+		if !slices.Equal(got.Argv, want) {
+			t.Errorf("the checks ran as %q,\nwant %q", got.Argv, want)
+		}
+	})
+
+	t.Run("all four with none entered", func(t *testing.T) {
+		f := gatewaytest.New(t)
+		checkCourse(f, "<p>Week 1</p>")
+		record := helperEnv(t)
+		gatewaytest.Workspace(t, f, gatewaytest.WorkspaceOpts{
+			ChecksCommand:   checksCommand(),
+			OmitClosureDays: true,
+		})
+
+		// check all is the one an agent reaches for first, so it is the one
+		// that must not be held up by a list nobody has entered.
+		stdout, stderr, code := runCLI(t, "check", "all")
+		if code != 0 {
+			t.Fatalf("exit %d\nstdout: %s\nstderr: %s", code, stdout, stderr)
+		}
+		got := readRun(t, record)
+		want := []string{"all", "--snapshot", "-", "--local-host", f.HostPort()}
 		if !slices.Equal(got.Argv, want) {
 			t.Errorf("the checks ran as %q,\nwant %q", got.Argv, want)
 		}
@@ -467,6 +498,29 @@ func TestCheckOutsideCanvasBuilder(t *testing.T) {
 		}
 	})
 
+	t.Run("no closure days given", func(t *testing.T) {
+		f := gatewaytest.New(t)
+		checkCourse(f, "<p>Week 1</p>")
+		record := helperEnv(t)
+		gatewaytest.Workspace(t, f, gatewaytest.WorkspaceOpts{
+			ChecksCommand: checksCommand(),
+			OmitSandbox:   true,
+		})
+
+		// Outside Canvas Builder nobody has said either, and the flag being
+		// left off says so: --closures with nothing after it would claim this
+		// course closes on no days.
+		stdout, stderr, code := runCLI(t, "check", "dates", "--course", "7")
+		if code != 0 {
+			t.Fatalf("exit %d\nstdout: %s\nstderr: %s", code, stdout, stderr)
+		}
+		got := readRun(t, record)
+		want := []string{"dates", "--snapshot", "-", "--local-host", f.HostPort()}
+		if !slices.Equal(got.Argv, want) {
+			t.Errorf("the checks ran as %q,\nwant %q", got.Argv, want)
+		}
+	})
+
 	t.Run("no course to check", func(t *testing.T) {
 		f := gatewaytest.New(t)
 		checkCourse(f, "<p>Week 1</p>")
@@ -541,5 +595,65 @@ func TestCheckRealHelper(t *testing.T) {
 	}
 	if len(report.Issues) != 1 {
 		t.Fatalf("cb-checks found %d placeholders, want the one in the page: %s", len(report.Issues), stdout)
+	}
+}
+
+// TestCheckRealHelperWithoutClosureDays is the other half of JR-59, tested
+// across both repos at once: this CLI leaves --closures off when nobody has
+// entered the days, and cb-checks reads that as not having been told rather
+// than as a course that closes on no days. Either side alone would look
+// right; only together do they show the date check still running and saying
+// which part of it couldn't be applied.
+func TestCheckRealHelperWithoutClosureDays(t *testing.T) {
+	repo := os.Getenv("CANVAS_BUILDER_V2")
+	if repo == "" {
+		t.Skip("set CANVAS_BUILDER_V2 to the canvas-builder-v2 repo to run the real checks")
+	}
+	node, err := exec.LookPath("node")
+	if err != nil {
+		t.Skip("node isn't on PATH, so cb-checks can't run")
+	}
+	checks := filepath.Join(repo, "checks", "src", "cli.ts")
+	if _, err := os.Stat(checks); err != nil {
+		t.Skipf("no cb-checks at %s", checks)
+	}
+
+	f := gatewaytest.New(t)
+	checkCourse(f, "<p>Week 1</p>")
+	gatewaytest.Workspace(t, f, gatewaytest.WorkspaceOpts{
+		ChecksCommand:   []string{node, checks},
+		OmitClosureDays: true,
+	})
+
+	stdout, stderr, code := runCLI(t, "check", "dates")
+	if code != 0 {
+		t.Fatalf("exit %d\nstdout: %s\nstderr: %s", code, stdout, stderr)
+	}
+	var report struct {
+		Check  string `json:"check"`
+		Issues []struct {
+			Rule string `json:"rule"`
+			Item struct {
+				Type string `json:"type"`
+			} `json:"item"`
+			Message string `json:"message"`
+		} `json:"issues"`
+		Schedule []struct{} `json:"schedule"`
+	}
+	if err := json.Unmarshal([]byte(stdout), &report); err != nil {
+		t.Fatalf("what cb-checks reported isn't JSON: %v\nstdout: %s", err, stdout)
+	}
+	if report.Check != "dates" {
+		t.Errorf("the report is for %q, want dates", report.Check)
+	}
+	if len(report.Issues) != 1 {
+		t.Fatalf("cb-checks reported %d issues, want the one not-checked entry: %s", len(report.Issues), stdout)
+	}
+	entry := report.Issues[0]
+	if entry.Rule != "not-checked" || entry.Item.Type != "course" {
+		t.Errorf("the entry is %q about %q, want not-checked about the course: %s", entry.Rule, entry.Item.Type, stdout)
+	}
+	if !strings.Contains(entry.Message, "closure days") {
+		t.Errorf("the entry doesn't say what wasn't checked:\n%s", entry.Message)
 	}
 }
