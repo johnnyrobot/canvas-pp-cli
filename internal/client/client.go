@@ -21,7 +21,10 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
+	"sync"
 	"time"
+
+	"github.com/johnnyrobot/canvas-pp-cli/internal/sandbox"
 )
 
 const BinaryResponseHeader = "X-Printing-Press-Binary-Response"
@@ -37,8 +40,19 @@ type Client struct {
 	// WriteVerify controls the post-write check that catches a mutating
 	// request Canvas accepted without applying. See writeverify.go.
 	WriteVerify WriteVerifyMode
-	cacheDir    string
-	limiter     *cliutil.AdaptiveLimiter
+	// Sandbox is Canvas Builder's profile, set from the workspace config when
+	// it says sandbox = true, and nil everywhere else. When it is set this
+	// client talks to the gateway and to nothing else. See sandbox.go.
+	Sandbox *sandbox.Profile
+	// JobLabel travels as X-Job-Label. Canvas Builder groups a job's changes
+	// under it so the instructor can review them and undo them together.
+	JobLabel string
+	// Notices is where messages meant for the agent go, alongside the result
+	// rather than inside it. Nil means os.Stderr.
+	Notices        io.Writer
+	noJobLabelOnce sync.Once
+	cacheDir       string
+	limiter        *cliutil.AdaptiveLimiter
 }
 
 // RequestBaseURL returns the base URL used for requests.
@@ -146,6 +160,9 @@ func New(cfg *config.Config, timeout time.Duration, rateLimit float64) *Client {
 		}
 		return nil
 	}
+	// Canvas Builder's settings, if this is a course workspace: they narrow the
+	// client to the gateway and stretch the timeout to cover an approval.
+	c.applySandbox(timeout)
 	return c
 }
 
@@ -485,6 +502,11 @@ func (c *Client) doInternal(ctx context.Context, method, path string, params map
 		return nil, 0, err
 	}
 	targetURL := c.BaseURL + path
+	// Checked here rather than in New so a BaseURL something changed afterwards
+	// is caught too. Nothing has been built, minted or dialed yet.
+	if err := c.CheckURL(targetURL); err != nil {
+		return nil, 0, err
+	}
 
 	// Parameter names written in Rails bracket convention only reach the
 	// controller when they are form-encoded; inside a JSON body they stay
@@ -559,6 +581,7 @@ func (c *Client) doInternal(ctx context.Context, method, path string, params map
 		for k, v := range headerOverrides {
 			req.Header.Set(k, v)
 		}
+		c.applyJobLabel(req, method)
 		binaryResponse := strings.EqualFold(req.Header.Get(BinaryResponseHeader), "true")
 		if binaryResponse {
 			req.Header.Del(BinaryResponseHeader)
@@ -589,6 +612,12 @@ func (c *Client) doInternal(ctx context.Context, method, path string, params map
 		if err != nil {
 			if ctxErr := ctx.Err(); ctxErr != nil {
 				return nil, 0, ctxErr
+			}
+			// A refusal the CLI raised itself -- a redirect off the gateway --
+			// is not a failed connection. Retrying it would send the request
+			// to the gateway again for the same answer.
+			if r, ok := refusal(err); ok {
+				return nil, 0, r
 			}
 			lastErr = fmt.Errorf("%s %s: %w", method, c.displayURL(path, authHeader), c.maskError(err, authHeader))
 			continue
