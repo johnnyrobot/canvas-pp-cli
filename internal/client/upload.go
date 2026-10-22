@@ -259,7 +259,7 @@ func (c *Client) sendUpload(ctx context.Context, ticket uploadTicket, file *os.F
 	// outrun it would be cut off mid-stream and reported as an outcome nobody
 	// knows, which is the most expensive answer this command has, for a file
 	// that was probably on its way in fine.
-	uploadClient.Timeout = uploadTimeout(uploadClient.Timeout, size)
+	uploadClient.Timeout = transferTimeout(uploadClient.Timeout, size)
 
 	resp, err := uploadClient.Do(req)
 	if err != nil {
@@ -277,21 +277,21 @@ func (c *Client) sendUpload(ctx context.Context, ticket uploadTicket, file *os.F
 	return c.uploadResult(ctx, resp, ticket.url)
 }
 
-// minUploadRate is the slowest a stalled upload can be told apart from a slow
-// one. Canvas Builder's Canvas is on this machine, where a megabyte a second
+// minTransferRate is the slowest a stalled transfer can be told apart from a
+// slow one. Canvas Builder's Canvas is on this machine, where a megabyte a second
 // is many times slower than the real thing, so a transfer below it has stopped
 // rather than merely being large.
-const minUploadRate = 1 << 20
+const minTransferRate = 1 << 20
 
-// uploadTimeout is how long the file itself is given: the base timeout, which
-// is what waiting for an answer is worth, plus the time the bytes need at a
-// rate only a stalled transfer falls below. Zero stays zero — a caller that
+// transferTimeout is how long a file's own bytes are given, in either
+// direction: the base timeout, which is what waiting for an answer is worth,
+// plus the time the bytes need at a rate only a stalled transfer falls below. Zero stays zero — a caller that
 // asked for no bound gets none.
-func uploadTimeout(base time.Duration, size int64) time.Duration {
+func transferTimeout(base time.Duration, size int64) time.Duration {
 	if base <= 0 {
 		return 0
 	}
-	return base + time.Duration(size/minUploadRate)*time.Second
+	return base + time.Duration(size/minTransferRate)*time.Second
 }
 
 // checkUploadURL is step 2's own rule, and it is stricter than the client's

@@ -398,6 +398,7 @@ See README.md or the bundled SKILL.md for recipes.`,
 	rootCmd.AddCommand(newNovelToGradeCmd(flags))
 	// Hand-authored for Canvas Builder.
 	rootCmd.AddCommand(newUploadCmd(flags))
+	rootCmd.AddCommand(newDownloadCmd(flags))
 
 	rootCmd.AddCommand(newAPICmd(flags))
 	rootCmd.AddCommand(newAccessibilityCourseScansPromotedCmd(flags))

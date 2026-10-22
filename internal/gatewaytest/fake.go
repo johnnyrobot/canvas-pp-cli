@@ -133,6 +133,25 @@ func Drop(w http.ResponseWriter) {
 	_ = conn.Close()
 }
 
+// Truncated answers with a body that declares one length and delivers less,
+// then closes the connection: a download that stopped partway. It is the one
+// failure a file transfer has that a request carrying JSON doesn't, because a
+// short file looks exactly like a whole one once it is on disk.
+func Truncated(w http.ResponseWriter, declared int64, send []byte) {
+	hj, ok := w.(http.Hijacker)
+	if !ok {
+		panic("gatewaytest: the response writer can't be hijacked, so Truncated can't cut the body short")
+	}
+	conn, buf, err := hj.Hijack()
+	if err != nil {
+		panic("gatewaytest: hijacking the connection: " + err.Error())
+	}
+	defer func() { _ = conn.Close() }()
+	_, _ = fmt.Fprintf(buf, "HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\nContent-Length: %d\r\n\r\n", declared)
+	_, _ = buf.Write(send)
+	_ = buf.Flush()
+}
+
 // WorkspaceOpts tunes the workspace Workspace writes. The zero value is the
 // ordinary case: a two-minute approval timeout, no checks command, and the two
 // closure days the date tests use.

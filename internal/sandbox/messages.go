@@ -55,6 +55,7 @@ const (
 	MsgClosuresFromWorkspace = "In Canvas Builder, closure days come from the course workspace, so --closures isn't used."
 	MsgChecksMissing         = "Canvas Builder's checks aren't set up for this workspace, so no checks ran."
 	MsgDownloadShort         = "The download stopped before the whole file arrived, so nothing was saved."
+	MsgNotAFileAddress       = "The address Canvas gave for this file isn't a file download, so the Canvas CLI won't fetch it."
 )
 
 // gatewayMessages is every message the gateway writes. CanvasBuilderMessage

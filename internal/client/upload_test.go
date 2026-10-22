@@ -244,13 +244,13 @@ func uploadRecord(t *testing.T, f *gatewaytest.Fake) gatewaytest.Recorded {
 func TestUploadTimeoutScalesWithSize(t *testing.T) {
 	t.Parallel()
 	const base = 90 * time.Second
-	if got := uploadTimeout(base, 0); got != base {
+	if got := transferTimeout(base, 0); got != base {
 		t.Errorf("an empty file: got %s, want %s", got, base)
 	}
-	if got := uploadTimeout(base, 500<<20); got != base+500*time.Second {
+	if got := transferTimeout(base, 500<<20); got != base+500*time.Second {
 		t.Errorf("500 MB: got %s, want %s", got, base+500*time.Second)
 	}
-	if got := uploadTimeout(0, 500<<20); got != 0 {
+	if got := transferTimeout(0, 500<<20); got != 0 {
 		t.Errorf("no bound asked for: got %s, want 0", got)
 	}
 }
