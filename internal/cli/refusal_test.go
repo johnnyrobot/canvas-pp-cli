@@ -7,6 +7,7 @@ package cli
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strings"
 	"testing"
@@ -37,6 +38,9 @@ func TestRefusalSurfacedUnchanged(t *testing.T) {
 		{"quarantine", sandbox.MsgQuarantine, http.StatusLocked},
 		{"denied", sandbox.MsgDenied, http.StatusForbidden},
 		{"too large", sandbox.MsgTooLarge, http.StatusRequestEntityTooLarge},
+		// The limit in this one is the gateway's, and the whole sentence
+		// including the number reaches the agent.
+		{"too many changes", fmt.Sprintf(sandbox.MsgTooManyChangesFmt, 500), http.StatusForbidden},
 		// MsgNotRecorded arrives as either 503 or 400. The 400 is the row
 		// here because a 503 is also retried, which is Task 3's subject and
 		// would only make this test wait out the backoff.

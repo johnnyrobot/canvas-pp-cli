@@ -37,6 +37,11 @@ const (
 	MsgTooLarge = "This request is too large for Canvas Builder to check. Try a smaller upload."
 	// MsgNotRecorded is HTTP 503 or 400.
 	MsgNotRecorded = "Canvas Builder couldn't record this change, so it didn't send it to Canvas. Try again in a moment."
+	// MsgTooManyChangesFmt is HTTP 403, for a write naming more things than
+	// Canvas Builder keeps a before-copy of (today only a long
+	// assignments bulk-update list). The gateway owns the number, so the CLI
+	// recognises this one by the words either side of it rather than whole.
+	MsgTooManyChangesFmt = "This change covers too many things at once. Canvas Builder keeps a copy of each one first, so the instructor can undo it. Send it as several changes of %d things or fewer."
 )
 
 // The CLI's own messages.
@@ -64,12 +69,37 @@ const (
 	MsgChecksTimeout = "The checks took longer than 10 minutes and were stopped."
 )
 
-// gatewayMessages is every message the gateway writes. CanvasBuilderMessage
-// matches on this set, so a Canvas message that happens to arrive in the same
-// envelope is left alone.
+// gatewayMessages is every message the gateway writes with no number in it.
+// CanvasBuilderMessage matches on this set, so a Canvas message that happens to
+// arrive in the same envelope is left alone.
 var gatewayMessages = []string{
 	MsgBlocked, MsgUnknownToken, MsgWrongCourse, MsgQuarantine,
 	MsgDenied, MsgUnknownOutcome, MsgTooLarge, MsgNotRecorded,
+}
+
+// tooManyChanges reports whether msg is MsgTooManyChangesFmt with a number in
+// it. The limit is the gateway's to set and may change without this CLI
+// changing, so the match is on the sentence around the number; anything else
+// between those words, including nothing, is not the gateway's message.
+func tooManyChanges(msg string) bool {
+	before, after, found := strings.Cut(MsgTooManyChangesFmt, "%d")
+	if !found {
+		return false
+	}
+	rest, ok := strings.CutPrefix(msg, before)
+	if !ok {
+		return false
+	}
+	digits, ok := strings.CutSuffix(rest, after)
+	if !ok || digits == "" {
+		return false
+	}
+	for _, r := range digits {
+		if r < '0' || r > '9' {
+			return false
+		}
+	}
+	return true
 }
 
 // ApprovalNotice tells the agent its change is waiting on the instructor, and
@@ -128,6 +158,9 @@ func CanvasBuilderMessage(body []byte) (string, bool) {
 		return "", false
 	}
 	for _, e := range envelope.Errors {
+		if tooManyChanges(e.Message) {
+			return e.Message, true
+		}
 		for _, known := range gatewayMessages {
 			if e.Message == known {
 				return e.Message, true

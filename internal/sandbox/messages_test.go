@@ -6,6 +6,7 @@
 package sandbox
 
 import (
+	"fmt"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -68,8 +69,23 @@ func TestCanvasBuilderMessage(t *testing.T) {
 		}
 	}
 
+	// The too-many-changes refusal carries the gateway's own limit, so it is
+	// recognised by the words either side of the number.
+	for _, limit := range []int{500, 1, 10000} {
+		msg := fmt.Sprintf(MsgTooManyChangesFmt, limit)
+		body := []byte(`{"errors":[{"message":` + quote(msg) + `}]}`)
+		got, ok := CanvasBuilderMessage(body)
+		if !ok || got != msg {
+			t.Errorf("CanvasBuilderMessage(limit %d) = %q, %v; want the message back", limit, got, ok)
+		}
+	}
+
 	notOurs := [][]byte{
 		[]byte(`{"errors":[{"message":"The specified resource does not exist."}]}`),
+		// The same sentence with no number, or with words where the number
+		// goes, is not the gateway's message.
+		[]byte(`{"errors":[{"message":` + quote(strings.Replace(MsgTooManyChangesFmt, "%d", "", 1)) + `}]}`),
+		[]byte(`{"errors":[{"message":` + quote(strings.Replace(MsgTooManyChangesFmt, "%d", "a few", 1)) + `}]}`),
 		[]byte(`<html>502 Bad Gateway</html>`),
 		[]byte(``),
 		[]byte(`{"errors":[]}`),
@@ -92,8 +108,8 @@ func TestCanvasBuilderMessage_FirstOfOurs(t *testing.T) {
 	}
 }
 
-// TestGatewayMessagesMatchV2 keeps the copies honest: these eight strings are
-// the gateway's own, and the CLI only recognises them by exact text.
+// TestGatewayMessagesMatchV2 keeps the copies honest: these strings are the
+// gateway's own, and the CLI recognises them by their exact text.
 func TestGatewayMessagesMatchV2(t *testing.T) {
 	root := os.Getenv("CANVAS_BUILDER_V2")
 	if root == "" {
@@ -113,6 +129,9 @@ func TestGatewayMessagesMatchV2(t *testing.T) {
 	for _, msg := range []string{
 		MsgBlocked, MsgUnknownToken, MsgWrongCourse, MsgQuarantine,
 		MsgDenied, MsgUnknownOutcome, MsgTooLarge, MsgNotRecorded,
+		// Its %d is in the gateway's source too: that source is the format
+		// string, not a message with a number already in it.
+		MsgTooManyChangesFmt,
 	} {
 		if !strings.Contains(sources, msg) {
 			t.Errorf("the gateway source no longer contains %q", msg)
@@ -129,6 +148,7 @@ func TestMessagesAvoidForbiddenWords(t *testing.T) {
 		MsgStudentData, MsgTokenManaged, MsgStaysLocal, MsgNoJobLabel, MsgBadJobLabel,
 		MsgOutsideWorkspace, MsgWorkspace, MsgNoClosureDays, MsgClosuresFromWorkspace,
 		MsgChecksMissing, MsgDownloadShort, MsgTokenSetup,
+		fmt.Sprintf(MsgTooManyChangesFmt, 500),
 		ApprovalNotice(2 * time.Minute), StillWaitingNotice(2 * time.Minute),
 	}
 	for _, msg := range all {
