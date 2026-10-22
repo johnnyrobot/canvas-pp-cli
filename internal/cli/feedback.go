@@ -15,6 +15,7 @@ import (
 	"time"
 
 	"github.com/johnnyrobot/canvas-pp-cli/internal/cliutil"
+	"github.com/johnnyrobot/canvas-pp-cli/internal/sandbox"
 	"github.com/spf13/cobra"
 )
 
@@ -138,6 +139,16 @@ maintainer sees it.`,
 			}
 			if err := appendFeedback(entry); err != nil {
 				return err
+			}
+
+			// In Canvas Builder this CLI sends nothing anywhere but Canvas
+			// Builder. The entry above is already written, so the note the
+			// agent wrote is kept and only the posting is refused.
+			// Hand-authored for Canvas Builder.
+			if flags.sandboxActive && (send || feedbackAutoSend()) {
+				refused := refusedErr(sandbox.MsgStaysLocal, 0)
+				writeRefusalEnvelope(flags, refused)
+				return refused
 			}
 
 			upstreamResult := map[string]any{"sent": false}

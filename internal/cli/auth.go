@@ -9,6 +9,7 @@ import (
 
 	"github.com/johnnyrobot/canvas-pp-cli/internal/cliutil"
 	"github.com/johnnyrobot/canvas-pp-cli/internal/config"
+	"github.com/johnnyrobot/canvas-pp-cli/internal/sandbox"
 	"github.com/spf13/cobra"
 )
 
@@ -89,6 +90,14 @@ func newAuthStatusCmd(flags *rootFlags) *cobra.Command {
 			if !authed {
 				fmt.Fprintln(w, red("Not authenticated"))
 				fmt.Fprintln(w, "")
+				// In Canvas Builder a token of the agent's own would have more
+				// reach than it is meant to have (ADR 0001), so the only way
+				// out is through Canvas Builder itself.
+				// Hand-authored for Canvas Builder.
+				if flags.sandboxActive {
+					fmt.Fprintln(w, sandbox.MsgTokenSetup)
+					return authErr(fmt.Errorf("no credentials configured"))
+				}
 				fmt.Fprintln(w, "Set your credentials:")
 				fmt.Fprintln(w, "  export CANVAS_API_TOKEN=\"your-token-here\"")
 				fmt.Fprintln(w, "  export CANVAS_ACCESS_TOKEN=\"your-token-here\"")

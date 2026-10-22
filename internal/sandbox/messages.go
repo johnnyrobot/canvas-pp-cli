@@ -45,6 +45,7 @@ const (
 	MsgExtraHeaders          = "Canvas Builder's settings can't add extra headers to Canvas requests."
 	MsgStudentData           = "This command works with student data, which Canvas Builder keeps out of its copy of Canvas."
 	MsgTokenManaged          = "Canvas Builder manages this workspace's agent token, so it can't be changed here."
+	MsgTokenSetup            = "Canvas Builder sets up this workspace's agent token. Open the course from Canvas Builder again."
 	MsgStaysLocal            = "In Canvas Builder the Canvas CLI sends nothing anywhere except Canvas Builder, so this is turned off."
 	MsgNoJobLabel            = `This change has no job label, so it can't be undone together with the rest of its job. Add --job "<name of the job>".`
 	MsgBadJobLabel           = `A job label is a short name on one line, such as --job "Move to spring 2027".`

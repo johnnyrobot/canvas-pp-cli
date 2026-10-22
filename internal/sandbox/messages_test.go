@@ -128,7 +128,7 @@ func TestMessagesAvoidForbiddenWords(t *testing.T) {
 		MsgUnknownOutcome, MsgTooLarge, MsgNotRecorded, MsgSettings, MsgExtraHeaders,
 		MsgStudentData, MsgTokenManaged, MsgStaysLocal, MsgNoJobLabel, MsgBadJobLabel,
 		MsgOutsideWorkspace, MsgWorkspace, MsgNoClosureDays, MsgClosuresFromWorkspace,
-		MsgChecksMissing, MsgDownloadShort,
+		MsgChecksMissing, MsgDownloadShort, MsgTokenSetup,
 		ApprovalNotice(2 * time.Minute), StillWaitingNotice(2 * time.Minute),
 	}
 	for _, msg := range all {

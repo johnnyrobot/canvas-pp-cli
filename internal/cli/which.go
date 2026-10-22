@@ -239,12 +239,29 @@ const whichTreeCandidates = 25
 // tree together, and is the whole of `which`'s behaviour. The command wraps
 // it with flag parsing and rendering only.
 func resolveWhich(root *cobra.Command, query string, limit int) []whichMatch {
+	index := visibleWhichIndex(root)
 	if strings.TrimSpace(query) == "" {
-		return rankWhichAll(whichIndex)
+		return rankWhichAll(index)
 	}
-	curated := rankWhich(whichIndex, query, len(whichIndex))
+	curated := rankWhich(index, query, len(index))
 	tree := rankWhich(whichTreeEntries(root), query, whichTreeCandidates)
 	return mergeWhichMatches(curated, tree, limit)
+}
+
+// visibleWhichIndex drops the curated capabilities whose command the tree
+// hides. Canvas Builder hides the ones built on student data, and an index
+// that still advertised them would send an agent to a command it can't run.
+// Outside Canvas Builder nothing is hidden and the whole index is returned.
+// Hand-authored for Canvas Builder.
+func visibleWhichIndex(root *cobra.Command) []whichEntry {
+	out := make([]whichEntry, 0, len(whichIndex))
+	for _, e := range whichIndex {
+		if cmd := findCommandByRoute(root, e.Command); cmd != nil && cmd.Hidden {
+			continue
+		}
+		out = append(out, e)
+	}
+	return out
 }
 
 // whichCuratedBoost favours a curated index entry over a command-tree entry
@@ -336,7 +353,7 @@ Exit codes:
 
 			// Empty query returns the whole index at score 0 (listing mode).
 			if strings.TrimSpace(query) == "" {
-				return renderWhich(cmd, flags, rankWhichAll(whichIndex))
+				return renderWhich(cmd, flags, rankWhichAll(visibleWhichIndex(cmd.Root())))
 			}
 
 			matches := resolveWhich(cmd.Root(), query, limit)
