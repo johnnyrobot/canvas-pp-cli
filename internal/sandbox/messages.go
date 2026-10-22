@@ -58,6 +58,10 @@ const (
 	MsgNotAFileAddress       = "The address Canvas gave for this file isn't a file download, so the Canvas CLI won't fetch it."
 	MsgTooManyPages          = "This course has more items of one kind than the CLI can read (10,000), so it stopped."
 	MsgNoTimeZone            = "Canvas didn't say which time zone this course uses, so the checks can't judge its dates."
+	// MsgChecksTimeout is the limit on one run of the checks. Ten minutes is
+	// far longer than a course takes; past it, something is wrong with the
+	// checks rather than slow about them.
+	MsgChecksTimeout = "The checks took longer than 10 minutes and were stopped."
 )
 
 // gatewayMessages is every message the gateway writes. CanvasBuilderMessage
@@ -90,6 +94,17 @@ func NewError(msg string) error { return errors.New(msg) }
 // which is a credential and never belongs in a message.
 func NotGateway(gw *url.URL, raw string) error {
 	return errors.New("The Canvas CLI here only talks to Canvas Builder at " + gatewayText(gw) + ", so it won't use " + originText(raw) + ".")
+}
+
+// ChecksFailed says the checks produced no report. The detail is the first
+// line of what they said on stderr, passed through as it is: the checks
+// explain their own failures better than a guess from out here would, and the
+// lines after the first are for whoever is reading the checks' own output.
+func ChecksFailed(detail string) error {
+	if detail == "" {
+		detail = "they produced no report."
+	}
+	return errors.New("The checks couldn't run: " + detail)
 }
 
 // NotTheCanvasRead says the next page of a list is somewhere other than the
