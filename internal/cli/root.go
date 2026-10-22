@@ -400,6 +400,7 @@ See README.md or the bundled SKILL.md for recipes.`,
 	rootCmd.AddCommand(newUploadCmd(flags))
 	rootCmd.AddCommand(newDownloadCmd(flags))
 	rootCmd.AddCommand(newCheckCmd(flags))
+	rootCmd.AddCommand(newRecipesCmd(flags))
 
 	rootCmd.AddCommand(newAPICmd(flags))
 	rootCmd.AddCommand(newAccessibilityCourseScansPromotedCmd(flags))

@@ -100,6 +100,36 @@ func TestSandboxHidesStudentDataFromWhichAndHelp(t *testing.T) {
 	}
 }
 
+// TestSandboxWhichOffersRecipesForItsJobs: Canvas Builder drops the six
+// cross-resource capabilities from the index, so what is left has to answer
+// the jobs an agent is actually sent here to do. A recipe is the answer to
+// most of them, and a recipe nothing reaches is a recipe nobody runs.
+func TestSandboxWhichOffersRecipesForItsJobs(t *testing.T) {
+	for _, tc := range []struct{ query, want string }{
+		{"move a course to a new term", "recipes move-to-new-term"},
+		{"fix accessibility problems", "recipes accessibility-remediation"},
+		{"put an image in a page", "recipes insert-image"},
+		{"review the course design", "recipes design-review"},
+	} {
+		t.Run(tc.query, func(t *testing.T) {
+			f := gatewaytest.New(t)
+			gatewaytest.Workspace(t, f, gatewaytest.WorkspaceOpts{})
+
+			stdout, stderr, code := runCLI(t, "which", tc.query, "--json", "--limit", "1")
+			if code != 0 {
+				t.Fatalf("exit = %d, want 0\nstderr: %s", code, stderr)
+			}
+			var out whichOutput
+			if err := json.Unmarshal([]byte(stdout), &out); err != nil {
+				t.Fatalf("parsing %q: %v", stdout, err)
+			}
+			if len(out.Matches) == 0 || out.Matches[0].Entry.Command != tc.want {
+				t.Fatalf("which %q = %s, want %s", tc.query, stdout, tc.want)
+			}
+		})
+	}
+}
+
 // TestSandboxWhichOffersOnlyCourseScopedCommands: every command `which`
 // returns has to be one the gateway can trace to this course, or Canvas
 // Builder would refuse it on arrival.
