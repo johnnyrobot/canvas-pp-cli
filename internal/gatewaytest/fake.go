@@ -28,6 +28,9 @@ type Recorded struct {
 	RawQuery string
 	Header   http.Header
 	Body     []byte
+	// ContentLength is what the request declared, which is the only way to
+	// tell a streamed body with an exact length from a chunked one.
+	ContentLength int64
 }
 
 // Fake is an httptest server on 127.0.0.1 that answers only the method and path
@@ -76,11 +79,12 @@ func (f *Fake) serve(w http.ResponseWriter, r *http.Request) {
 	body := readAll(r)
 	f.mu.Lock()
 	f.requests = append(f.requests, Recorded{
-		Method:   r.Method,
-		Path:     r.URL.Path,
-		RawQuery: r.URL.RawQuery,
-		Header:   r.Header.Clone(),
-		Body:     body,
+		Method:        r.Method,
+		Path:          r.URL.Path,
+		RawQuery:      r.URL.RawQuery,
+		Header:        r.Header.Clone(),
+		Body:          body,
+		ContentLength: r.ContentLength,
 	})
 	h := f.handlers[r.Method+" "+r.URL.Path]
 	f.mu.Unlock()

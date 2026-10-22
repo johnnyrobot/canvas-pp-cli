@@ -35,6 +35,12 @@ const formContentType = "application/x-www-form-urlencoded"
 // A body handed in through --stdin as real nested JSON has no bracketed keys,
 // stays on the JSON path, and keeps working.
 func railsBracketBody(body any) (map[string]any, bool) {
+	// Hand-authored for Canvas Builder: a body whose caller has already decided
+	// it must be form-encoded, whatever its key names look like. See the
+	// formBody comment in upload.go.
+	if f, ok := body.(formBody); ok {
+		return f, true
+	}
 	m, ok := body.(map[string]any)
 	if !ok {
 		return nil, false
