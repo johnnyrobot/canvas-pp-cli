@@ -12,7 +12,6 @@ package client
 
 import (
 	"errors"
-	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -83,7 +82,7 @@ func (c *Client) applyJobLabel(req *http.Request, method string) {
 		return
 	}
 	c.noJobLabelOnce.Do(func() {
-		_, _ = fmt.Fprintln(c.notices(), sandbox.MsgNoJobLabel)
+		c.notice(sandbox.MsgNoJobLabel)
 	})
 }
 

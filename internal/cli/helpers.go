@@ -111,6 +111,11 @@ func apiErr(err error) error       { return &cliError{code: 5, err: err} }
 func configErr(err error) error    { return &cliError{code: 10, err: err} }
 func rateLimitErr(err error) error { return &cliError{code: 7, err: err} }
 
+// outcomeUnknownErr is exit 8: the change went out and no answer came back, so
+// it may or may not have happened. The agent has to look at the course before
+// it tries again. Hand-authored for Canvas Builder; see client/outcome.go.
+func outcomeUnknownErr(err error) error { return &cliError{code: 8, err: err} }
+
 // partialFailureErr signals that the upstream API returned a 2xx with a
 // body shape indicating some operations in a batch failed (e.g. Google
 // Ads `partialFailureError`, similar shapes from Drive batch, Sheets
@@ -546,11 +551,35 @@ func writeAPIErrorEnvelope(flags *rootFlags, err error, code int) {
 	})
 }
 
+// writeOutcomeUnknownEnvelope is the exit-8 envelope. "outcome":"unknown" is
+// there so an agent can act on it without matching the message text.
+// Hand-authored for Canvas Builder.
+func writeOutcomeUnknownEnvelope(flags *rootFlags, err error) {
+	if flags == nil || !flags.asJSON {
+		return
+	}
+	_ = json.NewEncoder(os.Stdout).Encode(map[string]any{
+		"error":   err.Error(),
+		"code":    8,
+		"outcome": "unknown",
+	})
+}
+
 // classifyAPIError maps API errors to structured exit codes with actionable hints.
 func classifyAPIError(err error, flags *rootFlags) error {
 	var typed *cliError
 	if errors.As(err, &typed) {
 		return err
+	}
+
+	// A change whose outcome nobody knows comes first: it isn't a status to
+	// classify, and its own sentence is the whole message. Hand-authored for
+	// Canvas Builder.
+	var unknown *client.OutcomeUnknownError
+	if errors.As(err, &unknown) {
+		classified := outcomeUnknownErr(unknown)
+		writeOutcomeUnknownEnvelope(flags, classified)
+		return classified
 	}
 
 	msg := err.Error()

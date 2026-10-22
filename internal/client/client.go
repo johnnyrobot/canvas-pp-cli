@@ -51,8 +51,14 @@ type Client struct {
 	// rather than inside it. Nil means os.Stderr.
 	Notices        io.Writer
 	noJobLabelOnce sync.Once
-	cacheDir       string
-	limiter        *cliutil.AdaptiveLimiter
+	noticeMu       sync.Mutex
+	// stillWaitingAfter is how long to wait before saying an answer is slow.
+	// Zero means defaultStillWaitingAfter. See notice.go.
+	stillWaitingAfter time.Duration
+	// backoff is the wait between attempts, so a test can make it nothing.
+	backoff  func(attempt int) time.Duration
+	cacheDir string
+	limiter  *cliutil.AdaptiveLimiter
 }
 
 // RequestBaseURL returns the base URL used for requests.
@@ -125,6 +131,7 @@ func New(cfg *config.Config, timeout time.Duration, rateLimit float64) *Client {
 		Config:      cfg,
 		HTTPClient:  httpClient,
 		WriteVerify: WriteVerifyOn,
+		backoff:     cliutil.Backoff,
 		cacheDir:    cacheDir,
 		limiter:     cliutil.NewAdaptiveLimiter(rateLimit),
 	}
@@ -543,6 +550,10 @@ func (c *Client) doInternal(ctx context.Context, method, path string, params map
 	const maxRetries = 3
 	var lastErr error
 
+	// What to tell the agent while this one waits, if anything. Built once, so
+	// a second attempt doesn't say it again. See notice.go.
+	notice := c.newWriteNotice(method, path, body)
+
 	for attempt := 0; attempt <= maxRetries; attempt++ {
 		// Proactive rate limiting — wait before sending
 		c.limiter.Wait()
@@ -608,7 +619,9 @@ func (c *Client) doInternal(ctx context.Context, method, path string, params map
 			}
 		}
 
+		notice.sending()
 		resp, err := c.HTTPClient.Do(req)
+		notice.answered()
 		if err != nil {
 			if ctxErr := ctx.Err(); ctxErr != nil {
 				return nil, 0, ctxErr
@@ -619,7 +632,17 @@ func (c *Client) doInternal(ctx context.Context, method, path string, params map
 			if r, ok := refusal(err); ok {
 				return nil, 0, r
 			}
-			lastErr = fmt.Errorf("%s %s: %w", method, c.displayURL(path, authHeader), c.maskError(err, authHeader))
+			failure := fmt.Errorf("%s %s: %w", method, c.displayURL(path, authHeader), c.maskError(err, authHeader))
+			// A write that went out and got no answer may well have been
+			// applied, so it is not sent again. See retry.go.
+			retry, unknown := retryDecision(method, c.Sandbox != nil, err, 0, nil)
+			switch {
+			case unknown:
+				return nil, 0, &OutcomeUnknownError{Method: method, Path: c.displayURL(path, authHeader), Cause: failure}
+			case !retry:
+				return nil, 0, failure
+			}
+			lastErr = failure
 			continue
 		}
 
@@ -658,6 +681,9 @@ func (c *Client) doInternal(ctx context.Context, method, path string, params map
 			return json.RawMessage(sanitized), resp.StatusCode, nil
 		}
 
+		// Kept before the sanitizer, which rewrites anything that looks like a
+		// credential, so a Canvas Builder message is matched on what arrived.
+		rawBody := respBody
 		if !binaryResponse {
 			respBody = sanitizeJSONResponse(respBody)
 		}
@@ -669,8 +695,15 @@ func (c *Client) doInternal(ctx context.Context, method, path string, params map
 			Body:       c.maskCredentialText(truncateBody(respBody), authHeader),
 		}
 
+		retry, unknown := retryDecision(method, c.Sandbox != nil, nil, resp.StatusCode, rawBody)
+		if unknown {
+			// Canvas Builder sent the change on and heard nothing back, so it
+			// may or may not have happened. Asking again won't settle it.
+			return nil, resp.StatusCode, &OutcomeUnknownError{Method: method, Path: c.displayURL(path, authHeader), Cause: apiErr}
+		}
+
 		// Rate limited - adjust adaptive limiter and retry
-		if resp.StatusCode == 429 && attempt < maxRetries {
+		if resp.StatusCode == 429 && retry && attempt < maxRetries {
 			c.limiter.OnRateLimit()
 			wait := cliutil.RetryAfter(resp)
 			fmt.Fprintf(os.Stderr, "rate limited, waiting %s (attempt %d/%d, rate adjusted to %.1f req/s)\n", wait, attempt+1, maxRetries, c.limiter.Rate())
@@ -681,13 +714,14 @@ func (c *Client) doInternal(ctx context.Context, method, path string, params map
 			continue
 		}
 
-		// Server error - retry with backoff
-		if resp.StatusCode >= 500 && attempt < maxRetries {
+		// Server error - retry with backoff, unless sending it again could
+		// apply the same change twice.
+		if resp.StatusCode >= 500 && retry && attempt < maxRetries {
 			// cliutil.Backoff is the same 2^attempt curve this computed
 			// inline, plus a MaxBackoff ceiling. At the current retry count
 			// the ceiling never binds; sharing the helper keeps the curve in
 			// one place if the retry budget ever grows.
-			wait := cliutil.Backoff(attempt)
+			wait := c.backoff(attempt)
 			fmt.Fprintf(os.Stderr, "server error %d, retrying in %s (attempt %d/%d)\n", resp.StatusCode, wait, attempt+1, maxRetries)
 			if err := sleepContext(ctx, wait); err != nil {
 				return nil, 0, err
