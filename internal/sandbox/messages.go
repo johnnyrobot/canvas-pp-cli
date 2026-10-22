@@ -56,6 +56,8 @@ const (
 	MsgChecksMissing         = "Canvas Builder's checks aren't set up for this workspace, so no checks ran."
 	MsgDownloadShort         = "The download stopped before the whole file arrived, so nothing was saved."
 	MsgNotAFileAddress       = "The address Canvas gave for this file isn't a file download, so the Canvas CLI won't fetch it."
+	MsgTooManyPages          = "This course has more items of one kind than the CLI can read (10,000), so it stopped."
+	MsgNoTimeZone            = "Canvas didn't say which time zone this course uses, so the checks can't judge its dates."
 )
 
 // gatewayMessages is every message the gateway writes. CanvasBuilderMessage
@@ -88,6 +90,14 @@ func NewError(msg string) error { return errors.New(msg) }
 // which is a credential and never belongs in a message.
 func NotGateway(gw *url.URL, raw string) error {
 	return errors.New("The Canvas CLI here only talks to Canvas Builder at " + gatewayText(gw) + ", so it won't use " + originText(raw) + ".")
+}
+
+// NotTheCanvasRead says the next page of a list is somewhere other than the
+// Canvas this CLI was pointed at. Like NotGateway it names the scheme and host
+// only: the rest of a Canvas address can carry a verifier, which is a
+// credential and never belongs in a message.
+func NotTheCanvasRead(raw string) error {
+	return errors.New("Canvas said the next page of this list is at " + originText(raw) + ", which isn't the Canvas this CLI reads, so it stopped.")
 }
 
 // CanvasBuilderMessage returns the first gateway message in an error envelope.
