@@ -57,6 +57,7 @@ const (
 	MsgOutsideWorkspace      = "Canvas Builder only uploads and downloads files inside this course's workspace folder. Use a path inside it, such as materials/."
 	MsgWorkspace             = "This course workspace's workspace.json is missing or damaged. Open the course from Canvas Builder again."
 	MsgClosuresFromWorkspace = "In Canvas Builder, closure days come from the course workspace, so --closures isn't used."
+	MsgCourseFromWorkspace   = "In Canvas Builder, the course comes from the course workspace, so --course can't name a different one."
 	MsgChecksMissing         = "Canvas Builder's checks aren't set up for this workspace, so no checks ran."
 	MsgDownloadShort         = "The download stopped before the whole file arrived, so nothing was saved."
 	MsgNotAFileAddress       = "The address Canvas gave for this file isn't a file download, so the Canvas CLI won't fetch it."

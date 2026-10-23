@@ -114,7 +114,10 @@ func (c *Client) fetchInto(ctx context.Context, info FileInfo, dst io.Writer) (i
 	if err != nil {
 		return 0, err
 	}
-	if auth != "" {
+	// The address came out of the file's record, and outside Canvas Builder
+	// nothing holds it to the gateway. A file store's address carries its own
+	// verifier, so the token goes only to the Canvas this CLI was pointed at.
+	if auth != "" && c.authAllowed(info.URL) {
 		req.Header.Set("Authorization", auth)
 	}
 	c.applyJobLabel(req, http.MethodGet)

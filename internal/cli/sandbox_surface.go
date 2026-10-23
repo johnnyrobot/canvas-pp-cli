@@ -223,7 +223,9 @@ func (f *rootFlags) sandboxRefusal(cmd *cobra.Command) string {
 // addSandboxReport is doctor's Canvas Builder section: which course this
 // workspace is for, where the gateway is, and whether the checks are set up.
 // In Canvas Builder it also replaces the auth hint, because the ordinary one
-// tells an agent to export a token of its own (ADR 0001).
+// tells an agent to export a token of its own (ADR 0001). The replacement says
+// to open the course again, so it is only for a workspace that has no token
+// yet: on one that has, the right answer is that auth is configured.
 func (f *rootFlags) addSandboxReport(report map[string]any, cfg *config.Config) {
 	if !f.sandboxActive || cfg == nil || cfg.Profile == nil {
 		report["sandbox"] = "off"
@@ -242,7 +244,9 @@ func (f *rootFlags) addSandboxReport(report map[string]any, cfg *config.Config) 
 		section["course_id"] = ws.CourseID
 	}
 	report["sandbox"] = section
-	report["auth_hint"] = sandbox.MsgTokenSetup
+	if cfg.AuthHeader() == "" {
+		report["auth_hint"] = sandbox.MsgTokenSetup
+	}
 }
 
 // renderSandboxReport prints doctor's Canvas Builder section without --json.

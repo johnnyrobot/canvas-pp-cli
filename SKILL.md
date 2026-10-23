@@ -1564,7 +1564,7 @@ Other changes that get asked about, because each of them loses something: an upl
 |---|---|
 | `canvas-pp-cli check <a11y\|dates\|placeholders\|links\|all>` | Read the course as it is now and report what is wrong with it: the content students read, every date, text left over from a previous term, and the links. `check all` is the last step of every job. |
 | `canvas-pp-cli upload <path>` | Put a file from the workspace folder into the course's files in one command, and hand back `embed_src`, the address a page has to use to show it. |
-| `canvas-pp-cli download <course> <file>` | Save a course file into the workspace folder under the name Canvas has for it. |
+| `canvas-pp-cli download <file_id> --output materials/` | Save a course file into the workspace folder. `--output` takes a folder, where the file keeps the name Canvas has for it, or the name to save it under. |
 | `canvas-pp-cli recipes [<name>]` | The order the commands go in for each of the jobs below. |
 
 ### Exit codes to expect here

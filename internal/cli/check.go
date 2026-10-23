@@ -117,9 +117,14 @@ rest of it ran.`,
 				if err != nil {
 					return configErr(err)
 				}
-				if courseID == 0 {
-					courseID = ws.CourseID
+				// A --course naming a different course is a mistake worth
+				// saying out loud: silently checking the workspace's course
+				// instead reports a clean bill of health for a course nobody
+				// asked about. --closures is refused the same way above.
+				if courseID != 0 && courseID != ws.CourseID {
+					return usageErr(sandbox.NewError(sandbox.MsgCourseFromWorkspace))
 				}
+				courseID = ws.CourseID
 				// An empty list is an answer — this course closes on no days
 				// — and a missing one isn't, so it is passed on as nothing
 				// said rather than as none. Closure days are one rule of the

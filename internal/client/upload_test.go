@@ -23,6 +23,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/johnnyrobot/canvas-pp-cli/internal/config"
 	"github.com/johnnyrobot/canvas-pp-cli/internal/gatewaytest"
 )
 
@@ -48,6 +49,58 @@ func uploadFlow(t *testing.T, f *gatewaytest.Fake, uploadURL string, params map[
 		_, _ = w.Write([]byte(`{"id":31,"display_name":"diagram.png","size":1024,` +
 			`"content-type":"image/png","folder_id":9,"url":"` + f.URL + `/files/31/download"}`))
 	})
+}
+
+// Outside Canvas Builder nothing holds an upload_url to one host, and a real
+// Canvas points it at its own file store, whose address authenticates itself.
+// The file goes there. The token does not.
+func TestUploadTokenStaysOnTheCanvasItWasPointedAt(t *testing.T) {
+	f := gatewaytest.New(t)
+	store, seen := otherHost(t, func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path == "/files_api" {
+			// S3-style storage answers an accepted upload with somewhere to
+			// confirm it, which is the second request this test watches.
+			http.Redirect(w, r, "/create_success?uuid=u", http.StatusFound)
+			return
+		}
+		_, _ = w.Write([]byte(`{"id":31,"display_name":"diagram.png","size":1024,"content-type":"image/png"}`))
+	})
+	f.Handle(http.MethodPost, "/api/v1/courses/7/files", func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		_ = json.NewEncoder(w).Encode(map[string]any{
+			"upload_url":    store + "/files_api",
+			"upload_params": map[string]string{},
+			"file_param":    "file",
+		})
+	})
+	path := fileOfSize(t, t.TempDir(), "diagram.png", 1024)
+	c := New(&config.Config{BaseURL: f.URL, CanvasApiToken: "tA"}, 5*time.Second, 0)
+	c.WriteVerify = WriteVerifyOff
+	c.NoCache = true
+
+	info, err := c.UploadFile(context.Background(), 7, UploadRequest{Path: path})
+	if err != nil {
+		t.Fatalf("uploading: %v", err)
+	}
+	if info.ID != 31 {
+		t.Fatalf("the file record came back as %+v", info)
+	}
+	requests := seen()
+	if len(requests) != 2 {
+		t.Fatalf("the file store saw %d requests, want 2: the file and the confirmation", len(requests))
+	}
+	for _, r := range requests {
+		if r.Auth != "" {
+			t.Errorf("%s carried Authorization %q, want none", r.Path, r.Auth)
+		}
+	}
+	// The control: step 1 is Canvas's own request, and it still carries the
+	// token, so an absent header above is the rule and not a lost token.
+	if got := f.Requests(); len(got) == 0 {
+		t.Fatal("Canvas saw no request at all")
+	} else if auth := got[0].Header.Get("Authorization"); auth != "Bearer tA" {
+		t.Errorf("step 1 carried Authorization %q, want %q", auth, "Bearer tA")
+	}
 }
 
 // fileOfSize writes a file of exactly n bytes, filled so every 1 KiB block

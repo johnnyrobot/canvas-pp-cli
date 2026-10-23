@@ -16,6 +16,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/johnnyrobot/canvas-pp-cli/internal/config"
 	"github.com/johnnyrobot/canvas-pp-cli/internal/gatewaytest"
 	"github.com/johnnyrobot/canvas-pp-cli/internal/sandbox"
 )
@@ -57,6 +58,43 @@ func TestDownloadFileSavesWhatCanvasSent(t *testing.T) {
 	}
 	if auth := last.Header.Get("Authorization"); auth != "Bearer tA" {
 		t.Errorf("the download carried Authorization %q", auth)
+	}
+}
+
+// The same rule on the way out: outside Canvas Builder a file's address is
+// whatever the record says, and a real Canvas's is its file store's, with a
+// verifier of its own in the query.
+func TestDownloadTokenStaysOnTheCanvasItWasPointedAt(t *testing.T) {
+	f := gatewaytest.New(t)
+	want := []byte("canvas")
+	store, seen := otherHost(t, func(w http.ResponseWriter, _ *http.Request) {
+		_, _ = w.Write(want)
+	})
+	f.Handle(http.MethodGet, "/api/v1/courses/7/files/31", func(w http.ResponseWriter, _ *http.Request) {
+		_, _ = fmt.Fprintf(w, `{"id":31,"display_name":"diagram.png","size":%d,"content-type":"image/png","url":%q}`,
+			len(want), store+"/files/31/download?token=jwt")
+	})
+	c := New(&config.Config{BaseURL: f.URL, CanvasApiToken: "tA"}, 5*time.Second, 0)
+	c.NoCache = true
+
+	var got bytes.Buffer
+	_, n, err := c.DownloadFile(context.Background(), 7, 31, &got)
+	if err != nil {
+		t.Fatalf("downloading the file: %v", err)
+	}
+	if n != int64(len(want)) || !bytes.Equal(got.Bytes(), want) {
+		t.Errorf("got %q (%d bytes), want %q", got.Bytes(), n, want)
+	}
+	requests := seen()
+	if len(requests) != 1 {
+		t.Fatalf("the file store saw %d requests, want 1", len(requests))
+	}
+	if requests[0].Auth != "" {
+		t.Errorf("the fetch carried Authorization %q, want none", requests[0].Auth)
+	}
+	// The control: the file's record came from Canvas itself, with the token.
+	if auth := f.Requests()[0].Header.Get("Authorization"); auth != "Bearer tA" {
+		t.Errorf("the record request carried Authorization %q, want %q", auth, "Bearer tA")
 	}
 }
 

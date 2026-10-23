@@ -387,6 +387,7 @@ func TestDoctorReportsSandbox(t *testing.T) {
 				CourseID  int64  `json:"course_id"`
 				Checks    string `json:"checks"`
 			} `json:"sandbox"`
+			Auth     string `json:"auth"`
 			AuthHint string `json:"auth_hint"`
 		}
 		if err := json.Unmarshal([]byte(stdout), &report); err != nil {
@@ -407,6 +408,42 @@ func TestDoctorReportsSandbox(t *testing.T) {
 		if report.Sandbox.Checks != "ready" {
 			t.Errorf("sandbox.checks = %q, want ready", report.Sandbox.Checks)
 		}
+		// This workspace has its agent token, so there is nothing to set up:
+		// telling the agent to open the course again would be advice to undo
+		// a working workspace.
+		if report.Auth != "configured" {
+			t.Errorf("auth = %q, want configured", report.Auth)
+		}
+		if report.AuthHint != "" {
+			t.Errorf("auth_hint = %q, want none on a workspace that has its token", report.AuthHint)
+		}
+		if strings.Contains(stdout, "export CANVAS_API_TOKEN") {
+			t.Errorf("doctor told an agent to export a token:\n%s", stdout)
+		}
+	})
+
+	t.Run("the workspace has no token yet", func(t *testing.T) {
+		f := gatewaytest.New(t)
+		home := gatewaytest.Workspace(t, f, gatewaytest.WorkspaceOpts{ChecksCommand: []string{"/bin/sh", "-c", "true"}})
+		if err := os.Remove(filepath.Join(home.Dir, "data", "credentials.toml")); err != nil {
+			t.Fatalf("removing the workspace's token: %v", err)
+		}
+
+		stdout, stderr, code := runCLI(t, "doctor", "--json")
+		if code != 0 {
+			t.Fatalf("exit = %d, want 0\nstdout: %s\nstderr: %s", code, stdout, stderr)
+		}
+		var report struct {
+			Auth     string `json:"auth"`
+			AuthHint string `json:"auth_hint"`
+		}
+		if err := json.Unmarshal([]byte(stdout), &report); err != nil {
+			t.Fatalf("parsing %q: %v", stdout, err)
+		}
+		if report.Auth != "not configured" {
+			t.Errorf("auth = %q, want not configured", report.Auth)
+		}
+		// Canvas Builder's own words, not the export-a-token ones (ADR 0001).
 		if report.AuthHint != sandbox.MsgTokenSetup {
 			t.Errorf("auth_hint = %q, want %q", report.AuthHint, sandbox.MsgTokenSetup)
 		}
@@ -452,7 +489,6 @@ func TestDoctorReportsSandbox(t *testing.T) {
 			"workspace: " + home.Workspace,
 			"course_id: 7",
 			"checks: ready",
-			sandbox.MsgTokenSetup,
 		} {
 			if !strings.Contains(stdout, want) {
 				t.Errorf("doctor output is missing %q:\n%s", want, stdout)
@@ -460,6 +496,10 @@ func TestDoctorReportsSandbox(t *testing.T) {
 		}
 		if strings.Contains(stdout, "export CANVAS_API_TOKEN") {
 			t.Errorf("doctor told an agent to export a token:\n%s", stdout)
+		}
+		// This workspace has its token, so neither hint belongs here.
+		if strings.Contains(stdout, sandbox.MsgTokenSetup) {
+			t.Errorf("doctor told the instructor to set up a token they have:\n%s", stdout)
 		}
 	})
 

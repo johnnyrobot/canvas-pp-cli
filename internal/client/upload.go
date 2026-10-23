@@ -241,9 +241,12 @@ func (c *Client) sendUpload(ctx context.Context, ticket uploadTicket, file *os.F
 	if err != nil {
 		return FileInfo{}, err
 	}
-	if auth != "" {
+	if auth != "" && c.authAllowed(ticket.url) {
 		// The gateway ties what it captures to the caller, so this request is
-		// the same caller as the two around it.
+		// the same caller as the two around it. A ticket pointing at a file
+		// store instead gets the file and not the token: outside Canvas
+		// Builder nothing refuses such a ticket, so this is where the token
+		// stops.
 		req.Header.Set("Authorization", auth)
 	}
 	c.applyJobLabel(req, http.MethodPost)
@@ -408,7 +411,10 @@ func (c *Client) confirmUpload(ctx context.Context, uploadURL, location string) 
 	if err != nil {
 		return FileInfo{}, err
 	}
-	if auth != "" {
+	// Canvas's own storage answers with a create_success on the Canvas this
+	// CLI is pointed at, which is the one case that needs the token. A
+	// Location anywhere else belongs to a file store and doesn't.
+	if auth != "" && c.authAllowed(target) {
 		req.Header.Set("Authorization", auth)
 	}
 	c.applyJobLabel(req, http.MethodGet)

@@ -336,6 +336,45 @@ func TestCheckRefusesClosuresFlagInSandbox(t *testing.T) {
 	}
 }
 
+// A --course that names a different course used to be accepted and then
+// ignored, which reported the workspace's course as clean under another
+// course's number.
+func TestCheckRefusesAnotherCourseInSandbox(t *testing.T) {
+	f := gatewaytest.New(t)
+	checkCourse(f, "<p>Week 1</p>")
+	record := helperEnv(t)
+	gatewaytest.Workspace(t, f, gatewaytest.WorkspaceOpts{ChecksCommand: checksCommand()})
+
+	stdout, stderr, code := runCLI(t, "check", "dates", "--course", "99")
+	if code != 2 {
+		t.Fatalf("exit %d, want 2\nstdout: %s\nstderr: %s", code, stdout, stderr)
+	}
+	if !strings.Contains(stderr, sandbox.MsgCourseFromWorkspace) {
+		t.Errorf("stderr doesn't say where the course comes from:\n%s", stderr)
+	}
+	neverRan(t, record)
+	if got := f.Requests(); len(got) != 0 {
+		t.Errorf("the command asked Canvas for %v before refusing the flag", paths(got))
+	}
+}
+
+// The workspace's own course number is still accepted: saying the same thing
+// twice is not a mistake.
+func TestCheckAcceptsTheWorkspaceCourseInSandbox(t *testing.T) {
+	f := gatewaytest.New(t)
+	checkCourse(f, "<p>Week 1</p>")
+	record := helperEnv(t)
+	gatewaytest.Workspace(t, f, gatewaytest.WorkspaceOpts{ChecksCommand: checksCommand()})
+
+	stdout, stderr, code := runCLI(t, "check", "dates", "--course", "7")
+	if code != 0 {
+		t.Fatalf("exit %d, want 0\nstdout: %s\nstderr: %s", code, stdout, stderr)
+	}
+	if got := readRun(t, record); len(got.Argv) == 0 {
+		t.Error("the checks never ran")
+	}
+}
+
 func TestCheckMissingHelper(t *testing.T) {
 	f := gatewaytest.New(t)
 	checkCourse(f, "<p>Week 1</p>")

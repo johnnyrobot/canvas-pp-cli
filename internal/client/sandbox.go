@@ -14,7 +14,9 @@ import (
 	"errors"
 	"io"
 	"net/http"
+	"net/url"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/johnnyrobot/canvas-pp-cli/internal/sandbox"
@@ -58,6 +60,50 @@ func (c *Client) CheckURL(raw string) error {
 		return sandbox.NotGateway(c.Sandbox.Gateway, raw)
 	}
 	return nil
+}
+
+// authAllowed reports whether an address Canvas named may carry this CLI's
+// credential. Canvas hands out two of them — where a file's bytes are, and
+// where an upload's bytes go — and they are not always Canvas's own: a real
+// Canvas points them at its file store, whose addresses authenticate
+// themselves and have no use for a Canvas token. Sending the token there hands
+// it to a host the instructor never configured, and the first request is where
+// that happens: the redirect rule only sees the hops after it.
+//
+// In Canvas Builder the only such address is the gateway's. Outside it, it is
+// the Canvas this CLI was pointed at and nowhere else.
+func (c *Client) authAllowed(raw string) bool {
+	if c.Sandbox != nil {
+		return c.Sandbox.Allows(raw)
+	}
+	return c.sameOrigin(raw)
+}
+
+// sameOrigin reports whether raw is the scheme and host the CLI was pointed
+// at. A default port is one origin written two ways, so it comes off before
+// the comparison; anything that isn't an absolute address is not the origin.
+func (c *Client) sameOrigin(raw string) bool {
+	target, err := url.Parse(raw)
+	if err != nil || target.Host == "" {
+		return false
+	}
+	base, err := url.Parse(c.BaseURL)
+	if err != nil || base.Host == "" {
+		return false
+	}
+	return originOf(target) == originOf(base)
+}
+
+func originOf(u *url.URL) string {
+	scheme := strings.ToLower(u.Scheme)
+	host := strings.ToLower(u.Host)
+	switch scheme {
+	case "http":
+		host = strings.TrimSuffix(host, ":80")
+	case "https":
+		host = strings.TrimSuffix(host, ":443")
+	}
+	return scheme + "://" + host
 }
 
 // notices is where a message for the agent goes. Tests set c.Notices; a real

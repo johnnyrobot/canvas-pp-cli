@@ -53,6 +53,34 @@ func elsewhere(t *testing.T) (url string, requests func() int) {
 	return srv.URL, func() int { return int(n.Load()) }
 }
 
+// offHostRequest is what a host that isn't Canvas saw of one request: enough
+// to say whether the token went there.
+type offHostRequest struct {
+	Path string
+	Auth string
+}
+
+// otherHost is a second server that is not the Canvas the CLI was pointed at —
+// a file store, in the flows that have one — and it keeps what each request
+// carried.
+func otherHost(t *testing.T, handler http.HandlerFunc) (base string, seen func() []offHostRequest) {
+	t.Helper()
+	var mu sync.Mutex
+	var got []offHostRequest
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		mu.Lock()
+		got = append(got, offHostRequest{Path: r.URL.Path, Auth: r.Header.Get("Authorization")})
+		mu.Unlock()
+		handler(w, r)
+	}))
+	t.Cleanup(srv.Close)
+	return srv.URL, func() []offHostRequest {
+		mu.Lock()
+		defer mu.Unlock()
+		return append([]offHostRequest(nil), got...)
+	}
+}
+
 func TestSandboxClient_RefusesRedirectOffGateway(t *testing.T) {
 	f := gatewaytest.New(t)
 	other, count := elsewhere(t)
