@@ -17,6 +17,10 @@ import (
 func isolate(t *testing.T) string {
 	t.Helper()
 	dir := t.TempDir()
+	// HOME too: the legacy fallback path is $HOME/.config/canvas-pp-cli, and
+	// without this a developer's own config is read whenever the primary path
+	// has no file.
+	t.Setenv("HOME", filepath.Join(dir, "home"))
 	t.Setenv("XDG_CONFIG_HOME", dir)
 	t.Setenv("XDG_DATA_HOME", filepath.Join(dir, "data"))
 	t.Setenv("XDG_STATE_HOME", filepath.Join(dir, "state"))

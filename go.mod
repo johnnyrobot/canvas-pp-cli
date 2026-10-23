@@ -2,7 +2,7 @@ module github.com/johnnyrobot/canvas-pp-cli
 
 go 1.26
 
-toolchain go1.26.5
+toolchain go1.27.3
 
 require (
 	github.com/pelletier/go-toml/v2 v2.2.4

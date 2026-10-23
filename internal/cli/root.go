@@ -15,6 +15,7 @@ import (
 	"github.com/johnnyrobot/canvas-pp-cli/internal/client"
 	"github.com/johnnyrobot/canvas-pp-cli/internal/cliutil"
 	"github.com/johnnyrobot/canvas-pp-cli/internal/config"
+	"github.com/johnnyrobot/canvas-pp-cli/internal/sandbox"
 	"github.com/spf13/cobra"
 )
 
@@ -46,7 +47,21 @@ type rootFlags struct {
 	maxAge              time.Duration
 	dataSource          string
 	verifyWrites        string
-	freshnessMeta       any
+	// jobLabel names the job a run's changes belong to, so Canvas Builder can
+	// show them together and undo them together.
+	jobLabel string
+	// sandboxActive is true when this run is inside Canvas Builder. It changes
+	// what the CLI says rather than what it does: Canvas Builder manages the
+	// token, so an auth error here never suggests setting one.
+	sandboxActive bool
+	// sandboxProfile is Canvas Builder's validated settings, or nil when the
+	// settings are damaged — ensureSandbox never fails, so the command that
+	// needs them is the one that reports it.
+	sandboxProfile *sandbox.Profile
+	// sandboxChecked keeps ensureSandbox to one pass: the help path and
+	// PersistentPreRunE both call it, and in a test both can run.
+	sandboxChecked bool
+	freshnessMeta  any
 
 	// deliverBuf captures command output when --deliver is set to a
 	// non-stdout sink. Flushed to the sink after Execute returns.
@@ -190,6 +205,16 @@ See README.md or the bundled SKILL.md for recipes.`,
 	rootCmd.PersistentFlags().StringVar(&flags.deliverSpec, "deliver", "", "Route output to a sink: stdout (default), file:<path>, webhook:<url>")
 	rootCmd.PersistentFlags().Float64Var(&flags.rateLimit, "rate-limit", 0, "Max requests per second (0 to disable)")
 	rootCmd.PersistentFlags().StringVar(&flags.verifyWrites, "verify-writes", "on", "After a write, check the response reflects what was sent: on (fail on a body Canvas ignored), warn (stderr only), off")
+	rootCmd.PersistentFlags().StringVar(&flags.jobLabel, "job", "", "Job label for the changes this command makes; Canvas Builder groups them for review and Undo")
+
+	// The help path never reaches PersistentPreRunE, and help is where an
+	// agent reads what it may run, so Canvas Builder's narrowed command list
+	// has to be applied here too. Hand-authored for Canvas Builder.
+	defaultHelp := rootCmd.HelpFunc()
+	rootCmd.SetHelpFunc(func(cmd *cobra.Command, args []string) {
+		flags.ensureSandbox(cmd)
+		defaultHelp(cmd, args)
+	})
 
 	rootCmd.PersistentPreRunE = func(cmd *cobra.Command, args []string) error {
 		if _, err := cliutil.SetHomeOverride(flags.homePath); err != nil {
@@ -245,7 +270,11 @@ See README.md or the bundled SKILL.md for recipes.`,
 		default:
 			return fmt.Errorf("invalid --data-source value %q: must be auto, live, or local", flags.dataSource)
 		}
-		return nil
+		// Canvas Builder last, because its refusals write a JSON envelope and
+		// --agent above is what decides whether there is one.
+		// Hand-authored for Canvas Builder.
+		flags.ensureSandbox(cmd)
+		return flags.sandboxPreRun(cmd)
 	}
 	rootCmd.AddCommand(newAccessTokensCmd(flags))
 	rootCmd.AddCommand(newAccountCalendarsCmd(flags))
@@ -367,6 +396,12 @@ See README.md or the bundled SKILL.md for recipes.`,
 	rootCmd.AddCommand(newNovelSinceCmd(flags))
 	rootCmd.AddCommand(newNovelStandingsCmd(flags))
 	rootCmd.AddCommand(newNovelToGradeCmd(flags))
+	// Hand-authored for Canvas Builder.
+	rootCmd.AddCommand(newUploadCmd(flags))
+	rootCmd.AddCommand(newDownloadCmd(flags))
+	rootCmd.AddCommand(newCheckCmd(flags))
+	rootCmd.AddCommand(newRecipesCmd(flags))
+
 	rootCmd.AddCommand(newAPICmd(flags))
 	rootCmd.AddCommand(newAccessibilityCourseScansPromotedCmd(flags))
 	rootCmd.AddCommand(newAccessibilityCourseStatisticsPromotedCmd(flags))
@@ -406,6 +441,11 @@ func (f *rootFlags) newClient() (*client.Client, error) {
 	if err != nil {
 		return nil, configErr(err)
 	}
+	if cfg.Profile != nil {
+		// Set, never cleared: Task 5's ensureSandbox runs first on the help
+		// path, where there is no config to load.
+		f.sandboxActive = true
+	}
 	c := client.New(cfg, f.timeout, f.rateLimit)
 	c.DryRun = f.dryRun
 	c.NoCache = f.noCache
@@ -414,6 +454,12 @@ func (f *rootFlags) newClient() (*client.Client, error) {
 		return nil, usageErr(err)
 	}
 	c.WriteVerify = mode
+	if f.jobLabel != "" {
+		if err := validJobLabel(f.jobLabel); err != nil {
+			return nil, usageErr(err)
+		}
+		c.JobLabel = strings.TrimSpace(f.jobLabel)
+	}
 	return c, nil
 }
 

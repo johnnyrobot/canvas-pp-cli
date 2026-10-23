@@ -20,7 +20,7 @@ jobs:
         with:
           # Keep in step with ci.yml — see the vulnerability list in the note
           # there.
-          go-version: '1.26.6'
+          go-version: '1.27.3'
           check-latest: true
 
       - name: Verify before publishing

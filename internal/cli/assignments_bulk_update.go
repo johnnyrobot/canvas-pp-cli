@@ -5,6 +5,7 @@ package cli
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -16,15 +17,41 @@ func newAssignmentsBulkUpdateCmd(flags *rootFlags) *cobra.Command {
 	var stdinBody bool
 
 	cmd := &cobra.Command{
-		Use:         "bulk-update <course_id>",
-		Short:       "Bulk update assignment dates",
-		Example:     "  canvas-pp-cli assignments bulk-update 550e8400-e29b-41d4-a716-446655440000",
+		Use:   "bulk-update <course_id>",
+		Short: "Move the dates of several assignments at once",
+		// Hand-authored for Canvas Builder: an agent decides whether to use
+		// this command from its help, and the generated help said nothing
+		// about the list, which is the only thing it needs to know.
+		Long: `Change the dates of several assignments in one request.
+
+The list goes in on stdin, in the shape Canvas reads:
+
+  [{"id":12,"all_dates":[{"base":true,"due_at":"2027-02-01T07:59:00Z"}]}]
+
+Each entry names one assignment by id. A date left out of an entry is left
+alone; a date given as null is cleared. Canvas answers with the job it queued
+rather than with the assignments, so read the assignments back to see the dates
+it set.
+
+In Canvas Builder the whole list is one change, and a copy of every assignment
+in it is kept first so the instructor can undo the move. A list long enough to
+outgrow that record — a few hundred assignments — is refused rather than half
+recorded, so send a course that big in batches.`,
+		Example: `  # Move two assignments
+  echo '[{"id":11,"all_dates":[{"base":true,"due_at":"2027-05-06T06:59:00Z"}]},
+         {"id":12,"all_dates":[{"base":true,"due_at":"2027-05-13T06:59:00Z"}]}]' \
+    | canvas-pp-cli assignments bulk-update 7 --stdin`,
 		Annotations: map[string]string{"pp:endpoint": "assignments.bulk_update", "pp:method": "PUT", "pp:path": "/api/v1/courses/{course_id}/assignments/bulk_update"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {
 				return cmd.Help()
 			}
+			// Hand-authored for Canvas Builder: bulk_update's body is a JSON
+			// list, and --stdin is the only way to hand the command one. The
+			// generated default was an empty object, which Canvas answers with
+			// a job that then moves nothing.
 			if !stdinBody {
+				return usageErr(errors.New(msgBulkUpdateNeedsList))
 			}
 			c, err := flags.newClient()
 			if err != nil {
@@ -37,19 +64,16 @@ func newAssignmentsBulkUpdateCmd(flags *rootFlags) *cobra.Command {
 			}
 			path = replacePathParam(path, "course_id", args[0])
 			params := map[string]string{}
-			var body map[string]any
-			if stdinBody {
-				stdinData, err := io.ReadAll(os.Stdin)
-				if err != nil {
-					return fmt.Errorf("reading stdin: %w", err)
-				}
-				var jsonBody map[string]any
-				if err := json.Unmarshal(stdinData, &jsonBody); err != nil {
-					return fmt.Errorf("parsing stdin JSON: %w", err)
-				}
-				body = jsonBody
-			} else {
-				body = map[string]any{}
+			stdinData, err := io.ReadAll(os.Stdin)
+			if err != nil {
+				return fmt.Errorf("reading stdin: %w", err)
+			}
+			// Hand-authored for Canvas Builder: a JSON list, passed on as it
+			// arrived. The generated code unmarshalled into map[string]any,
+			// which could not hold Canvas's shape at all. See bulk_update.go.
+			body, err := bulkUpdateList(stdinData)
+			if err != nil {
+				return err
 			}
 			data, statusCode, err := c.PutWithParams(cmd.Context(), path, params, body)
 			if err != nil {
@@ -73,9 +97,12 @@ func newAssignmentsBulkUpdateCmd(flags *rootFlags) *cobra.Command {
 					}
 				}
 			}
-			if !flags.dryRun && statusCode >= 200 && statusCode < 300 && (partialFailure == nil || flags.allowPartialFailure) {
-				writeMutationResponseToStore(cmd.Context(), "assignments", data, "")
-			}
+			// Hand-authored for Canvas Builder: nothing is mirrored here.
+			// Canvas answers bulk_update with a Progress — the job it queued,
+			// not the assignments — and the id in it is a job id. The generated
+			// mirror write would file that as an assignment 1001 nobody has,
+			// and a later `--data-source local` read would serve it. The
+			// assignments are mirrored when they are read back.
 			if wantsHumanTable(cmd.OutOrStdout(), flags) {
 				// Check if response contains an array (directly or wrapped in "data")
 				var items []map[string]any
@@ -187,7 +214,7 @@ func newAssignmentsBulkUpdateCmd(flags *rootFlags) *cobra.Command {
 			return nil
 		},
 	}
-	cmd.Flags().BoolVar(&stdinBody, "stdin", false, "Read request body as JSON from stdin")
+	cmd.Flags().BoolVar(&stdinBody, "stdin", false, "Read the JSON list of assignments from stdin (required)")
 
 	return cmd
 }

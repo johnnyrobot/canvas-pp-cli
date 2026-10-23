@@ -174,13 +174,22 @@ func newDoctorCmd(flags *rootFlags) *cobra.Command {
 				collectCredentialsLocationReport(report, cfg)
 			}
 
+			// Canvas Builder's own section, plus the auth hint that stands in
+			// for the export-a-token one. The auth block below leaves that
+			// hint alone in Canvas Builder, so the order here is only about
+			// where the section lands in the JSON.
+			// Hand-authored for Canvas Builder.
+			flags.addSandboxReport(report, cfg)
+
 			// Check auth
 			authConfigured := false
 			if cfg != nil {
 				header := cfg.AuthHeader()
 				if header == "" {
 					report["auth"] = "not configured"
-					report["auth_hint"] = "Set credentials with: export CANVAS_API_TOKEN=\"your-token-here\" CANVAS_ACCESS_TOKEN=\"your-token-here\""
+					if !flags.sandboxActive {
+						report["auth_hint"] = "Set credentials with: export CANVAS_API_TOKEN=\"your-token-here\" CANVAS_ACCESS_TOKEN=\"your-token-here\""
+					}
 				} else {
 					authConfigured = true
 					report["auth"] = "configured"
@@ -384,6 +393,9 @@ func newDoctorCmd(flags *rootFlags) *cobra.Command {
 			if hint, ok := report["auth_hint"]; ok {
 				fmt.Fprintf(w, "  hint: %v\n", hint)
 			}
+			// Canvas Builder's section, after the hint it replaces.
+			// Hand-authored for Canvas Builder.
+			renderSandboxReport(w, report)
 			// Cache section: render after the primary health block so it
 			// sits next to version info, mirroring the JSON report layout.
 			if cacheAny, ok := report["cache"]; ok {

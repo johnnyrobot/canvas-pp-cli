@@ -48,6 +48,16 @@ func TestWhichResolves(t *testing.T) {
 		// Endpoint commands — reachable only via the command-tree fallback.
 		{"create an assignment", "assignments create"},
 		{"delete a quiz", "quizzes delete-quizzes"},
+
+		// Canvas Builder's own commands and the recipes for its jobs. These
+		// are what an agent working in a course workspace asks for, and none
+		// of them was reachable before Task 11 put them in the index.
+		{"move course to a new term", "recipes move-to-new-term"},
+		{"shift due dates", "recipes move-to-new-term"},
+		{"insert an image into a page", "recipes insert-image"},
+		{"fix accessibility", "recipes accessibility-remediation"},
+		{"upload a file", "upload"},
+		{"run the checks", "check"},
 	}
 
 	for _, tc := range cases {

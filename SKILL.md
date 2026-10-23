@@ -1522,7 +1522,78 @@ canvas-pp-cli which "<capability in your own words>"
 
 `which` resolves a natural-language capability query to the best matching command from this CLI's curated feature index. Exit code `0` means at least one match; exit code `2` means no confident match — fall back to `--help` or use a narrower query.
 
+## Canvas Builder mode
+
+Canvas Builder is a macOS app that runs its own copy of Canvas for an instructor's course and opens a folder for an agent to work in. In that folder this CLI runs in Canvas Builder mode: `sandbox = true` in the workspace's `config/config.toml`, or a build stamped for it. `canvas-pp-cli doctor` says whether the mode is on, which course the workspace is, and whether the checks are set up.
+
+Everything goes through Canvas Builder's gateway, which records every change before it sends it, so the instructor can read what happened and undo it.
+
+What the mode refuses, and why:
+
+| Refusal | Why |
+|---|---|
+| Any Canvas address other than the workspace's gateway | A flag, an environment variable, a redirect, a "next page" link or an upload address that points elsewhere would take the work out of Canvas Builder. |
+| Another course | A workspace's key works on its own course only. |
+| `roster`, `at-risk`, `to-grade`, `standings`, `audit-enrollments`, `since` | They are built on student records, which Canvas Builder keeps out of its copy of Canvas. These commands are absent from `--help` and from `which`, not offered and then refused. |
+| `auth set-token`, `auth logout`, `auth setup` | Canvas Builder manages the workspace's key. |
+| A path outside the course workspace folder, on upload or download | Those are the only files this job is about. Use a path inside the folder, such as `materials/`. |
+| `feedback` delivery, and anything else that sends data out | In Canvas Builder the CLI talks to Canvas Builder and nothing else. |
+| Retrying a write whose outcome is unknown | Through the gateway a retry is a second recorded change, and a retried delete asks the instructor a second time. You get exit 8 instead; read the course and decide. |
+
+A refusal from the gateway is passed to you word for word, with nothing added about where else to look.
+
+### Course scope
+
+| In scope | Out of scope |
+|---|---|
+| The workspace's own course, and its pages, assignments, quizzes, discussions, announcements, modules, syllabus, files, folders and calendar events | Any other course, and anything that names one |
+| Files inside the course workspace folder | Anywhere else on disk |
+| The course's own settings and dates | Accounts, users, terms, enrollments, submissions, grades |
+
+### Job labels
+
+Put `--job "<short name of the job>"` on every write. Canvas Builder groups a job's changes under that name, so the instructor reviews them together and undoes them together. A write with no label still goes out — losing the work would cost more than losing the grouping — but you get a note on stderr saying so. Use the same label for every write in one job: `--job "Move to spring 2027"`.
+
+Expect Canvas Builder to ask the instructor before anything destructive. The command waits while they decide, which can take minutes, and an unanswered or declined change comes back as exit 9 with the instructor's answer as the message. A delete is not undoable, so it is always asked about.
+
+Other changes that get asked about, because each of them loses something: an upload that would overwrite a file of the same name, a page saved with an empty body, a syllabus emptied, publishing or concluding the course, deleting a module, replacing an assignment's list of who it is assigned to, and resetting, copying or importing into the course. An upload with `--on-duplicate rename` keeps the file that is there and is not asked about, so use it unless replacing the file is the point.
+
+### Canvas Builder's own commands
+
+| Command | What it is for |
+|---|---|
+| `canvas-pp-cli check <a11y\|dates\|placeholders\|links\|all>` | Read the course as it is now and report what is wrong with it: the content students read, every date, text left over from a previous term, and the links. `check all` is the last step of every job. |
+| `canvas-pp-cli upload <path>` | Put a file from the workspace folder into the course's files in one command, and hand back `embed_src`, the address a page has to use to show it. |
+| `canvas-pp-cli download <file_id> --output materials/` | Save a course file into the workspace folder. `--output` takes a folder, where the file keeps the name Canvas has for it, or the name to save it under. |
+| `canvas-pp-cli recipes [<name>]` | The order the commands go in for each of the jobs below. |
+
+### Exit codes to expect here
+
+6 means part of a batch failed, 8 means a change may or may not have happened, and 9 means Canvas Builder stopped it. See Exit Codes below.
+
 ## Recipes
+
+### Canvas Builder jobs
+
+Each job an agent is sent to a course workspace to do is a recipe: the order the commands go in, and the reason the order matters. Run `canvas-pp-cli recipes` for the list and `canvas-pp-cli recipes <name>` for the steps, and follow the steps rather than this table.
+
+| Recipe | The job |
+|---|---|
+| `move-to-new-term` | Shift every date in a course: its own start and end, the due dates on every assignment in one batch, the discussions, and the dates written into the text of pages. |
+| `accessibility-remediation` | Work through what the accessibility check reports, fixing the markup and leaving the instructor's words alone. |
+| `design-review` | Read a whole course and write the instructor a review of how it is put together. Changes nothing. |
+| `ai-use-map` | Work out what each graded item says about using AI, then publish one page students can find. |
+| `build-from-materials` | Turn files in the workspace folder into course files, a page that uses them, and a module that holds it. |
+| `insert-image` | Upload an image and embed it in a page, with alt text, so the accessibility and link checks both pass. |
+
+Every recipe reads before it writes, puts `--job` on each write, leaves `[Check: …]` where a fact is still unknown rather than inventing it, and ends with `canvas-pp-cli check all` before the job is called done.
+
+Two things the recipes spell out and are easy to get wrong on your own:
+
+- `--agent` shortens lists, and a page body is one of the things it leaves out. A read that needs the text — `pages index --include body` — also needs `--select url,title,body`, because `--select` takes precedence over the shortening.
+- One `assignments bulk-update` list may name at most 500 assignments, and nothing splits a longer one for you: Canvas Builder refuses the whole list and says to send it as several changes of 500 or fewer. Count the assignments before you send, and for a course with more than 500 write the lists yourself — at most 500 each, the same `--job` label on every one. The instructor is asked to approve each list.
+
+If the course's closure days have not been entered yet, no check is held up, `check dates` by name included. The date check reports one not-checked entry about the course, saying it could not tell whether anything is due on a closure day, and checks the rest of the dates as usual. Report that entry as it stands: a rule nobody could apply is not a rule that passed, and the instructor is the one who can enter the days.
 
 
 ### Course roster as JSON for an agent
@@ -1660,7 +1731,10 @@ Explicit flags always win over profile values; profile values win over defaults.
 | 3 | Resource not found |
 | 4 | Authentication required |
 | 5 | API error (upstream issue) |
+| 6 | Part of a batch failed; the rest went through |
 | 7 | Rate limited (wait and retry) |
+| 8 | Outcome unknown: the change may or may not have happened. Read the course; don't retry |
+| 9 | Canvas Builder stopped this. The message says why |
 | 10 | Config error |
 
 ## Argument Parsing

@@ -11,12 +11,22 @@ import (
 	"time"
 
 	"github.com/johnnyrobot/canvas-pp-cli/internal/cliutil"
+	"github.com/johnnyrobot/canvas-pp-cli/internal/sandbox"
 	"github.com/pelletier/go-toml/v2"
 )
 
 type Config struct {
-	BaseURL            string            `toml:"base_url"`
-	AuthHeaderVal      string            `toml:"auth_header"`
+	BaseURL       string `toml:"base_url"`
+	AuthHeaderVal string `toml:"auth_header"`
+	// Canvas Builder's settings. The app writes these five keys; sandbox = true
+	// is what turns the mode on, and Profile is their validated form, attached
+	// by Load after every override has been applied.
+	Sandbox            bool              `toml:"sandbox"`
+	Gateway            string            `toml:"gateway"`
+	Workspace          string            `toml:"workspace"`
+	ApprovalTimeout    string            `toml:"approval_timeout"`
+	ChecksCommand      []string          `toml:"checks_command"`
+	Profile            *sandbox.Profile  `toml:"-"`
 	Headers            map[string]string `toml:"headers,omitempty"`
 	AuthSource         string            `toml:"-"`
 	CredentialSource   string            `toml:"-"`
@@ -53,7 +63,14 @@ func Load(configPath string) (*Config, error) {
 	}
 	cfg.Path = path
 
-	if explicitConfigFile {
+	if sandbox.Required() {
+		// The bundled build reads this one file and nothing else. A missing,
+		// unreadable or damaged settings file is a stop, never a reason to go
+		// looking for another config or another Canvas (ADR 0001).
+		if err := readConfigFile(path, cfg, "config-kind path"); err != nil {
+			return nil, settingsErr()
+		}
+	} else if explicitConfigFile {
 		if err := readConfigFile(path, cfg, "config-kind path"); err != nil && !os.IsNotExist(err) {
 			return nil, err
 		}
@@ -162,7 +179,69 @@ func Load(configPath string) (*Config, error) {
 	if v := os.Getenv("CANVAS_BASE_URL"); v != "" {
 		cfg.BaseURL = v
 	}
+
+	// Last, so the settings are checked against the values the CLI will
+	// actually use rather than the ones the file started with.
+	if err := cfg.applySandbox(); err != nil {
+		return nil, err
+	}
 	return cfg, nil
+}
+
+// applySandbox attaches the Canvas Builder profile and enforces the two rules
+// that have to hold before the first request leaves: no extra headers, and a
+// base URL that is the gateway. In the bundled build, settings that don't say
+// sandbox = true are a stop.
+func (c *Config) applySandbox() error {
+	if sandbox.Required() && !c.Sandbox {
+		return settingsErr()
+	}
+	if !c.Sandbox {
+		return nil
+	}
+	profile, err := sandbox.New(sandbox.Settings{
+		Gateway:         c.Gateway,
+		Workspace:       c.Workspace,
+		ApprovalTimeout: c.ApprovalTimeout,
+		ChecksCommand:   c.ChecksCommand,
+	})
+	if err != nil {
+		return err
+	}
+	c.Profile = profile
+	// A header the settings add is a header the agent could have put there, and
+	// the gateway blocks several by name. Neither is worth guessing about.
+	if len(c.Headers) > 0 || c.AuthHeaderVal != "" {
+		return sandbox.NewError(sandbox.MsgExtraHeaders)
+	}
+	if !profile.Allows(c.BaseURL) {
+		return sandbox.NotGateway(profile.Gateway, c.BaseURL)
+	}
+	return nil
+}
+
+func settingsErr() error { return sandbox.NewError(sandbox.MsgSettings) }
+
+// SandboxRequested reports whether the resolved config file says
+// sandbox = true, without validating anything else. The command surface narrows
+// itself before Load has a chance to fail, so this has to be answerable from
+// the file alone.
+func SandboxRequested(configPath string) bool {
+	path, _, err := resolveConfigPath(configPath)
+	if err != nil {
+		return false
+	}
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return false
+	}
+	var probe struct {
+		Sandbox bool `toml:"sandbox"`
+	}
+	if err := toml.Unmarshal(data, &probe); err != nil {
+		return false
+	}
+	return probe.Sandbox
 }
 
 func resolveConfigPath(configPath string) (string, bool, error) {
@@ -521,15 +600,29 @@ func (c *Config) scrubLegacyCredentials() {
 	}
 }
 
+// persistedConfig is what a save writes back. The Canvas Builder keys are
+// omitempty and listed before Headers: they must survive a token save, or the
+// next run of the CLI fails closed for no reason, and a key written after the
+// [headers] table would read back as part of it.
 type persistedConfig struct {
-	BaseURL string            `toml:"base_url"`
-	Headers map[string]string `toml:"headers,omitempty"`
+	BaseURL         string            `toml:"base_url"`
+	Sandbox         bool              `toml:"sandbox,omitempty"`
+	Gateway         string            `toml:"gateway,omitempty"`
+	Workspace       string            `toml:"workspace,omitempty"`
+	ApprovalTimeout string            `toml:"approval_timeout,omitempty"`
+	ChecksCommand   []string          `toml:"checks_command,omitempty"`
+	Headers         map[string]string `toml:"headers,omitempty"`
 }
 
 func (c *Config) persisted() persistedConfig {
 	return persistedConfig{
-		BaseURL: c.BaseURL,
-		Headers: c.Headers,
+		BaseURL:         c.BaseURL,
+		Sandbox:         c.Sandbox,
+		Gateway:         c.Gateway,
+		Workspace:       c.Workspace,
+		ApprovalTimeout: c.ApprovalTimeout,
+		ChecksCommand:   c.ChecksCommand,
+		Headers:         c.Headers,
 	}
 }
 

@@ -33,6 +33,21 @@ var whichIndex = []whichEntry{
 	{Command: "since", Description: "A 'what changed' digest of new submissions, new announcements, and new enrollments since a time window.", Group: "Local snapshots that compound", WhyItMatters: "Use this for a standup-style digest of course activity over a window the API cannot query directly."},
 	{Command: "standings", Description: "Grade-distribution and pass/fail/DFW rollups computed locally across every course in a term, drillable by section or course.", Group: "Admin rollups", WhyItMatters: "Reach for this for term-level reporting that joins enrollments, submissions, and courses no single endpoint combines."},
 	{Command: "audit-enrollments", Description: "Flags enrollment anomalies in an account: students with no submissions, teacher-less courses, and concluded-but-active users.", Group: "Admin rollups", WhyItMatters: "Use this for compliance and cleanup sweeps before a term rolls over."},
+
+	// Hand-authored for Canvas Builder: the commands and recipes an agent
+	// working inside a course workspace asks for. The six entries above are
+	// all built on student records, so Canvas Builder hides them and
+	// visibleWhichIndex drops them — without these, `which` would have
+	// nothing left to answer with.
+	{Command: "check", Description: "Read a course as it is now and check the content students read, every date, text left over from a previous term, and the links.", Group: "Canvas Builder", WhyItMatters: "Run this before you call a job done; it is the one command that reports what is still wrong with the course."},
+	{Command: "upload", Description: "Upload a file from the course workspace into a course's files, and hand back the address a page embeds it from.", Group: "Canvas Builder", WhyItMatters: "Reach for this instead of the three-step files API whenever an image or a document has to get into a course."},
+	{Command: "download", Description: "Save a course file into the course workspace under the name Canvas has for it.", Group: "Canvas Builder", WhyItMatters: "Use this to read a file the course already holds, such as a syllabus you are about to check."},
+	{Command: "recipes move-to-new-term", Description: "The order to shift a course onto new dates: the course's own start and end, then the due dates on every assignment in one batch, then the discussions, then the dates written into pages.", Group: "Canvas Builder recipes", WhyItMatters: "Start here when you are asked to move a course, or its schedule, to another term."},
+	{Command: "recipes accessibility-remediation", Description: "The order to fix what the accessibility check reports in a course's pages, keeping the author's own words.", Group: "Canvas Builder recipes", WhyItMatters: "Start here to fix accessibility, WCAG or alt-text problems a check has already found."},
+	{Command: "recipes design-review", Description: "The order to read a whole course in and report on how it is put together. Changes nothing.", Group: "Canvas Builder recipes", WhyItMatters: "Start here when the instructor wants an opinion on their course rather than an edit to it."},
+	{Command: "recipes ai-use-map", Description: "The order to work out what each graded item says about using AI and publish it as one page students can find.", Group: "Canvas Builder recipes", WhyItMatters: "Start here when a course's AI rules are scattered through its assignment descriptions."},
+	{Command: "recipes build-from-materials", Description: "The order to turn a folder of materials into course files, a page that uses them, and a module that holds it.", Group: "Canvas Builder recipes", WhyItMatters: "Start here when you have been handed documents and asked to build the course around them."},
+	{Command: "recipes insert-image", Description: "The order to put an image into a page: upload it, embed it by the address Canvas gives back, and give it alt text.", Group: "Canvas Builder recipes", WhyItMatters: "Start here for the small job that comes up inside most of the others."},
 }
 
 // whichMatch pairs an index entry with its ranking score for a query.
@@ -239,12 +254,29 @@ const whichTreeCandidates = 25
 // tree together, and is the whole of `which`'s behaviour. The command wraps
 // it with flag parsing and rendering only.
 func resolveWhich(root *cobra.Command, query string, limit int) []whichMatch {
+	index := visibleWhichIndex(root)
 	if strings.TrimSpace(query) == "" {
-		return rankWhichAll(whichIndex)
+		return rankWhichAll(index)
 	}
-	curated := rankWhich(whichIndex, query, len(whichIndex))
+	curated := rankWhich(index, query, len(index))
 	tree := rankWhich(whichTreeEntries(root), query, whichTreeCandidates)
 	return mergeWhichMatches(curated, tree, limit)
+}
+
+// visibleWhichIndex drops the curated capabilities whose command the tree
+// hides. Canvas Builder hides the ones built on student data, and an index
+// that still advertised them would send an agent to a command it can't run.
+// Outside Canvas Builder nothing is hidden and the whole index is returned.
+// Hand-authored for Canvas Builder.
+func visibleWhichIndex(root *cobra.Command) []whichEntry {
+	out := make([]whichEntry, 0, len(whichIndex))
+	for _, e := range whichIndex {
+		if cmd := findCommandByRoute(root, e.Command); cmd != nil && cmd.Hidden {
+			continue
+		}
+		out = append(out, e)
+	}
+	return out
 }
 
 // whichCuratedBoost favours a curated index entry over a command-tree entry
@@ -336,7 +368,7 @@ Exit codes:
 
 			// Empty query returns the whole index at score 0 (listing mode).
 			if strings.TrimSpace(query) == "" {
-				return renderWhich(cmd, flags, rankWhichAll(whichIndex))
+				return renderWhich(cmd, flags, rankWhichAll(visibleWhichIndex(cmd.Root())))
 			}
 
 			matches := resolveWhich(cmd.Root(), query, limit)

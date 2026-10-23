@@ -1,0 +1,18 @@
+{
+  "schema_version": 2,
+  "id": "too-many-changes-refusal",
+  "applied_at": "2026-10-22",
+  "base_run_id": "20260622-151431-06e611a5",
+  "base_printing_press_version": "4.25.0",
+  "summary": "The CLI now recognises Canvas Builder's too-many-changes refusal and passes it to the agent word for word, exit 9, like every other refusal. MsgTooManyChangesFmt joins the copies of the gateway's messages in internal/sandbox/messages.go, but unlike the others it carries a number the gateway owns, so CanvasBuilderMessage matches it with tooManyChanges(): the sentence either side of the number, with digits and nothing else between them. The recipes' and SKILL.md's paragraphs on the 500-assignment bulk-update limit were corrected to say the refusal names the limit, because they were written when it didn't.",
+  "reason": "The gateway refuses a write that names more things than it can keep a before-copy of (today only a long assignments bulk-update list). Until canvas-builder-v2 commit 573f6c8 that refusal was the generic \"Canvas Builder doesn't let agents use this part of Canvas\", which the CLI already knew; now it is its own sentence, and an unknown gateway message is not recognised as a refusal at all. It would have fallen through classifyAPIError to the HTTP 403 branch, which tells the agent to check its token, set CANVAS_API_TOKEN and run doctor \u2014 advice that is wrong three ways for a list that is simply too long, and the one thing the agent needs to hear, split it up, is in the sentence that would have been thrown away. Matching on the words around the number keeps the limit the gateway's to change: 500 appears in no CLI code, only in prose about today's gateway.",
+  "files": [
+    "internal/sandbox/messages.go",
+    "internal/sandbox/messages_test.go",
+    "internal/cli/refusal_test.go",
+    "internal/cli/recipes.go",
+    "SKILL.md"
+  ],
+  "known_limitations": "The match is on the sentence, so a reworded refusal in the gateway stops being recognised and the agent gets the 403 token advice again. TestGatewayMessagesMatchV2 catches that, but only when CANVAS_BUILDER_V2 points at the other repo; it skips otherwise, which is every run in CI or on a machine with only this repo checked out. The same hole already existed for the other eight messages. Nothing here reads the gateway's limit at run time either: the CLI can't tell an agent how many things one change may cover until the gateway has refused one.",
+  "validated_outcome": "gofmt clean on every file touched. go build ./... and go vet ./... clean. go test ./... passing. go test ./internal/sandbox/ with CANVAS_BUILDER_V2=/Users/johnnyrobot/code/canvas-builder-v2 passing, which is what proves the copy of the format string matches the gateway's source. TestRefusalSurfacedUnchanged gained a row for the formatted message and asserts the number reaches the agent; TestCanvasBuilderMessage checks three limits are recognised and that the same sentence with no number, or with words where the number goes, is not."
+}

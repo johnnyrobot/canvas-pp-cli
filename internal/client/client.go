@@ -21,7 +21,10 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
+	"sync"
 	"time"
+
+	"github.com/johnnyrobot/canvas-pp-cli/internal/sandbox"
 )
 
 const BinaryResponseHeader = "X-Printing-Press-Binary-Response"
@@ -37,8 +40,25 @@ type Client struct {
 	// WriteVerify controls the post-write check that catches a mutating
 	// request Canvas accepted without applying. See writeverify.go.
 	WriteVerify WriteVerifyMode
-	cacheDir    string
-	limiter     *cliutil.AdaptiveLimiter
+	// Sandbox is Canvas Builder's profile, set from the workspace config when
+	// it says sandbox = true, and nil everywhere else. When it is set this
+	// client talks to the gateway and to nothing else. See sandbox.go.
+	Sandbox *sandbox.Profile
+	// JobLabel travels as X-Job-Label. Canvas Builder groups a job's changes
+	// under it so the instructor can review them and undo them together.
+	JobLabel string
+	// Notices is where messages meant for the agent go, alongside the result
+	// rather than inside it. Nil means os.Stderr.
+	Notices        io.Writer
+	noJobLabelOnce sync.Once
+	noticeMu       sync.Mutex
+	// stillWaitingAfter is how long to wait before saying an answer is slow.
+	// Zero means defaultStillWaitingAfter. See notice.go.
+	stillWaitingAfter time.Duration
+	// backoff is the wait between attempts, so a test can make it nothing.
+	backoff  func(attempt int) time.Duration
+	cacheDir string
+	limiter  *cliutil.AdaptiveLimiter
 }
 
 // RequestBaseURL returns the base URL used for requests.
@@ -111,6 +131,7 @@ func New(cfg *config.Config, timeout time.Duration, rateLimit float64) *Client {
 		Config:      cfg,
 		HTTPClient:  httpClient,
 		WriteVerify: WriteVerifyOn,
+		backoff:     cliutil.Backoff,
 		cacheDir:    cacheDir,
 		limiter:     cliutil.NewAdaptiveLimiter(rateLimit),
 	}
@@ -146,6 +167,9 @@ func New(cfg *config.Config, timeout time.Duration, rateLimit float64) *Client {
 		}
 		return nil
 	}
+	// Canvas Builder's settings, if this is a course workspace: they narrow the
+	// client to the gateway and stretch the timeout to cover an approval.
+	c.applySandbox(timeout)
 	return c
 }
 
@@ -444,6 +468,14 @@ func sleepContext(ctx context.Context, wait time.Duration) error {
 // do executes an HTTP request. headerOverrides, when non-nil, override global
 // RequiredHeaders for this specific request (used for per-endpoint API versioning).
 func (c *Client) do(ctx context.Context, method, path string, params map[string]string, body any, headerOverrides map[string]string) (json.RawMessage, int, error) {
+	result, status, _, err := c.doInternal(ctx, method, path, params, body, headerOverrides, false)
+	return result, status, err
+}
+
+// doWithHeader is do() keeping the response headers. Only reading a whole list
+// needs them: the address of the next page arrives in a Link header and
+// nowhere else. See pages.go.
+func (c *Client) doWithHeader(ctx context.Context, method, path string, params map[string]string, body any, headerOverrides map[string]string) (json.RawMessage, int, http.Header, error) {
 	return c.doInternal(ctx, method, path, params, body, headerOverrides, false)
 }
 
@@ -454,14 +486,15 @@ func (c *Client) do(ctx context.Context, method, path string, params map[string]
 // but the verify-mode short-circuit does not fire because the operation
 // does not mutate remote state.
 func (c *Client) doRead(ctx context.Context, method, path string, params map[string]string, body any, headerOverrides map[string]string) (json.RawMessage, int, error) {
-	return c.doInternal(ctx, method, path, params, body, headerOverrides, true)
+	result, status, _, err := c.doInternal(ctx, method, path, params, body, headerOverrides, true)
+	return result, status, err
 }
 
 // doInternal is the shared implementation behind do() and doRead(). The
 // readOnlyIntent flag is set by doRead() callers (read-only POST/PUT/PATCH
 // operations like GraphQL queries) to skip the mutating-verb verify-mode
 // gate. Plain do() callers leave it false and get the usual short-circuit.
-func (c *Client) doInternal(ctx context.Context, method, path string, params map[string]string, body any, headerOverrides map[string]string, readOnlyIntent bool) (json.RawMessage, int, error) {
+func (c *Client) doInternal(ctx context.Context, method, path string, params map[string]string, body any, headerOverrides map[string]string, readOnlyIntent bool) (json.RawMessage, int, http.Header, error) {
 	// Verify-mode transport-layer gate. When the verifier (or any consumer
 	// that sets PRINTING_PRESS_VERIFY=1) drives a mutating verb without
 	// the LIVE_HTTP=1 opt-in, return a synthetic envelope without dialing,
@@ -479,12 +512,17 @@ func (c *Client) doInternal(ctx context.Context, method, path string, params map
 	// no cache invalidation runs (no remote state changed) and no
 	// client_credentials mint happens unnecessarily.
 	if !readOnlyIntent && isMutatingVerb(method) && cliutil.IsVerifyEnv() && !cliutil.IsVerifyLiveHTTPEnv() {
-		return verifyShortCircuitEnvelope(method, path), http.StatusOK, nil
+		return verifyShortCircuitEnvelope(method, path), http.StatusOK, nil, nil
 	}
 	if err := rejectUnresolvedPathParams(path, nil); err != nil {
-		return nil, 0, err
+		return nil, 0, nil, err
 	}
 	targetURL := c.BaseURL + path
+	// Checked here rather than in New so a BaseURL something changed afterwards
+	// is caught too. Nothing has been built, minted or dialed yet.
+	if err := c.CheckURL(targetURL); err != nil {
+		return nil, 0, nil, err
+	}
 
 	// Parameter names written in Rails bracket convention only reach the
 	// controller when they are form-encoded; inside a JSON body they stay
@@ -498,7 +536,7 @@ func (c *Client) doInternal(ctx context.Context, method, path string, params map
 		} else {
 			b, err := json.Marshal(body)
 			if err != nil {
-				return nil, 0, fmt.Errorf("marshaling body: %w", err)
+				return nil, 0, nil, fmt.Errorf("marshaling body: %w", err)
 			}
 			bodyBytes = b
 		}
@@ -510,16 +548,21 @@ func (c *Client) doInternal(ctx context.Context, method, path string, params map
 	// not during dry-run.
 	authHeader, err := c.authHeader(ctx)
 	if err != nil {
-		return nil, 0, err
+		return nil, 0, nil, err
 	}
 
 	// Build the request for dry-run display or actual execution
 	if c.DryRun {
-		return c.dryRun(method, targetURL, path, params, bodyBytes, bodyContentType, headerOverrides, authHeader)
+		dryBody, dryStatus, dryErr := c.dryRun(method, targetURL, path, params, bodyBytes, bodyContentType, headerOverrides, authHeader)
+		return dryBody, dryStatus, nil, dryErr
 	}
 
 	const maxRetries = 3
 	var lastErr error
+
+	// What to tell the agent while this one waits, if anything. Built once, so
+	// a second attempt doesn't say it again. See notice.go.
+	notice := c.newWriteNotice(method, path, body)
 
 	for attempt := 0; attempt <= maxRetries; attempt++ {
 		// Proactive rate limiting — wait before sending
@@ -531,7 +574,7 @@ func (c *Client) doInternal(ctx context.Context, method, path string, params map
 
 		req, err := http.NewRequestWithContext(ctx, method, targetURL, bodyReader)
 		if err != nil {
-			return nil, 0, fmt.Errorf("creating request: %w", err)
+			return nil, 0, nil, fmt.Errorf("creating request: %w", err)
 		}
 		if bodyBytes != nil {
 			req.Header.Set("Content-Type", bodyContentType)
@@ -559,6 +602,7 @@ func (c *Client) doInternal(ctx context.Context, method, path string, params map
 		for k, v := range headerOverrides {
 			req.Header.Set(k, v)
 		}
+		c.applyJobLabel(req, method)
 		binaryResponse := strings.EqualFold(req.Header.Get(BinaryResponseHeader), "true")
 		if binaryResponse {
 			req.Header.Del(BinaryResponseHeader)
@@ -585,19 +629,37 @@ func (c *Client) doInternal(ctx context.Context, method, path string, params map
 			}
 		}
 
+		notice.sending()
 		resp, err := c.HTTPClient.Do(req)
+		notice.answered()
 		if err != nil {
 			if ctxErr := ctx.Err(); ctxErr != nil {
-				return nil, 0, ctxErr
+				return nil, 0, nil, ctxErr
 			}
-			lastErr = fmt.Errorf("%s %s: %w", method, c.displayURL(path, authHeader), c.maskError(err, authHeader))
+			// A refusal the CLI raised itself -- a redirect off the gateway --
+			// is not a failed connection. Retrying it would send the request
+			// to the gateway again for the same answer.
+			if r, ok := refusal(err); ok {
+				return nil, 0, nil, r
+			}
+			failure := fmt.Errorf("%s %s: %w", method, c.displayURL(path, authHeader), c.maskError(err, authHeader))
+			// A write that went out and got no answer may well have been
+			// applied, so it is not sent again. See retry.go.
+			retry, unknown := retryDecision(method, c.Sandbox != nil, err, 0, nil)
+			switch {
+			case unknown:
+				return nil, 0, nil, &OutcomeUnknownError{Method: method, Path: c.displayURL(path, authHeader), Cause: failure}
+			case !retry:
+				return nil, 0, nil, failure
+			}
+			lastErr = failure
 			continue
 		}
 
 		respBody, err := io.ReadAll(resp.Body)
 		resp.Body.Close()
 		if err != nil {
-			return nil, 0, fmt.Errorf("reading response: %w", err)
+			return nil, 0, nil, fmt.Errorf("reading response: %w", err)
 		}
 
 		// Success
@@ -613,9 +675,9 @@ func (c *Client) doInternal(ctx context.Context, method, path string, params map
 			if isBinaryResponseContentType(resp.Header.Get("Content-Type")) {
 				env, encErr := wrapBinaryResponse(resp.Header.Get("Content-Type"), respBody)
 				if encErr != nil {
-					return nil, 0, encErr
+					return nil, 0, nil, encErr
 				}
-				return env, resp.StatusCode, nil
+				return env, resp.StatusCode, resp.Header, nil
 			}
 			sanitized := sanitizeJSONResponse(respBody)
 			// A 2xx on a mutating verb is not proof the write applied —
@@ -623,12 +685,15 @@ func (c *Client) doInternal(ctx context.Context, method, path string, params map
 			// with the unchanged resource. Check before reporting success.
 			if isMutatingVerb(method) && !readOnlyIntent {
 				if vErr := c.checkWriteApplied(method, path, body, sanitized, authHeader); vErr != nil {
-					return nil, resp.StatusCode, vErr
+					return nil, resp.StatusCode, nil, vErr
 				}
 			}
-			return json.RawMessage(sanitized), resp.StatusCode, nil
+			return json.RawMessage(sanitized), resp.StatusCode, resp.Header, nil
 		}
 
+		// Kept before the sanitizer, which rewrites anything that looks like a
+		// credential, so a Canvas Builder message is matched on what arrived.
+		rawBody := respBody
 		if !binaryResponse {
 			respBody = sanitizeJSONResponse(respBody)
 		}
@@ -640,38 +705,46 @@ func (c *Client) doInternal(ctx context.Context, method, path string, params map
 			Body:       c.maskCredentialText(truncateBody(respBody), authHeader),
 		}
 
+		retry, unknown := retryDecision(method, c.Sandbox != nil, nil, resp.StatusCode, rawBody)
+		if unknown {
+			// Canvas Builder sent the change on and heard nothing back, so it
+			// may or may not have happened. Asking again won't settle it.
+			return nil, resp.StatusCode, nil, &OutcomeUnknownError{Method: method, Path: c.displayURL(path, authHeader), Cause: apiErr}
+		}
+
 		// Rate limited - adjust adaptive limiter and retry
-		if resp.StatusCode == 429 && attempt < maxRetries {
+		if resp.StatusCode == 429 && retry && attempt < maxRetries {
 			c.limiter.OnRateLimit()
 			wait := cliutil.RetryAfter(resp)
 			fmt.Fprintf(os.Stderr, "rate limited, waiting %s (attempt %d/%d, rate adjusted to %.1f req/s)\n", wait, attempt+1, maxRetries, c.limiter.Rate())
 			if err := sleepContext(ctx, wait); err != nil {
-				return nil, 0, err
+				return nil, 0, nil, err
 			}
 			lastErr = apiErr
 			continue
 		}
 
-		// Server error - retry with backoff
-		if resp.StatusCode >= 500 && attempt < maxRetries {
+		// Server error - retry with backoff, unless sending it again could
+		// apply the same change twice.
+		if resp.StatusCode >= 500 && retry && attempt < maxRetries {
 			// cliutil.Backoff is the same 2^attempt curve this computed
 			// inline, plus a MaxBackoff ceiling. At the current retry count
 			// the ceiling never binds; sharing the helper keeps the curve in
 			// one place if the retry budget ever grows.
-			wait := cliutil.Backoff(attempt)
+			wait := c.backoff(attempt)
 			fmt.Fprintf(os.Stderr, "server error %d, retrying in %s (attempt %d/%d)\n", resp.StatusCode, wait, attempt+1, maxRetries)
 			if err := sleepContext(ctx, wait); err != nil {
-				return nil, 0, err
+				return nil, 0, nil, err
 			}
 			lastErr = apiErr
 			continue
 		}
 
 		// Client error or retries exhausted - return the error
-		return nil, resp.StatusCode, apiErr
+		return nil, resp.StatusCode, nil, apiErr
 	}
 
-	return nil, 0, lastErr
+	return nil, 0, nil, lastErr
 }
 
 // dryRun prints the outgoing request exactly as the live path would send it,

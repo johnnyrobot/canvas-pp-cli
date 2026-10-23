@@ -191,6 +191,25 @@ These capabilities aren't available in any other tool for this API.
 
 ## Recipes
 
+### Canvas Builder jobs
+
+In Canvas Builder mode — the mode the CLI runs in inside a course workspace opened by the Canvas Builder app — each job is a recipe: the order the commands go in, and the reason the order matters.
+
+```bash
+canvas-pp-cli recipes                     # the six jobs
+canvas-pp-cli recipes move-to-new-term    # the steps, with an example line for each
+```
+
+| Recipe | The job |
+|---|---|
+| `move-to-new-term` | Shift every date in a course: its own start and end, the due dates on every assignment in one batch, the discussions, and the dates written into the text of pages. |
+| `accessibility-remediation` | Work through what the accessibility check reports, fixing the markup and leaving the instructor's words alone. |
+| `design-review` | Read a whole course and write the instructor a review of how it is put together. Changes nothing. |
+| `ai-use-map` | Work out what each graded item says about using AI, then publish one page students can find. |
+| `build-from-materials` | Turn files in the workspace folder into course files, a page that uses them, and a module that holds it. |
+| `insert-image` | Upload an image and embed it in a page, with alt text, so the accessibility and link checks both pass. |
+
+Every recipe reads before it writes, puts `--job` on each write so the instructor can undo the job as one thing, leaves `[Check: …]` where a fact is still unknown rather than inventing it, and ends with `canvas-pp-cli check all` before the job is called done.
 
 ### Course roster as JSON for an agent
 
