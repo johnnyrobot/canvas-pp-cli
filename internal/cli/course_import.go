@@ -40,7 +40,7 @@ import (
 // Skipping step 3 (e.g. curl without -L) leaves the migration in
 // pre_processing with no file. Canvas runs one migration per course at a time,
 // so that orphan silently blocks every later import on the course for hours.
-// The generated `content_migrations create-2` command only performs step 1;
+// The generated `canvas-pp-cli content-migrations create-2` command only performs step 1;
 // this command performs all three and checks the result.
 
 // Canvas treats these API states as "a migration is still going" for the
@@ -135,7 +135,7 @@ func newCourseImportCmd(flags *rootFlags) *cobra.Command {
 		Use:   "course-import <course_id> <file>",
 		Short: "Import a course package (.imscc / .zip) into a course, including the file upload",
 		Long: "Creates a content migration, uploads the file, confirms the upload, and waits for the import to finish.\n\n" +
-			"Use this instead of `content_migrations create-2` plus a hand-rolled upload: a missed confirm step leaves the\n" +
+			"Use this instead of `canvas-pp-cli content-migrations create-2` plus a hand-rolled upload: a missed confirm step leaves the\n" +
 			"migration stuck in pre_processing, which blocks every later import on the course for hours.\n\n" +
 			"The migration type is detected from the package (Canvas export -> canvas_cartridge_importer, other Common\n" +
 			"Cartridge -> common_cartridge_importer); pass --type to override. Refuses to start while another import on the\n" +
@@ -347,17 +347,17 @@ func (r *courseImporter) run(ctx context.Context) (*courseImportResult, error) {
 	}
 	if err != nil {
 		if errors.Is(err, errWaitTimeout) {
-			res.Note = fmt.Sprintf("still %s after %s; check later with `content_migrations show-6 %s %d`", res.WorkflowState, r.waitTimeout, r.courseID, m.ID)
+			res.Note = fmt.Sprintf("still %s after %s; check later with `canvas-pp-cli content-migrations show-6 %s %d`", res.WorkflowState, r.waitTimeout, r.courseID, m.ID)
 			return res, apiErr(fmt.Errorf("timed out waiting for migration %d (state %s)", m.ID, res.WorkflowState))
 		}
 		return res, err
 	}
 	if res.WorkflowState == "failed" {
-		res.Note = fmt.Sprintf("see `content_migrations index-2 %s %d` for migration issues", r.courseID, m.ID)
+		res.Note = fmt.Sprintf("see `canvas-pp-cli content-migrations index-2 %s %d` for migration issues", r.courseID, m.ID)
 		return res, apiErr(fmt.Errorf("migration %d failed", m.ID))
 	}
 	if res.MigrationIssues > 0 {
-		res.Note = fmt.Sprintf("completed with %d migration issue(s); see `content_migrations index-2 %s %d`", res.MigrationIssues, r.courseID, m.ID)
+		res.Note = fmt.Sprintf("completed with %d migration issue(s); see `canvas-pp-cli content-migrations index-2 %s %d`", res.MigrationIssues, r.courseID, m.ID)
 	}
 	return res, nil
 }
@@ -619,6 +619,10 @@ func (r *courseImporter) waitFor(ctx context.Context, id int64, timeout time.Dur
 // abandon releases a migration that will never get its file, so it does not
 // block later imports on the course, and reports what happened.
 func (r *courseImporter) abandon(ctx context.Context, res *courseImportResult, cause error) error {
+	// Release even if the command was interrupted: an unreleased orphan blocks
+	// the course, which is the failure this command exists to prevent.
+	ctx, cancel := context.WithTimeout(context.WithoutCancel(ctx), 30*time.Second)
+	defer cancel()
 	body := map[string]any{
 		"migration_type":       r.migrationType,
 		"pre_attachment[name]": res.File,
