@@ -188,6 +188,13 @@ These capabilities aren't available in any other tool for this API.
   ```bash
   canvas-pp-cli audit-enrollments --account 1 --orphans --agent
   ```
+- **`course-import`** — Imports a course package (.imscc / .zip) into a course end to end: creates the content migration, uploads the file, confirms the upload, and waits for the import to finish. Retries a failed upload with a fresh token, and refuses to start while another import on the course is still active.
+
+  _Use this instead of `canvas-pp-cli content-migrations create-2` plus a hand-rolled upload. A skipped confirm step leaves the migration stuck in pre_processing, and that blocks every later import on the course for hours._
+
+  ```bash
+  canvas-pp-cli course-import 259 ./course-export.imscc --agent
+  ```
 
 ## Recipes
 

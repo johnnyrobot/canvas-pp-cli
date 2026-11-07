@@ -392,6 +392,7 @@ See README.md or the bundled SKILL.md for recipes.`,
 	rootCmd.AddCommand(newWorkflowCmd(flags))
 	rootCmd.AddCommand(newNovelAtRiskCmd(flags))
 	rootCmd.AddCommand(newNovelAuditEnrollmentsCmd(flags))
+	rootCmd.AddCommand(newCourseImportCmd(flags))
 	rootCmd.AddCommand(newNovelRosterCmd(flags))
 	rootCmd.AddCommand(newNovelSinceCmd(flags))
 	rootCmd.AddCommand(newNovelStandingsCmd(flags))
